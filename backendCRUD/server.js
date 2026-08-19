@@ -28,7 +28,8 @@ app.delete('/delete/:id', (req, res) => {
 app.put('/update/:id', (req, res) => {
 
     let { id } = req.params
-    let userData = users.map((u) => u.id === id ? req.body : u)
+    let { name } = req.body
+    let userData = users.map((u) => u.id === id ? {...u, name } : u)
     users = userData
     res.send("user update succefully")
 })
