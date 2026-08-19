@@ -24,6 +24,15 @@ app.delete('/delete/:id', (req, res) => {
     res.send("user deleted succefully")
 })
 
+
+app.put('/update/:id', (req, res) => {
+
+    let { id } = req.params
+    let userData = users.map((u) => u.id === id ? req.body : u)
+    users = userData
+    res.send("user update succefully")
+})
+
 const port = 3000
 app.listen(port, () => {
     console.log(`server is running on port ${port}`)
