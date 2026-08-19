@@ -1,17 +1,30 @@
 const express = require("express")
 
+
 const app = express()
 app.use(express.json())
 
-app.get('/', (req, res) => {
-    res.send("all good")
+let users = []
+
+app.get("/", (req, res) => {
+    res.send(users)
 })
+
 
 app.post('/create', (req, res) => {
-    console.log(req.body)
-    res.send("ok post")
+    let body = req.body
+    users.push(body)
+    res.send("users saved succefully")
 })
 
-app.listen(3000, () => {
-    console.log("server is running on port 300")
+app.delete('/delete/:id', (req, res) => {
+    let { id } = req.params
+    let userData = users.filter((u) => u.id !== id)
+    users = userData
+    res.send("user deleted succefully")
+})
+
+const port = 3000
+app.listen(port, () => {
+    console.log(`server is running on port ${port}`)
 })
