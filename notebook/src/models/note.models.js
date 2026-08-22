@@ -5,7 +5,7 @@ const notesSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    descripton: {
+    description: {
         type: String,
         minlength: 10
     }
