@@ -13,8 +13,79 @@ const createNotesControlles = async(req, res) => {
             data: notes
         })
     } catch (error) {
-        console.log("error post", error)
+        return res.status(500).json({
+            message: "internal server error"
+        })
     }
 }
 
-module.exports = createNotesControlles
+const findNotesControllers = async(req, res) => {
+    try {
+        const notes = await notesApp.find()
+        return res.status(200).json({
+            message: "notes find successfully",
+            data: notes
+        })
+
+    } catch {
+        return res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
+
+const findNotebyIdControllers = async(req, res) => {
+    try {
+        const { id } = req.params
+        const notes = await notesApp.findById(id)
+        return res.status(200).json({
+            message: "note find succefully",
+            data: notes
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "internal server error"
+        })
+
+    }
+}
+
+
+const updateNotesControllers = async(req, res) => {
+    try {
+        const { id } = req.params
+        const body = req.body;
+        const notes = await notesApp.findByIdAndUpdate(id, body)
+        return res.status(200).json({
+            message: "notee update succefully",
+            data: notes
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
+
+const deleteNotesControlles = async(req, res) => {
+    try {
+        const { id } = req.params;
+        const notes = await notesApp.findByIdAndDelete(id)
+        return res.status(200).json({
+            message: "notes deleted succefully",
+            data: notes
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
+
+module.exports = {
+    createNotesControlles,
+    findNotesControllers,
+    deleteNotesControlles,
+    updateNotesControllers,
+    findNotebyIdControllers
+}

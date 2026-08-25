@@ -1,18 +1,18 @@
 const express = require("express")
-const notesApp = require("./moduls/notes.moduls")
 const connectDb = require("./config/db")
 const notesRouter = require("./routes/notes.router")
+const dotenv = require("dotenv");
 
+dotenv.config();
 
 const app = express()
 app.use(express.json())
 
 connectDb()
-app.get("/", (req, res) => {
-    res.send("ok got it")
-})
 
 app.use("/notes", notesRouter)
+
+
 
 
 
