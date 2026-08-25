@@ -66,6 +66,24 @@ const updateNotesControllers = async(req, res) => {
         })
     }
 }
+const updateNotesByPatchConttrollers = async(req, res) => {
+    try {
+
+        const { id } = req.params
+        const body = req.body
+        const notes = await notesApp.findByIdAndUpdate(id, body, { new: true })
+
+        res.status(200).json({
+            message: "not update succefully",
+            data: notes
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
 
 const deleteNotesControlles = async(req, res) => {
     try {
@@ -87,5 +105,6 @@ module.exports = {
     findNotesControllers,
     deleteNotesControlles,
     updateNotesControllers,
-    findNotebyIdControllers
+    findNotebyIdControllers,
+    updateNotesByPatchConttrollers
 }
