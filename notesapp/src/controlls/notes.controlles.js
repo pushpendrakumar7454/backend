@@ -55,7 +55,7 @@ const updateNotesControllers = async(req, res) => {
     try {
         const { id } = req.params
         const body = req.body;
-        const notes = await notesApp.findByIdAndUpdate(id, body)
+        const notes = await notesApp.findByIdAndUpdate(id, body, { new: true })
         return res.status(200).json({
             message: "notee update succefully",
             data: notes
