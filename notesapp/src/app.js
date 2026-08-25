@@ -5,8 +5,8 @@ const notesRouter = require("./routes/notes.router")
 
 
 const app = express()
-
 app.use(express.json())
+
 connectDb()
 app.get("/", (req, res) => {
     res.send("ok got it")
