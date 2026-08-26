@@ -26,7 +26,6 @@ const NotesForm = ({setNotes}) => {
         
     }
 
-    console.log(formData);
    formData({
     title:"",
     description:""
