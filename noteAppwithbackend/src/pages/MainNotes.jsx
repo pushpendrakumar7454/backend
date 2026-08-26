@@ -34,7 +34,6 @@ const MainNotes = () => {
             return <NotesUi key={value.id} value={value} setNotes={setNotes}/>
          })}
         </div>
-
       </div>
     </div>
   );
