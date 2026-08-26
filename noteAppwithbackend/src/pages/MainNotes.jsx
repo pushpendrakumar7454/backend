@@ -14,7 +14,6 @@ const MainNotes = () => {
             console.log(error)
         }
     }
-
     useEffect(()=>{
        fetchData()
     },[])
