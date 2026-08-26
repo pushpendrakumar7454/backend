@@ -19,7 +19,6 @@ const NotesForm = ({setNotes}) => {
     e.preventDefault();
     try {
         const data= await createNotes(formData)
-        console.log(data)
        setNotes((prev)=>[...prev,data.data])
     } catch (error) {
         console.log(error)
