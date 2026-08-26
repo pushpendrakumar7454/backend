@@ -1,10 +1,12 @@
 import React, { useState } from "react";
+import { createNotes } from "../api/noteHooks";
 
-const NotesForm = () => {
+const NotesForm = ({setNotes}) => {
   const [formData, setformData] = useState({
     title: "",
     description: "",
   });
+ 
 
   const handleChange = (e) => {
     setformData((prev) => ({
@@ -13,9 +15,22 @@ const NotesForm = () => {
     }));
   };
 
-  const submitForm = (e) => {
+  const submitForm =async (e) => {
     e.preventDefault();
+    try {
+        const data= await createNotes(formData)
+        console.log(data)
+       setNotes((prev)=>[...prev,data.data])
+    } catch (error) {
+        console.log(error)
+        
+    }
+
     console.log(formData);
+   formData({
+    title:"",
+    description:""
+   })
   };
 
   return (

@@ -7,9 +7,9 @@ const { createNotesControlles, findNotesControllers, deleteNotesControlles, upda
 const router = express.Router({})
 
 
+router.get("/allnotes", findNotesControllers)
 router.get("/:id", findNotebyIdControllers)
 router.post("/create", createNotesControlles)
-router.get("/allnotes", findNotesControllers)
 router.delete("/delete/:id", deleteNotesControlles)
 router.put("/update/:id", updateNotesControllers)
 router.patch("/updatepatch/:id", updateNotesByPatchConttrollers)

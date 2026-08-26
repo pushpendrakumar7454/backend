@@ -13,6 +13,7 @@ const createNotesControlles = async(req, res) => {
             data: notes
         })
     } catch (error) {
+
         return res.status(500).json({
             message: "internal server error"
         })
@@ -27,7 +28,8 @@ const findNotesControllers = async(req, res) => {
             data: notes
         })
 
-    } catch {
+    } catch (error) {
+        console.log(error)
         return res.status(500).json({
             message: "internal server error"
         })
