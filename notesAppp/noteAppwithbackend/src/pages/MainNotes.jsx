@@ -6,6 +6,12 @@ import { getNotes } from "../api/noteHooks";
 const MainNotes = () => {
 
     const [notes, setNotes] = useState([])
+     const [formData, setformData] = useState({
+        title: "",
+        description: "",
+      });
+     const [updateNote, setupdateNote] = useState(null)
+
     const fetchData=async()=>{
         try {
             const res=await getNotes()
@@ -25,13 +31,13 @@ const MainNotes = () => {
 
         {/* Notes Form */}
         <div className="w-full lg:w-[45%]">
-          <NotesForm setNotes={setNotes}/>
+          <NotesForm formData={formData} setformData={setformData} setNotes={setNotes} updateNote={updateNote}setupdateNote={setupdateNote}/>
         </div>
 
         {/* Notes UI */}
         <div className="w-full lg:w-[55%]">
          {notes?.map((value)=>{
-            return <NotesUi key={value.id} value={value} setNotes={setNotes}/>
+            return <NotesUi key={value.id} value={value} formData={formData} setformData={setformData} setNotes={setNotes} updateNote={updateNote} setupdateNote={setupdateNote}/>
          })}
         </div>
       </div>

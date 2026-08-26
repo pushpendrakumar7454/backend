@@ -1,11 +1,7 @@
-import React, { useState } from "react";
-import { createNotes } from "../api/noteHooks";
 
-const NotesForm = ({setNotes}) => {
-  const [formData, setformData] = useState({
-    title: "",
-    description: "",
-  });
+import { createNotes, updateNotes } from "../api/noteHooks";
+
+const NotesForm = ({setNotes,formData, setformData,updateNote, setupdateNote}) => {
  
 
   const handleChange = (e) => {
@@ -17,18 +13,30 @@ const NotesForm = ({setNotes}) => {
 
   const submitForm =async (e) => {
     e.preventDefault();
+   if(updateNote){
     try {
+      const res=await updateNotes(updateNote,formData)
+      setNotes((prev)=>prev.map((note)=>note._id===updateNote?{...note,...formData}:note))
+      setupdateNote(null)
+      return res
+    } catch (error) {
+      console.log(error)
+      
+    }
+   }else{
+     try {
         const data= await createNotes(formData)
        setNotes((prev)=>[...prev,data.data])
     } catch (error) {
         console.log(error)
         
     }
+   }
 
-   formData({
-    title:"",
-    description:""
-   })
+ setformData({
+    title: "",
+    description: ""
+})
   };
 
   return (

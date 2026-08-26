@@ -1,7 +1,7 @@
 import React from "react";
-import { deleteNotes } from "../api/noteHooks";
+import { deleteNotes, updateNotes } from "../api/noteHooks";
 
-const NotesUi = ({value,setNotes}) => {
+const NotesUi = ({value,setNotes, setformData, setupdateNote}) => {
 
     const handleDelete=async()=>{
         try { 
@@ -12,6 +12,15 @@ const NotesUi = ({value,setNotes}) => {
         }
     }
 
+    const handleUpdate=(note)=>{
+      setupdateNote(note._id)
+      setformData({
+        title:note.title,
+        description:note.description
+
+      })
+      
+    }
 
   return (
     <div className="w-full p-4 sm:p-6">
@@ -41,6 +50,7 @@ const NotesUi = ({value,setNotes}) => {
           </button>
 
           <button
+          onClick={()=>handleUpdate(value)}
             type="button"
             className="flex-1 rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-4 py-2.5 text-sm font-medium text-indigo-400 transition-all duration-200 hover:bg-indigo-500 hover:text-white"
           >
