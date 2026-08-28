@@ -9,10 +9,12 @@ const submit=async(data)=>{
     const formData = new FormData()
     formData.append("name",data.name)
     formData.append("email",data.email)
-    formData.append('image',data.image[0])
+    for (let i = 0; i < data.images.length; i++) {
+  formData.append("images", data.images[i]);
+}
 
     await axios.post("http://localhost:3000/file",formData)
-    console.log(formData)
+   console.log([...formData.entries()]);
 }
 
   return (
@@ -20,7 +22,7 @@ const submit=async(data)=>{
       <form className='w-90  flex flex-col gap-8 p-5' onSubmit={handleSubmit(submit)}>
         <input {...register("name")} type="text" placeholder='Enter name...'className='border border-gray-600 p-3 text-xl rounded w-full' />
         <input {...register("email")} type="text" placeholder='Enter email... 'className='border border-gray-600 p-3 text-xl rounded w-full'/>
-        <input {...register("image")} type="file" placeholder='enter File' className='border border-gray-600 p-3 text-sm rounded w-full' />
+        <input {...register("images")} type="file" multiple placeholder='enter File' className='border border-gray-600 p-3 text-sm rounded w-full' />
         <button className='bg-red-600 p-2 rounded text-white text-xl active:scale-95 cursor-pointer'>Submit</button>
       </form>
     </div>

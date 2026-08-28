@@ -1,6 +1,6 @@
 const createFileControllers = async(req, res) => {
     try {
-        const file = req.file
+        const file = req.files
         console.log(file)
         res.status(200).json({
             message: "file create succefully"
