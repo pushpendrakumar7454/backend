@@ -10,7 +10,7 @@ const submit=async(data)=>{
     formData.append("name",data.name)
     formData.append("email",data.email)
     for (let i = 0; i < data.images.length; i++) {
-  formData.append("images", data.images[i]);
+     formData.append("images", data.images[i]);
 }
 
     await axios.post("http://localhost:3000/file",formData)
