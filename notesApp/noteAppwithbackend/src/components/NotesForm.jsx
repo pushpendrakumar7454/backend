@@ -13,27 +13,35 @@ const NotesForm = ({setNotes,formData, setformData,updateNote, setupdateNote}) =
 
   const submitForm =async (e) => {
     e.preventDefault();
-   if(updateNote){
+   if (updateNote) {
     try {
-      const res=await updateNotes(updateNote,formData)
-      setNotes((prev)=>prev.map((note)=>note._id===updateNote?{...note,...formData}:note))
-      setupdateNote(null)
-      return res
-    } catch (error) {
-      console.log(error)
-      
-    }
-   }else{
-     try {
-        const data= await createNotes(formData)
-       setNotes((prev)=>[...prev,data.data])
+        const res = await updateNotes(updateNote, formData)
+
+        setNotes((prev) =>
+            prev.map((note) =>
+                note._id === updateNote
+                    ? { ...note, ...formData }
+                    : note
+            )
+        )
+
+        setupdateNote(null)
+
     } catch (error) {
         console.log(error)
-        
     }
-   }
+} else {
+    try {
+        const data = await createNotes(formData)
 
- setformData({
+        setNotes((prev) => [...prev, data.data])
+
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+setformData({
     title: "",
     description: ""
 })

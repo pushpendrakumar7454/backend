@@ -10,6 +10,11 @@ const app = express()
 app.use(cors({
     origin: "http://localhost:5173",
 }))
+
+
+app.get("/", (req, res) => {
+    res.send("Server is running")
+})
 app.use(express.json())
 
 connectDb()
