@@ -20,3 +20,25 @@ export const getNotes=async()=>{
         throw error
     }
 }
+
+
+export const deleteNote=async(id)=>{
+    try {
+   const res=await apiInstance.delete(`/notes/delete/${id}`)   
+   return res.data     
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}
+
+
+export const updateNote=async(id,data)=>{
+    try {
+  const res= await apiInstance.put(`/notes/update/${id}`,data) 
+  return res.data       
+    } catch (error) {
+        console.log(error)
+        throw error
+    }
+}

@@ -1,7 +1,7 @@
 import React from "react";
 
 
-const NotesUi = ({note}) => {
+const NotesUi = ({note,deleteData,updateData}) => {
 
    
 
@@ -25,7 +25,7 @@ const NotesUi = ({note}) => {
         <div className="mt-5 flex gap-3 border-t border-white/10 pt-4">
 
           <button
-          
+          onClick={()=>deleteData(note._id)}
             type="button"
             className="flex-1 cursor-pointer active:scale-95 rounded-xl border border-red-500/20 bg-red-500/10 px-4 py-2.5 text-sm font-medium text-red-400 transition-all duration-200 hover:bg-red-500 hover:text-white"
           >
@@ -33,7 +33,7 @@ const NotesUi = ({note}) => {
           </button>
 
           <button
-         
+         onClick={()=>updateData(note)}
             type="button"
             className="flex-1 rounded-xl border border-indigo-500/20 bg-indigo-500/10 px-4 py-2.5 text-sm font-medium text-indigo-400 transition-all duration-200 hover:bg-indigo-500 hover:text-white"
           >

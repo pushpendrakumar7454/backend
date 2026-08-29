@@ -1,16 +1,13 @@
-import { useState } from "react";
-import { createNote } from "../api/notesApi";
+
+import { createNote, updateNote } from "../api/notesApi";
 
 
 
 
-const NotesForm = ({setNotes}) => {
+const NotesForm = ({setNotes,formData, setFormData,updateNotes, setUpdateNotes}) => {
  
 
-const [formData, setFormData] = useState({
-    title:"",
-    description:""
-})
+
 
 
 const handleChange=(e)=>{
@@ -19,8 +16,15 @@ const handleChange=(e)=>{
 
     const submitForm=async(e)=>{
         e.preventDefault()
-       const res= await createNote(formData)
+       if(updateNotes){
+           const res=await updateNote(updateNotes,formData)
+           setNotes((prev)=>prev.map((data)=>data._id===updateNotes?res.data:data))
+          setUpdateNotes(null)
+
+       }else{
+        const res= await createNote(formData)
         setNotes((prev)=>[...prev,res.data])
+       }
         console.log(formData)
         setFormData({
             title:"",
