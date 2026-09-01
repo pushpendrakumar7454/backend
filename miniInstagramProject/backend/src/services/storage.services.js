@@ -8,4 +8,14 @@ const storageInstance = new ImageKit({
     publicKey: process.env.IK_PUBLIC_KEY
 });
 
-module.exports = storageInstance;
+const sendFiles = async(file, fileName) => {
+    const obj = {
+        file,
+        fileName,
+        folder: "cohort-3"
+    };
+
+    return await storageInstance.upload(obj);
+};
+
+module.exports = sendFiles;
