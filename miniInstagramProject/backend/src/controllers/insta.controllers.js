@@ -39,4 +39,21 @@ const createPostController = async(req, res) => {
     }
 };
 
-module.exports = { createPostController };
+
+const getAllPostControllers = async(req, res) => {
+    try {
+        const posts = await instaPost.find()
+
+        res.status(200).json({
+            message: "find all posts",
+            data: posts
+
+        })
+    } catch (error) {
+        res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
+
+module.exports = { createPostController, getAllPostControllers };
