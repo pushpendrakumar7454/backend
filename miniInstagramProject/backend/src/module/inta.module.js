@@ -1,8 +1,19 @@
-const { default: mongoose } = require("mongoose");
+const mongoose = require("mongoose");
 
-const instaSchema = new mongoose.Schema({
+const instaPostSchema = new mongoose.Schema({
+    caption: {
+        type: String,
+        required: true
+    },
 
-})
-const instaPost = mongoose.model("miniinsta", instaSchema)
+    image: {
+        type: String,
+        required: true
+    }
+}, {
+    timestamps: true
+});
 
-module.exports = instaPost
+const InstaPost = mongoose.model("miniinsta", instaPostSchema);
+
+module.exports = InstaPost;
