@@ -14,6 +14,6 @@ const instaPostSchema = new mongoose.Schema({
     timestamps: true
 });
 
-const InstaPost = mongoose.model("miniinsta", instaPostSchema);
+const instaPost = mongoose.model("miniinsta", instaPostSchema);
 
-module.exports = InstaPost;
+module.exports = instaPost;
