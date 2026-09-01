@@ -12,6 +12,6 @@ app.get("/", (req, res) => {
 })
 
 
-app.get("/post", postRouter)
+app.use("/post", postRouter)
 
 module.exports = app
