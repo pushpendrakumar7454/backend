@@ -1,20 +1,38 @@
 const instaPost = require("../module/inta.module");
+const sendFiles = require("../services/storage.services");
 
 const createPostController = async(req, res) => {
     try {
-        const { caption, image } = req.body;
+        const { caption } = req.body;
+        const file = req.file;
 
-        const posts = await instaPost.create({
+        if (!caption || !file) {
+            return res.status(400).json({
+                message: "fields are required",
+                success: false
+            });
+        }
+
+        // Upload image to ImageKit
+        const uploadImage = await sendFiles(
+            file.buffer,
+            file.originalname
+        );
+
+        // Save post in MongoDB
+        const post = await instaPost.create({
             caption,
-            image
+            image: uploadImage.url
         });
 
-        res.status(201).json({
+        return res.status(201).json({
             message: "post created successfully",
-            data: posts
+            success: true,
+            data: post
         });
+
     } catch (error) {
-        res.status(500).json({
+        return res.status(500).json({
             message: "internal server error",
             error: error.message
         });

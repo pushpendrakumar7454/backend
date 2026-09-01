@@ -9,13 +9,14 @@ const storageInstance = new ImageKit({
 });
 
 const sendFiles = async(file, fileName) => {
+
     const obj = {
-        file,
-        fileName,
+        file: file.toString("base64"),
+        fileName: fileName,
         folder: "cohort-3"
     };
 
-    return await storageInstance.upload(obj);
+    return await storageInstance.files.upload(obj);
 };
 
 module.exports = sendFiles;
