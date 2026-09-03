@@ -10,7 +10,7 @@ export const authenticate = async(req, res, next) => {
         })
     }
 
-    const data = jwt.decode(token)
+    const data = jwt.verify(token, "7d35f95bbb71aa61a7ca6b74ca22974c1909b7bb432ab9d2379843fc63d697fcf9e5b4da8122062b")
 
     const user = await userModel.findById(data.id)
 
