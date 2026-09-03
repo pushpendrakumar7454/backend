@@ -1,17 +1,17 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
 
+
 const app = express()
 app.use(express.json())
+
 
 app.get("/", (req, res) => {
     res.send("ok got it")
 })
 
-
 app.post("/api/register", (req, res) => {
     const { email, name, password } = req.body
-
 
     const token = jwt.sign({
         email,
