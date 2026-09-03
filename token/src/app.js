@@ -1,6 +1,8 @@
 import express from 'express'
 import jwt from 'jsonwebtoken'
 import userModel from './module/user.model.js'
+import { authenticate } from './middleware/user.midleware.js'
+
 
 
 const app = express()
@@ -50,25 +52,15 @@ app.get("/api/allusers", async(req, res) => {
     }
 })
 
-app.get("/api/me", async(req, res) => {
-    try {
-        const authHeaders = req.headers.authorization
-        console.log(authHeaders)
+app.get("/api/me", authenticate, async(req, res) => {
+    console.log(req.user)
+    res.status(200).json({
+        message: "token passed",
+        data: {
+            user: req.user
+        }
+    })
 
-        const data = jwt.decode(authHeaders)
-        console.log(data)
-
-        const user = await userModel.findById(data.id)
-        console.log(user)
-        console.log("AUTH:", authHeaders)
-        console.log("DATA:", data)
-
-
-    } catch (error) {
-        res.status(500).json({
-            message: "internal server error"
-        })
-    }
 })
 
 
