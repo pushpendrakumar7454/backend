@@ -2,6 +2,7 @@ import express from 'express'
 import jwt from 'jsonwebtoken'
 import userModel from './module/user.model.js'
 import { authenticate } from './middleware/user.midleware.js'
+import bycypt from 'bcryptjs'
 
 
 
@@ -19,7 +20,7 @@ app.post("/api/register", async(req, res) => {
     const user = await userModel.create({
         email,
         name,
-        password
+        password: await bycypt.hash(password, 10)
     })
 
     const token = jwt.sign({
@@ -61,6 +62,41 @@ app.get("/api/me", authenticate, async(req, res) => {
         }
     })
 
+})
+
+app.post("/api/login", async(req, res) => {
+    try {
+        const { email, password } = req.body
+
+        const user = await userModel.findOne({
+            email
+        })
+
+        const isValidPassword = bycypt.compare(password, user.password)
+        if (!isValidPassword) {
+            return res.status(400).json({
+                message: "invalid user"
+            })
+        }
+        const token = jwt.sign({
+            id: user._id
+        }, "7d35f95bbb71aa61a7ca6b74ca22974c1909b7bb432ab9d2379843fc63d697fcf9e5b4da8122062b")
+        res.status(200).json({
+            message: "user login succesfully",
+            data: {
+                user: {
+                    email: user.email,
+                    name: user.name
+                }
+            }
+        })
+
+
+    } catch (error) {
+        res.status(500).json({
+            message: "internal server error"
+        })
+    }
 })
 
 
