@@ -70,7 +70,7 @@ export const loginUserControllers = async(req, res) => {
         const { email, name, password } = req.body
 
         const user = await userModel.findOne({ email })
-        const isValidPassword = bcrypt.compare(password, user.password)
+        const isValidPassword = await bcrypt.compare(password, user.password)
         if (!isValidPassword) {
             return res.status(401).json({
                 message: "invalid user"
