@@ -1,6 +1,6 @@
 import userModel from "../module/user.module.js";
 import bcrypt from "bcryptjs";
-import { generateTokens } from "../utils/auth.js";
+import { generateTokens, varifyrefreshToken } from "../utils/auth.js";
 
 export const registerUserController = async(req, res) => {
     try {
@@ -68,5 +68,59 @@ export const meUserController = async(req, res) => {
         return res.status(500).json({
             message: "internal server error"
         })
+    }
+}
+
+
+export const refreshUserController = async(req, res) => {
+    const refressToken = req.cookies.refreshToken;
+
+    if(!refressToken){
+        return res.status(400).json({
+            message:"refresh token not found"
+        });
+    }
+
+    try{
+        const decoded = await varifyrefreshToken(refressToken);
+
+        const user = await userModel.findById(decoded.id);
+
+        if(!user){
+            return res.status(404).json({
+                message:"user not found"
+            });
+        }
+
+        if(refressToken !== user.refreshToken){
+            user.refreshToken = null;
+            await user.save();
+
+            return res.status(401).json({
+                message:"Unauthorized refresh token mismatch"
+            });
+        }
+
+        const {accessToken, refreshToken:newreFreshToken} = generateTokens({
+            userId:user._id
+        });
+
+        res.cookie("refreshToken",newreFreshToken, {
+            httpOnly:true
+        });
+
+        user.refreshToken =newreFreshToken;
+        await user.save();
+
+        res.status(200).json({
+            message:"token resfesh succefully",
+            accessToken
+        });
+
+    }catch(error){
+        console.log(error)
+        return res.status(500).json({
+            message:"internal server error"
+        });
     }
 }

@@ -11,3 +11,9 @@ export const varifyaccessToken = (token) => {
     const decoded = jwt.verify(token, config.JWT_ACCESS_TOKEN)
     return decoded
 }
+
+
+export const varifyrefreshToken=(token)=>{
+    const decoded=jwt.verify(token,config.JWT_REFRESS_TOKEN)
+    return decoded
+}
