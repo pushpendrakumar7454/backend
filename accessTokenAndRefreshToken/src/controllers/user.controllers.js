@@ -28,6 +28,9 @@ export const registerUserController = async(req, res) => {
             userId: user._id
         });
 
+        user.refreshToken = refreshToken
+        await user.save()
+
         res.cookie("refreshToken", refreshToken, {
             httpOnly: true
         });
@@ -51,3 +54,19 @@ export const registerUserController = async(req, res) => {
         });
     }
 };
+
+
+export const meUserController = async(req, res) => {
+    try {
+        res.status(200).json({
+            message: "user find sucefully",
+            data: {
+                user: req.user
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
