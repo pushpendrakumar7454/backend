@@ -1,4 +1,4 @@
-const registerUserController = async(req, res) => {
+export const registerUserController = async(req, res) => {
     try {
 
     } catch (error) {
