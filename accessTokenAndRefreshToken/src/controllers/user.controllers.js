@@ -1,41 +1,53 @@
-import userModel from "../module/user.module.js"
-import bcrypt from 'bcryptjs'
-import jwt from 'jsonwebtoken'
-import { config } from "../config/confg.js"
-import { generateTokens } from "../utils/auth.js"
+import userModel from "../module/user.module.js";
+import bcrypt from "bcryptjs";
+import { generateTokens } from "../utils/auth.js";
 
 export const registerUserController = async(req, res) => {
     try {
-        const { email, name, password } = req.body
-        const allredyExistUser = await userModel.findOne({ email })
-        if (allredyExistUser) {
-            return res.status(400).json({
-                message: "email allredy exist",
-                errors: [{
-                    field: email,
-                    message: "user allready exist"
-                }]
-            })
-        }
+        const { email, name, password } = req.body;
 
+        const alreadyExistUser = await userModel.findOne({ email });
+
+        if (alreadyExistUser) {
+            return res.status(400).json({
+                message: "Email already exists",
+                errors: [{
+                    field: "email",
+                    message: "User already exists"
+                }]
+            });
+        }
 
         const user = await userModel.create({
             name,
             email,
             hashPassword: await bcrypt.hash(password, 10)
-        })
-        const { accessToken, refreshToken } = generateTokens({ userId: user._id })
+        });
+
+        const { accessToken, refreshToken } = generateTokens({
+            userId: user._id
+        });
+
+        res.cookie("refreshToken", refreshToken, {
+            httpOnly: true
+        });
 
         return res.status(201).json({
-            messgae: "user register seccufully",
+            message: "User registered successfully",
             data: {
-                user
+                user: {
+                    name: user.name,
+                    email: user.email
+                },
+                accessToken
             }
-        })
+        });
 
     } catch (error) {
-        res.status(500).json({
-            message: "internal server error"
-        })
+        console.log(error);
+
+        return res.status(500).json({
+            message: "Internal server error"
+        });
     }
-}
+};
