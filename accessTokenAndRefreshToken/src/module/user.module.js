@@ -4,17 +4,21 @@ const moduleSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true,
-        minlength: 3,
-        maxlength: 50
+        minLength: 3,
+        maxLength: 50
     },
     email: {
         type: String,
         required: true,
-
+        unique: true,
+        match: /^[^\s@]+@[^\s@]+\.[^\s@]+$/
     },
     hashPassword: {
         type: String,
         required: true
+    },
+    refreshToken: {
+        type: String
     }
 })
 
