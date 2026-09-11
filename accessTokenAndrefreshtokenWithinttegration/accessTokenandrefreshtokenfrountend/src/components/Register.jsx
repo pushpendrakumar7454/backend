@@ -1,8 +1,11 @@
 import React, { useState } from "react";
 import useApi from "../config/apiInstance";
-
+import { authContext, useAuth } from "../context/authContext";
+import {useNavigate} from 'react-router'
 const Register = () => {
     const api=useApi()
+    const useContext=useAuth()
+const navigate=  useNavigate()
 
     const [formValue, setFormValue] = useState({
         name:"",
@@ -16,8 +19,14 @@ const Register = () => {
     e.preventDefault()
 
     const responce=await api.post("/auth/register",formValue)
-    console.log(responce)
-    console.log(formValue)
+
+    
+    useContext.setAccessToken(responce.data.accessToken)
+    useContext.setUser(responce.data.data.user)
+    console.log(responce.data.data.accessToken)
+    console.log(responce.data.data.user)
+    navigate("/profile")
+    
    }
 
 
