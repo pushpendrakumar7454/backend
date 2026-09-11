@@ -32,13 +32,13 @@ const useApi = () => {
       if (error.response?.status === 401) {
         try {
           console.log("Unauthorized - refreshing token");
-          const res = await axios.get(
+          const res = await axios.post(
             "http://localhost:5173/api/auth/refresh",
             {
               withCredentials: true,
             }
           );
-          const newAccessToken = res.data.data.accessToken;
+          const newAccessToken = res.data.accessToken;
           console.log("Refresh token response:", res.data);
           setAccessToken(newAccessToken);
           error.config.headers.Authorization = `Bearer ${newAccessToken}`;
