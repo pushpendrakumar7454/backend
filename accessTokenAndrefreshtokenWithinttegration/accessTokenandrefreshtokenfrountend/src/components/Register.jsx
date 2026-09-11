@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import useApi from "../config/apiInstance";
 
 const Register = () => {
-  
+    const api=useApi()
 
     const [formValue, setFormValue] = useState({
         name:"",
@@ -11,8 +12,11 @@ const Register = () => {
    const handleChange=(e)=>{
     setFormValue((prev)=>({...prev,[e.target.name]:e.target.value}))
    }
-   const handleSubmit=(e)=>{
+   const handleSubmit=async(e)=>{
     e.preventDefault()
+
+    const responce=await api.post("/auth/register",formValue)
+    console.log(responce)
     console.log(formValue)
    }
 

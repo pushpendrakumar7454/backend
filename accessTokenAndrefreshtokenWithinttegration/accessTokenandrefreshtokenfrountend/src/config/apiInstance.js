@@ -2,27 +2,21 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 
 export const apiInstance = axios.create({
-  baseURL: "http://localhost:3000/api",
+  baseURL: "http://localhost:5173/api",
   withCredentials: true,
 });
 
-const useApi = () => {
-  const { accessToken } = useAuth();
+const useApi=()=>{
+    const {accessToken}=useAuth()
+    apiInstance.interceptors.request.use((config)=>{
+        if(accessToken){
+            config.headers.Authorization=`Bearer ${accessToken}`
+        }
+        return config
+    },(error)=>{
+return Promise.reject(error)
+    })
+    return apiInstance
+}
 
-  apiInstance.interceptors.request.use(
-    (config) => {
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
-
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
-
-  return apiInstance;
-};
-
-export default useApi;
+export default useApi
