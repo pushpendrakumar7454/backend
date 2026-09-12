@@ -17,6 +17,6 @@ const urlScheme=new mongoose.Schema({
     timestamps:true
 })
 
-const urlModel=mongoose.model("urlModel",urlSchema)
+const urlModel=mongoose.model("urlModel",urlScheme)
 
 export default urlModel
