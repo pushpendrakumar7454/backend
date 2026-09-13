@@ -3,9 +3,21 @@ import React, { useState } from "react";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [formValue, setFormValue] = useState({
+    name:"",
+    email:"",
+    password:""
+  })
 
-   
-  
+   const handleChange=(e)=>{
+    setFormValue((prev)=>({...prev,[e.target.name]:e.target.value}))
+   }
+
+  const handleSubmit=(e)=>{
+    e.preventDefault()
+    console.log(formValue)
+  }
+
 
   return (
     <div className="min-h-screen bg-slate-950 flex items-center justify-center px-4 py-8">
@@ -25,7 +37,7 @@ const Register = () => {
           </div>
 
           {/* Form */}
-          <form className="space-y-5">
+          <form className="space-y-5" onSubmit={handleSubmit}>
 
             {/* Name */}
             <div>
@@ -40,6 +52,8 @@ const Register = () => {
                 id="name"
                 type="text"
                 name="name"
+                onChange={handleChange}
+                value={formValue.name}
                 placeholder="Enter your name"
                 className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900 focus:bg-white focus:ring-2 focus:ring-slate-900/10"
               />
@@ -58,6 +72,8 @@ const Register = () => {
                 id="email"
                 type="email"
                 name="email"
+                onChange={handleChange}
+                value={formValue.email}
                 placeholder="Enter your email"
                 className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900 focus:bg-white focus:ring-2 focus:ring-slate-900/10"
               />
@@ -77,6 +93,8 @@ const Register = () => {
                   id="password"
                   type={showPassword ? "text" : "password"}
                   name="password"
+                  onChange={handleChange}
+                  value={formValue.password}
                   placeholder="Enter your password"
                   className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 pr-20 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900 focus:bg-white focus:ring-2 focus:ring-slate-900/10"
                 />
