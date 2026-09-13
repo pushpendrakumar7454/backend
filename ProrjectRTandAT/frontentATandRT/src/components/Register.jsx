@@ -1,7 +1,13 @@
 
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
+import { authContext } from "../context/authContext";
+import { apiInstance } from "../config/apiInstance";
 
 const Register = () => {
+  
+
+  // const {setaccessToken,setUser}=useContext(authContext)
+
   const [showPassword, setShowPassword] = useState(false);
   const [formValue, setFormValue] = useState({
     name:"",
@@ -13,9 +19,10 @@ const Register = () => {
     setFormValue((prev)=>({...prev,[e.target.name]:e.target.value}))
    }
 
-  const handleSubmit=(e)=>{
+  const handleSubmit=async(e)=>{
     e.preventDefault()
-    console.log(formValue)
+     const res=await apiInstance.post("/register",formValue)
+     console.log(res)
   }
 
 
