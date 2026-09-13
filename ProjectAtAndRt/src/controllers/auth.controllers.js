@@ -19,7 +19,7 @@ export const createRegisterController=async(req,res)=>{
             hashPassword:await byrcpt.hash(password,10) 
         })
 
-       const{accessToken,refreshToken}= generateToken({userid:user._id})
+       const{accessToken,refreshToken}= generateToken({userId:user._id})
 
        user.refreshToken=refreshToken
        await user.save()
@@ -38,6 +38,21 @@ export const createRegisterController=async(req,res)=>{
        })
 
 
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+
+export const meAuthConteroller=async(req,res)=>{
+    try {
+        return res.status(200).json({
+            message:"user find succefuuly",
+            data:{
+                user:req.user
+            }
+        })
     } catch (error) {
         return res.status(500).json({
             message:"internal server error"
