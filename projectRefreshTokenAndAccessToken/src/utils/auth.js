@@ -10,3 +10,14 @@ export const generateToken=({userId})=>{
         refreshToken
     }
 }
+
+
+export const varifyAccessToken=(token)=>{
+    const decoded=jwt.verify(token,config.ACCESS_TOKEN)
+    return decoded
+}
+
+export const refreshToken=()=>{
+    const decoded=jwt.verify(token,config.REFRESH_TOKEN)
+    return decoded
+}

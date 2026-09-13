@@ -46,3 +46,19 @@ export const createAuthControllers=async(req,res)=>{
         })
     }
 }
+
+
+export const meAuthControllers=async(req,res)=>{
+    try {
+        res.status(200).json({
+            message:"user find succefuuly",
+            data:{
+                user:req.user
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"interrnal server error"
+        })
+    }
+}
