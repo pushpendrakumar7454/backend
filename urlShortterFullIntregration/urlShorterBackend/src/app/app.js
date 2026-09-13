@@ -8,6 +8,7 @@ const app=express()
 app.use(express.json())
 
 app.use("/api/url",urlRouter)
+
 app.get("/:code", async (req, res) => {
   try {
     const { code } = req.params;
@@ -20,7 +21,14 @@ app.get("/:code", async (req, res) => {
       });
     }
 
-    return res.redirect(302, url.orginalUrl);
+    res.redirect(302, url.orginalUrl);
+    await urlModel.findOneAndUpdate(
+      { shortCode: code },
+      {
+        $inc: { clicks: 1 },
+      }
+    );
+
 
   } catch (error) {
     console.log(error);
