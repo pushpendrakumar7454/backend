@@ -8,7 +8,7 @@ export const apiInstance=axios.create({
 
 
 const useApi=()=>{
-    const {accessToken,setaccessToken}=useAuth()
+    const{accessToken,setaccessToken}=useAuth()
 
     apiInstance.interceptors.request.use((config)=>{
         if(accessToken){
@@ -18,18 +18,24 @@ const useApi=()=>{
     },(error)=>{
         return Promise.reject(error)
     })
+   
 
     apiInstance.interceptors.response.use(response=>response,
         async(error)=>{
-            if(error.response && error.response.status==401){
-                const res=await axios.post("http://localhost:5173/api/auth/refresh")
-                setaccessToken(res.data.accessToken)
-                error.config.headers.Authorization=`Bearer ${res.data.accessToken}`
-                return axios(error.config)
-            }
-            return Promise.reject(error)
+           if(error.response && error.response.status==401){
+             const res=await axios.post("http://localhost:5173/api/auth/refresh")
+            setaccessToken(res.data.accessToken)
+            error.config.headers.Authorization=`Bearer ${res.data.accessToken}`
+
+            return axios(error.config)
+           }
+           return Promise(error)
+            
         }
+    
     )
+
+
     return apiInstance
 }
 
