@@ -2,7 +2,7 @@ import { createContext, useContext, useState } from "react";
 
 export const authContext=createContext()
 
-const authContextProvider=({children})=>{
+const AuthContextProvider=({children})=>{
 
     const [accessToken, setaccessToken] = useState(null)
     const [user, setUser] = useState(null)
@@ -16,7 +16,7 @@ export const useAuth=()=>{
     if(!context){
         throw new Error ("useAuth must be within authProvider")
     }
-    return
+    return context
 }
 
-export default authContextProvider
+export default AuthContextProvider

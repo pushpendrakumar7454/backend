@@ -1,12 +1,15 @@
 
 import React, { useContext, useState } from "react";
-import { authContext } from "../context/authContext";
-import { apiInstance } from "../config/apiInstance";
+import { authContext, useAuth } from "../context/authContext";
+import useApi, { apiInstance } from "../config/apiInstance";
+import { useNavigate } from "react-router";
 
 const Register = () => {
   
 
-  // const {setaccessToken,setUser}=useContext(authContext)
+ const{setaccessToken,setUser}= useAuth()
+const api= useApi()
+ const navigate=useNavigate()
 
   const [showPassword, setShowPassword] = useState(false);
   const [formValue, setFormValue] = useState({
@@ -21,8 +24,11 @@ const Register = () => {
 
   const handleSubmit=async(e)=>{
     e.preventDefault()
-     const res=await apiInstance.post("/register",formValue)
+     const res=await api.post("/register",formValue)
      console.log(res)
+     setaccessToken(res.data.accessToken)
+     setUser(res.data.data.user)
+     navigate("/profile")
   }
 
 
