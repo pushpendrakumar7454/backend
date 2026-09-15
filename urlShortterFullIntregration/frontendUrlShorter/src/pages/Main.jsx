@@ -1,12 +1,15 @@
 import React from 'react'
 import Upper from '../components/Upper'
 import Down from '../components/Down';
+import { UrlContextProvider } from '../context/UrlContext';
 
 const Main = () => {
   return (
     <div>
-      <Upper/>
-      <Down/>
+      <UrlContextProvider>
+        <Upper/>
+        <Down/>
+      </UrlContextProvider>
     </div>
   )
 }
