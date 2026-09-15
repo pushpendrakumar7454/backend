@@ -1,6 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { apiInstance } from '../config/apiInstance'
 
 const Upper = () => {
+   
+  const [formValue, setFormValue] = useState({
+    url:""
+  })
+    const handleChange=(e)=>{
+      setFormValue((prev)=>({...prev,[e.target.name]:e.target.value}))
+    }
+
+
+    const handleSubmit=async(e)=>{
+        e.preventDefault()
+
+        const res=await apiInstance.post("/url/create",formValue)
+        console.log(res)
+        console.log(formValue)
+  
+        
+
+    }
+
   return (
     <div className="w-full bg-[#faf7f2] py-16 px-4">
       <div className="max-w-4xl mx-auto text-center">
@@ -13,8 +34,12 @@ const Upper = () => {
           Paste a link, get a short one, see how many people clicked it.
         </p>
 
+        <form onSubmit={handleSubmit}>
         <div className="mt-8 flex flex-col sm:flex-row gap-3">
           <input
+          name='url'
+          value={formValue.url}
+          onChange={handleChange}
             type="text"
             placeholder="Paste a long URL here..."
             className="flex-1 h-12 px-4 rounded-xl border border-gray-200 bg-white text-gray-700 placeholder:text-gray-400 outline-none focus:ring-2 focus:ring-orange-400"
@@ -26,6 +51,7 @@ const Upper = () => {
             Shorten
           </button>
         </div>
+          </form>
 
       </div>
     </div>
