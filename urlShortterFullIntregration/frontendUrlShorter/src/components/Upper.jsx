@@ -1,9 +1,11 @@
 import React from 'react'
 import { apiInstance } from '../config/apiInstance'
 import { useUrl } from '../context/UrlContext'
+import { useState } from 'react'
 
 const Upper = () => {
     const { formValue, setFormValue, setUrl } = useUrl()
+    const [currentUrl, setCurrentUrl] = useState(null)
 
     const handleChange = (e) => {
         setFormValue((prev) => ({

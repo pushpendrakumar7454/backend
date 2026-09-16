@@ -41,6 +41,9 @@ const Down = () => {
                     <div className="text-orange-600 font-semibold text-lg">
                         {item.shortCode}
                     </div>
+                     <div className="text-orange-600 font-semibold text-lg">
+                        {item.shortCode}
+                    </div>
 
                     <div className="flex items-center gap-5">
 

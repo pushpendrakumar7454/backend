@@ -60,3 +60,35 @@ export const findAllUrl=async(req,res)=>{
         })
     }
 }
+
+export const deleteUrlControllers = async (req, res) => {
+  try {
+    const { id } = req.params
+
+    if (!id) {
+      return res.status(400).json({
+        message: "id is not found"
+      })
+    }
+
+    const newUrl = await urlModel.findByIdAndDelete(id)
+
+    if (!newUrl) {
+      return res.status(404).json({
+        message: "url not found"
+      })
+    }
+
+    return res.status(200).json({
+      message: "url deleted successfully",
+      data: {
+        newUrl
+      }
+    })
+
+  } catch (error) {
+    return res.status(500).json({
+      message: "internal server error"
+    })
+  }
+}
