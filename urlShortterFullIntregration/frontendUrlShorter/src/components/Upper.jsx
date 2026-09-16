@@ -1,11 +1,15 @@
-import React from 'react'
+
+import React, { useState } from 'react'
 import { apiInstance } from '../config/apiInstance'
 import { useUrl } from '../context/UrlContext'
-import { useState } from 'react'
 
 const Upper = () => {
-    const { formValue, setFormValue, setUrl } = useUrl()
-    const [currentUrl, setCurrentUrl] = useState(null)
+
+    const [formValue, setFormValue] = useState({
+        url: ''
+    })
+
+    const { setUrl } = useUrl()
 
     const handleChange = (e) => {
         setFormValue((prev) => ({
@@ -17,15 +21,25 @@ const Upper = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
 
-        const res = await apiInstance.post("/url/create", formValue)
+        try {
+            const res = await apiInstance.post("/url/create", formValue)
 
-        console.log(res.data.data.shortCode)
+            console.log(res.data.data.orginalUrl)
 
-        setUrl((prev) => [...prev, res.data.data])
+            setUrl((prev) => [...prev, res.data.data])
+
+            setFormValue({
+                url: ''
+            })
+
+        } catch (error) {
+            console.log(error)
+        }
     }
 
     return (
         <div className="w-full bg-[#faf7f2] py-16 px-4">
+
             <div className="max-w-4xl mx-auto text-center">
 
                 <h1 className="text-4xl md:text-5xl font-bold text-[#202020]">
@@ -37,6 +51,7 @@ const Upper = () => {
                 </p>
 
                 <form onSubmit={handleSubmit}>
+
                     <div className="mt-8 flex flex-col sm:flex-row gap-3">
 
                         <input
@@ -49,17 +64,46 @@ const Upper = () => {
                         />
 
                         <button
-                            className="h-12 px-7 rounded-xl bg-[#e86f2d] text-white font-medium hover:bg-[#d96021] transition"
+                            type="submit"
+                            className="h-12 cursor-pointer active:scale-95 px-7 rounded-xl bg-[#e86f2d] text-white font-medium hover:bg-[#d96021] transition"
                         >
                             Shorten
                         </button>
 
                     </div>
+
                 </form>
 
+                {/* Short URL Result UI */}
+                <div className="mt-4 w-full bg-white border border-gray-200 rounded-xl p-4 text-left">
+
+                    <p className="text-sm text-gray-500 mb-2">
+                        Your shortened link
+                    </p>
+
+                    <div className="flex items-center justify-between gap-3">
+
+                        <p className="text-[#e86f2d] font-medium truncate">
+                            https://short.ly/abc123
+                        </p>
+
+                        <button
+                            type="button"
+                            className="shrink-0 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 cursor-pointer"
+                        >
+                            Copy
+                        </button>
+
+                    </div>
+
+                </div>
+
             </div>
+
         </div>
     )
 }
 
 export default Upper
+
+

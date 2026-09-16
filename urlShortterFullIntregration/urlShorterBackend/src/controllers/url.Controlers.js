@@ -32,7 +32,10 @@ export const urlControllers = async (req, res) => {
 
     return res.status(201).json({
       message: "url created successfully",
-      data: newUrl,
+      data:{
+        orginalUrl: newUrl.orginalUrl,
+        shortCode: newUrl.shortCode
+      }
     });
   } catch (error) {
     console.log(error);

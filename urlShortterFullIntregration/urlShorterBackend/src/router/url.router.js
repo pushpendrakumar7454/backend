@@ -5,6 +5,6 @@ const router=Router()
 
 router.post("/create",urlControllers)
 router.get("/find",findAllUrl)
-router.delete("/:id",deleteUrlControllers)
+router.delete("/delete/:id",deleteUrlControllers)
 
 export default router;
