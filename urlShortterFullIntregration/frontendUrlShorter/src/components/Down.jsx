@@ -1,23 +1,28 @@
+
 import React, { useEffect } from 'react'
 import { useUrl } from '../context/UrlContext'
 import { apiInstance } from '../config/apiInstance'
 
 const Down = () => {
 
-    const { url,setUrl } = useUrl()
+    const { url, setUrl } = useUrl()
 
-    const getUrl=async()=>{
+    const getUrl = async () => {
         try {
-            const res=await apiInstance.get("")
-            setUrl(res.data.data)
+            const res = await apiInstance.get("/url/find")
+
+            console.log(res.data)
+
+            setUrl(res.data.data.urls)
+
         } catch (error) {
             console.log(error)
         }
     }
 
-    useEffect(()=>{
-    getUrl()
-    },[])
+    useEffect(() => {
+        getUrl()
+    }, [])
 
     return (
         <div className="w-full max-w-4xl mx-auto px-4 py-6">
@@ -34,7 +39,7 @@ const Down = () => {
                 >
 
                     <div className="text-orange-600 font-semibold text-lg">
-                        {item.shortUrl}
+                        {item.shortCode}
                     </div>
 
                     <div className="flex items-center gap-5">
@@ -44,7 +49,7 @@ const Down = () => {
                         </span>
 
                         <span className="text-gray-600 text-sm">
-                            {item.date}
+                            {item.createdAt}
                         </span>
 
                         <button className="bg-orange-600 hover:bg-orange-700 text-white font-semibold px-5 py-2.5 rounded-xl">
@@ -66,3 +71,5 @@ const Down = () => {
 }
 
 export default Down
+
+
