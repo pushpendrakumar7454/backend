@@ -1,6 +1,7 @@
+import urlModel from "../modules/url.moduls.js"
 import { generateCode } from "../utils/url.js"
 
-const createUrlControllers=async(req,res)=>{
+export const createUrlControllers=async(req,res)=>{
     try {
         const {url}=req.body
         
@@ -24,11 +25,36 @@ const createUrlControllers=async(req,res)=>{
 
         let code=generateCode()
 
-        const newUrl=await 
+        const newUrl=await urlModel.create({
+              orginalUrl:url,
+              shortCode:code
+        })
 
+        return res.status(201).json({
+            message:"url created succefully",
+            data:newUrl
+        })
        
 
     } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+
+
+export const findAllUrlConterollers=async(req,res)=>{
+    try{
+
+
+  const urls=await urlModel.find()
+
+  return res.status(200).json({
+    message:"find all url seccufully",
+    data:urls
+  })
+    }catch(error){
         return res.status(500).json({
             message:"internal server error"
         })
