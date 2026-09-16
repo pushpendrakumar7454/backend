@@ -1,3 +1,5 @@
+import { generateCode } from "../utils/url.js"
+
 const createUrlControllers=async(req,res)=>{
     try {
         const {url}=req.body
@@ -19,6 +21,10 @@ const createUrlControllers=async(req,res)=>{
                 message:"character is to long please enter minimum 2048 character"
             })
         }
+
+        let code=generateCode()
+
+        const newUrl=await 
 
        
 

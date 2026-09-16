@@ -19,4 +19,4 @@ const urlSchema=new mongoose.Schema({
 
 const urlModel=mongoose.model("practiceUrlModel",urlSchema)
 
-export default urlSchema
+export default urlModel
