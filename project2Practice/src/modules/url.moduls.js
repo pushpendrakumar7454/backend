@@ -8,7 +8,7 @@ const urlSchema=new mongoose.Schema({
     shortCode:{
         type:String,
         required:true
-    },digits:{
+    },clicks:{
         type:Number,
         default:0
     }
