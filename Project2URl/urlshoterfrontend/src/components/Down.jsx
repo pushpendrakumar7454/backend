@@ -17,6 +17,17 @@ const Down = ({ url, setUrl }) => {
     getData();
   }, []);
 
+
+  const deleteUrl=async(id)=>{
+    try {
+        const res= await axios.delete(`http://localhost:5173/api/delete/${id}`)
+        setUrl((prev)=>prev.filter((url)=>url._id!==id))
+        console.log(res)
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
   return (
     <div className="bg-[#eef4ff] min-h-[45vh] px-4 py-10">
 
@@ -112,6 +123,7 @@ const Down = ({ url, setUrl }) => {
                   </button>
 
                   <button
+                  onClick={()=>deleteUrl(item._id)}
                     className="flex-1 px-4 py-2.5 rounded-lg
                     bg-red-500 text-white font-medium
                     hover:bg-red-600 transition"

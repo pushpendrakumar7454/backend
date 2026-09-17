@@ -1,5 +1,5 @@
-import crypto from 'crypto'
+import crypto from "crypto";
 
-export const generateCode=()=>{
-    return crypto.randomBytes(6).toString().slice(0,6)
-}
+export const generateCode = () => {
+  return crypto.randomBytes(4).toString("hex").slice(0, 6);
+};

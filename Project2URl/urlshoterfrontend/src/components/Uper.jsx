@@ -20,11 +20,15 @@ e.preventDefault()
 
    try {
      const res=await axios.post("http://localhost:5173/api/url",formValue)
+     console.log(res.data)
      setUrl((prev) => [...prev, res.data.data])
     console.log(formValue)
    } catch (error) {
     console.log(error)
    }
+   setFormValue({
+      url: ""
+    });
   
   }
 
