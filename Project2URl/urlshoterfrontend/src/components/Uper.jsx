@@ -63,7 +63,7 @@ e.preventDefault()
 
           <button
             type="submit"
-            className="h-14 px-7 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-[0.98] transition duration-200 shadow-md"
+            className="h-14 px-7 cursor-pointer active:scale-95 rounded-xl bg-blue-600 text-white font-semibold hover:bg-blue-700 active:scale-[0.98] transition duration-200 shadow-md"
           >
             Shorten URL
           </button>

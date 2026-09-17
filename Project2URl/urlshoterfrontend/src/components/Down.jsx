@@ -115,7 +115,7 @@ const Down = ({ url, setUrl }) => {
                 <div className="flex gap-3 lg:w-40">
 
                   <button
-                    className="flex-1 px-4 py-2.5 rounded-lg
+                    className="flex-1 cursor-pointer active:scale-95 px-4 py-2.5 rounded-lg
                     bg-blue-600 text-white font-medium
                     hover:bg-blue-700 transition"
                   >
@@ -124,7 +124,7 @@ const Down = ({ url, setUrl }) => {
 
                   <button
                   onClick={()=>deleteUrl(item._id)}
-                    className="flex-1 px-4 py-2.5 rounded-lg
+                    className="flex-1 cursor-pointer active:scale-95 px-4 py-2.5 rounded-lg
                     bg-red-500 text-white font-medium
                     hover:bg-red-600 transition"
                   >

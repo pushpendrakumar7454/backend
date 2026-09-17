@@ -9,7 +9,7 @@ const Main = () => {
     const [url, setUrl] = useState([])
   return (
     <div>
-      <Upper/>
+      <Upper setUrl={setUrl} url={url}/>
       <Down url={url} setUrl={setUrl}/>
     </div>
   )
