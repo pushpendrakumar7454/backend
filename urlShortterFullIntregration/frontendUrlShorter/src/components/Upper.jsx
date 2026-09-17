@@ -8,6 +8,7 @@ const Upper = () => {
     const [formValue, setFormValue] = useState({
         url: ''
     })
+    const [shortUrl, setShortUrl] = useState('')
 
     const { setUrl } = useUrl()
 
@@ -25,8 +26,9 @@ const Upper = () => {
             const res = await apiInstance.post("/url/create", formValue)
 
             console.log(res.data.data.orginalUrl)
-
+            const data = res.data.data
             setUrl((prev) => [...prev, res.data.data])
+            setShortUrl(`http://localhost:3000/${data.shortCode}`)
 
             setFormValue({
                 url: ''
@@ -84,7 +86,7 @@ const Upper = () => {
                     <div className="flex items-center justify-between gap-3">
 
                         <p className="text-[#e86f2d] font-medium truncate">
-                            https://short.ly/abc123
+                           <a href={shortUrl} target='_blank'> {shortUrl}</a>
                         </p>
 
                         <button
