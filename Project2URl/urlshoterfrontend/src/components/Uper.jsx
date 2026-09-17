@@ -1,8 +1,9 @@
 
+import axios from "axios";
 import React from "react";
 import { useState } from "react";
 
-const Uper = ({setUrl}) => {
+const Uper = ({url,setUrl}) => {
 
     
   const [formValue, setFormValue] = useState({
@@ -10,13 +11,21 @@ const Uper = ({setUrl}) => {
   })
 
   const handleChange=(e)=>{
-    setUrl((prev)=>({...prev,[e.target.name]:e.target.value}))
+    setFormValue((prev)=>({...prev,[e.target.name]:e.target.value}))
     
   }
 
-  const handleSubmit=(e)=>{
-    e.preventDefault()
+  const handleSubmit=async(e)=>{
+e.preventDefault()
+
+   try {
+     const res=await axios.post("http://localhost:5173/api/url",formValue)
+     setUrl((prev) => [...prev, res.data.data])
     console.log(formValue)
+   } catch (error) {
+    console.log(error)
+   }
+  
   }
 
   return (
