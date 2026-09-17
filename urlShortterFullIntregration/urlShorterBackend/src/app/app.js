@@ -25,7 +25,7 @@ app.get("/:code", async (req, res) => {
     await urlModel.findOneAndUpdate(
       { shortCode: code },
       {
-        $inc: { clicks: 1 },
+        $inc: { clickes: 1 },
       }
     );
 

@@ -100,7 +100,7 @@ const {url,setUrl}=useUrl()
                                     </p>
 
                                     <p className="text-lg font-bold text-gray-800">
-                                        {item.clicks}
+                                        {item.clickes}
                                     </p>
                                 </div>
 
