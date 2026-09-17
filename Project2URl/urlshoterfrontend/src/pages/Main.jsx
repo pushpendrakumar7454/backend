@@ -7,10 +7,11 @@ const Main = () => {
   
 
     const [url, setUrl] = useState([])
+      const [currentUrl, setCurrentUrl] = useState('');
   return (
     <div>
-      <Upper setUrl={setUrl} url={url}/>
-      <Down url={url} setUrl={setUrl}/>
+      <Upper setUrl={setUrl} url={url} currentUrl={currentUrl} setCurrentUrl={setCurrentUrl}/>
+      <Down url={url} setUrl={setUrl}  currentUrl={currentUrl} setCurrentUrl={setCurrentUrl}/>
     </div>
   )
 }

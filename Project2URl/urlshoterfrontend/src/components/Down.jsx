@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 
-const Down = ({ url, setUrl }) => {
+const Down = ({ url, setUrl,currentUrl }) => {
 
   const getData = async () => {
     try {
@@ -27,6 +27,10 @@ const Down = ({ url, setUrl }) => {
         console.log(error)
     }
   }
+
+  const handleCopy = async () => {
+  await navigator.clipboard.writeText(currentUrl);
+};
 
   return (
     <div className="bg-[#eef4ff] min-h-[45vh] px-4 py-10">
@@ -115,6 +119,7 @@ const Down = ({ url, setUrl }) => {
                 <div className="flex gap-3 lg:w-40">
 
                   <button
+                    onClick={handleCopy}
                     className="flex-1 cursor-pointer active:scale-95 px-4 py-2.5 rounded-lg
                     bg-blue-600 text-white font-medium
                     hover:bg-blue-700 transition"
