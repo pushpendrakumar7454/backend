@@ -3,12 +3,12 @@ import React, { useState } from 'react'
 import { apiInstance } from '../config/apiInstance'
 import { useUrl } from '../context/UrlContext'
 
-const Upper = () => {
+const Upper = ({currentUrl, setcurrentUrl}) => {
 
     const [formValue, setFormValue] = useState({
         url: ''
     })
-    const [shortUrl, setShortUrl] = useState('')
+   
 
     const { setUrl } = useUrl()
 
@@ -27,8 +27,9 @@ const Upper = () => {
 
             console.log(res.data.data.orginalUrl)
             const data = res.data.data
+
             setUrl((prev) => [...prev, res.data.data])
-            setShortUrl(`http://localhost:3000/${data.shortCode}`)
+            setcurrentUrl(`http://localhost:3000/${data.shortCode}`)
 
             setFormValue({
                 url: ''
@@ -37,6 +38,10 @@ const Upper = () => {
         } catch (error) {
             console.log(error)
         }
+    }
+
+    const copyUrl=async()=>{
+        await navigator.clipboard.writeText(currentUrl)
     }
 
     return (
@@ -86,12 +91,13 @@ const Upper = () => {
                     <div className="flex items-center justify-between gap-3">
 
                         <p className="text-[#e86f2d] font-medium truncate">
-                           <a href={shortUrl} target='_blank'> {shortUrl}</a>
+                           <a href={currentUrl} target='_blank'> {currentUrl}</a>
                         </p>
 
                         <button
+                        onClick={copyUrl}
                             type="button"
-                            className="shrink-0 px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 cursor-pointer"
+                            className="shrink-0 active:scale-95 cursor-pointer px-4 py-2 rounded-lg bg-gray-100 text-gray-700 text-sm font-medium hover:bg-gray-200 cursor-pointer"
                         >
                             Copy
                         </button>

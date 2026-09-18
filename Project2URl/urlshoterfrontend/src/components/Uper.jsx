@@ -33,6 +33,10 @@ const Uper = ({  setUrl,currentUrl, setCurrentUrl }) => {
     });
   };
 
+   const copyUrl=async()=>{
+    await navigator.clipboard.writeText(currentUrl)
+   }
+
   return (
     <div className="min-h-[55vh] bg-gradient-to-br from-[#eef4ff] via-[#f8fbff] to-[#e0ecff] flex items-center justify-center px-4 py-14">
       <div className="w-full max-w-4xl text-center">
@@ -81,8 +85,9 @@ const Uper = ({  setUrl,currentUrl, setCurrentUrl }) => {
             </p>
 
             <button
+            onClick={copyUrl}
               type="button"
-              className="shrink-0 px-4 py-2 rounded-lg bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 cursor-pointer">
+              className="shrink-0 active:scale-95 cursor-pointer px-4 py-2 rounded-lg bg-slate-100 text-slate-700 text-sm font-medium hover:bg-slate-200 cursor-pointer">
               Copy
             </button>
           </div>

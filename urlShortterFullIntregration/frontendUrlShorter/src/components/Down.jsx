@@ -3,7 +3,7 @@ import { apiInstance } from '../config/apiInstance'
 import { useUrl } from '../context/UrlContext'
 
 
-const Down = () => {
+const Down = ({currentUrl}) => {
 
 const {url,setUrl}=useUrl()
 
@@ -37,6 +37,10 @@ const {url,setUrl}=useUrl()
         getUrl()
     }, [])
 
+   const copyUrl=async()=>{
+    await navigator.clipboard.writeText(currentUrl)
+   }
+    
     return (
         <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 py-8">
 
@@ -121,14 +125,15 @@ const {url,setUrl}=useUrl()
                             <div className="flex gap-2">
 
                                 <button
-                                    className="flex-1 sm:flex-none border border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold px-5 py-2.5 rounded-xl transition"
+                                onClick={()=>copyUrl(item._id)}
+                                    className="flex-1 sm:flex-none active:scale-95 cursor-pointer border border-orange-500 text-orange-600 hover:bg-orange-50 font-semibold px-5 py-2.5 rounded-xl transition"
                                 >
                                     Copy
                                 </button>
 
                                 <button
                                 onClick={()=>deleteUrl(item._id)}
-                                    className="flex-1 sm:flex-none bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl transition"
+                                    className="flex-1 active:scale-95 cursor-pointer sm:flex-none bg-red-500 hover:bg-red-600 text-white font-semibold px-5 py-2.5 rounded-xl transition"
                                 >
                                     Delete
                                 </button>
