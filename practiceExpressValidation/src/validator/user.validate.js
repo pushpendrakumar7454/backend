@@ -17,9 +17,9 @@ export const registerUserValidator=[
     (req,res,next)=>{
         let errors=validationResult(req)
 
-        if(errors.isEmpty()){
+        if(!errors.isEmpty()){
             return res.status(400).json({
-                message:"inalid requirt",
+                message:"inalid request",
                 errors:errors.array()
             })
         }

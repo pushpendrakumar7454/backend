@@ -31,11 +31,14 @@ export const userRegisterController=async(req,res)=>{
 
        return res.status(201).json({
         message:"user reggister succefully",
-        data:user,
+        data:{
+            user
+        },
         accessToken
        })
 
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             message:"internal server error"
         })
