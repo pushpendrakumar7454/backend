@@ -2,11 +2,11 @@ import userModel from "../modules/auth.module.js"
 import bycpt from 'bcryptjs'
 import { generateAccesToken, generateRefreshToken } from "../utils/auth.js"
 
-export const authRegisterController=async()=>{
+export const authRegisterController=async(req,res)=>{
     try {
         const {name,email,password,role}=req.body
 
-        const allreadyExistEmail=await userModel.findOne("email")
+        const allreadyExistEmail=await userModel.findOne({email})
 
         if(allreadyExistEmail){
             return res.status(400).json({
@@ -14,22 +14,22 @@ export const authRegisterController=async()=>{
             })
         }
 
-        const user=await userModel({
+        const user=await userModel.create({
             name,
             email,
             hashPassword:await bycpt.hash(password,6),
             role
         })
 
-        const {accessToken}=generateAccesToken({userId:user._id,role})
-        const {refreshToken}=generateRefreshToken({userId:user._id,role})
+        const accessToken=generateAccesToken({userId:user._id,role})
+        const refreshToken=generateRefreshToken({userId:user._id,role})
           
         user.refreshToken=refreshToken
         await user.save()
 
-        res.cookie("refreshToken",refreshToken,({
+        res.cookie("refreshToken",refreshToken,{
             httpOnly:true
-        }))
+        })
 
         return res.status(201).json({
             message:"user register succefully",
