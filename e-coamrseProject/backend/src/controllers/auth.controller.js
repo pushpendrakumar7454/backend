@@ -5,7 +5,7 @@ import { createAccessToken, createRefreshToken } from "../utils/auth.js"
 
 export const authRegisterController=async(req,res)=>{
     try {
-        const {name,password,email,role}=req.body
+        const {name,password,email}=req.body
 
 
         const alllreadyExistUser=await userModel.findOne({email})
@@ -24,12 +24,11 @@ export const authRegisterController=async(req,res)=>{
    const user= await userModel.create({
     email,
     name,
-    hashPassword:await bycprt.hash(password,6),
-    role
+    hashPassword:await bycprt.hash(password,6)
    })
 
-const {accessToken}= createAccessToken({userId:user._id,role})
-const {refreshToken}=createRefreshToken({userId:user._id,role})
+const {accessToken}= createAccessToken({userId:user._id,role:user.role})
+const {refreshToken}=createRefreshToken({userId:user._id,role:user.role})
 
 user.refreshToken=refreshToken
 await user.save()

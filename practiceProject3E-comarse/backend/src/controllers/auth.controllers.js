@@ -21,8 +21,8 @@ export const authRegisterController=async(req,res)=>{
             role
         })
 
-        const accessToken=generateAccesToken({userId:user._id,role})
-        const refreshToken=generateRefreshToken({userId:user._id,role})
+        const accessToken=generateAccesToken({userId:user._id,role:user.role})
+        const refreshToken=generateRefreshToken({userId:user._id,role:user.role})
           
         user.refreshToken=refreshToken
         await user.save()
