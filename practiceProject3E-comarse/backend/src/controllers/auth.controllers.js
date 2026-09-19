@@ -1,0 +1,3 @@
+const authRegisterController=async()=>{
+    
+}
