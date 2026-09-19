@@ -11,3 +11,5 @@ export const generateRefreshToken=({userId,role})=>{
     const refreshToken=jwt.sign({userId,role},config.REFRESH_TOKEN,{expiresIn:"7d"})
     return refreshToken
 }
+
+

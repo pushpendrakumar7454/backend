@@ -1,10 +1,10 @@
 import userModel from "../modules/auth.module.js"
 import bycpt from 'bcryptjs'
-import { generateAccesToken, generateRefreshToken } from "../utils/auth.js"
+import { generateAccesToken, generateRefreshToken,} from "../utils/auth.js"
 
 export const authRegisterController=async(req,res)=>{
     try {
-        const {name,email,password,role}=req.body
+        const {name,email,password}=req.body
 
         const allreadyExistEmail=await userModel.findOne({email})
 
@@ -18,14 +18,13 @@ export const authRegisterController=async(req,res)=>{
             name,
             email,
             hashPassword:await bycpt.hash(password,6),
-            role
+            
         })
 
         const accessToken=generateAccesToken({userId:user._id,role:user.role})
         const refreshToken=generateRefreshToken({userId:user._id,role:user.role})
           
-        user.refreshToken=refreshToken
-        await user.save()
+        await userModel.findByIdAndUpdate(user._id,{refreshToken})
 
         res.cookie("refreshToken",refreshToken,{
             httpOnly:true

@@ -3,7 +3,7 @@ import { readaccessToken } from "../utils/auth.js";
 
 export const authenticate = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
+    const authHeader = req.headers.authorization
 
     if (!authHeader) {
       return res.status(401).json({
