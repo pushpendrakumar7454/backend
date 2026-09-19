@@ -127,48 +127,93 @@ export const authLoginControllers = async (req, res) => {
 };
 
 export const authrefreshControllers = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
+    const refreshToken = req.cookies.refreshToken;
 
-  if (!refreshToken) {
-    return res.status(401).json({
-      messgae: "refresh token is required",
-    });
-  }
-  try {
-    const decoded = readrefreshToken(refreshToken);
-
-    const { userId, role } = decoded;
-
-    const user = await userModel.findById(userId);
-
-    if (refreshToken != user.refreshToken) {
-      await userModel.findByIdAndUpdate(user._id, {
-        refreshToken: null,
-      });
-
-      return res.status(401).json({
-        meessage: "refresh mismatch",
-      });
+    if (!refreshToken) {
+        return res.status(401).json({
+            message: "refresh token is required",
+        });
     }
-    const { accessToken } = createAccessToken({
-      userId: user._id,
-      role: user.role,
-    });
-    const { refreshToken } = createRefreshToken({
-      userId: user._id,
-      role: user.role,
-    });
 
-    await userModel.findByIdAndUpdate(user._id, {
-      refreshToken,
-    });
+    try {
+        const decoded = readrefreshToken(refreshToken);
 
-    res.cookie("refreshToken", refreshToken, {
-      httpOnly: true,
-    });
-  } catch (error) {
-    return res.status(500).json({
-      message: "internal server error",
-    });
-  }
+        const { userId, role } = decoded;
+
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(401).json({
+                message: "user not found",
+            });
+        }
+
+        if (refreshToken !== user.refreshToken) {
+            await userModel.findByIdAndUpdate(user._id, {
+                refreshToken: null,
+            });
+
+            return res.status(401).json({
+                message: "refresh mismatch",
+            });
+        }
+
+        const { accessToken } = createAccessToken({
+            userId: user._id,
+            role: user.role,
+        });
+
+        const { refreshToken: newRefreshToken } =
+            createRefreshToken({
+                userId: user._id,
+                role: user.role,
+            });
+
+        await userModel.findByIdAndUpdate(user._id, {
+            refreshToken: newRefreshToken,
+        });
+
+        res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+        });
+
+        return res.status(200).json({
+            message: "token rotated successfully",
+            data: {
+                user: {
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    id: user._id,
+                },
+                accessToken,
+            },
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: "internal server error",
+        });
+    }
+};
+
+
+export const authMeControllers = async (req, res) => {
+    try {
+        return res.status(200).json({
+            message: "user found successfully",
+            data: {
+                user: req.user
+            }
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: "internal server error"
+        });
+    }
 };
