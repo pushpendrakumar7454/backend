@@ -1,8 +1,8 @@
 import userModel from "../modules/auth.module.js"
 import bycpt from 'bcryptjs'
-import { generateAccesToken, generateRefreshToken } from "../utils/auth"
+import { generateAccesToken, generateRefreshToken } from "../utils/auth.js"
 
-const authRegisterController=async()=>{
+export const authRegisterController=async()=>{
     try {
         const {name,email,password,role}=req.body
 
@@ -39,9 +39,9 @@ const authRegisterController=async()=>{
                     email:user.email,
                     id:user._id,
                     role:user.role
-                }
+                },
+                accessToken
             },
-            accessToken
         })
 
 
