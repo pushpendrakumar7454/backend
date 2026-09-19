@@ -30,8 +30,9 @@ export const authRegisterController=async(req,res)=>{
 const {accessToken}= createAccessToken({userId:user._id,role:user.role})
 const {refreshToken}=createRefreshToken({userId:user._id,role:user.role})
 
-user.refreshToken=refreshToken
-await user.save()
+await userModel.findByIdAndUpdate(user._id,{
+    refreshToken
+})
 
    res.cookie("refreshToken",refreshToken,{
     httpOnly:true
