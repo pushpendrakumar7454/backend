@@ -98,7 +98,7 @@ export const authLoginControllers = async (req, res) => {
     });
 
     // Save refresh token
-    await userModel.findByIdAndUpdate(user._id, { refreshToken });
+    await userModel.findOneAndUpdate({email}, { refreshToken });
 
     // Set refresh token cookie
     res.cookie("refreshToken", refreshToken, {
