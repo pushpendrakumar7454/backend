@@ -91,11 +91,33 @@ export const loginController=async(req,res)=>{
                 email:user.email,
                 id:user._id,
                 role:user.role
-            }
+            },
+            accessToken
         }
       })
 
     } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+
+
+export const authRefreshController=async(req,res)=>{
+
+    const refreshToken=req.cookies.refreshToken
+
+    if(!refreshToken){
+        return res.status(400).json({
+            message:"refresh token not found"
+        })
+    }
+    try{
+
+        
+
+    }catch(error){
         return res.status(500).json({
             message:"internal server error"
         })
