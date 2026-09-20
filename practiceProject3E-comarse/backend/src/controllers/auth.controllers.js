@@ -1,6 +1,6 @@
 import userModel from "../modules/auth.module.js"
 import bycpt from 'bcryptjs'
-import { generateAccesToken, generateRefreshToken,} from "../utils/auth.js"
+import { generateAccesToken, generateRefreshToken, readRefreshToken,} from "../utils/auth.js"
 
 export const authRegisterController=async(req,res)=>{
     try {
@@ -115,7 +115,40 @@ export const authRefreshController=async(req,res)=>{
     }
     try{
 
-        
+        const decoded=readRefreshToken(refreshToken)
+
+        const {userId,role} = decoded
+
+        const user=await userModel.findById(userId)
+          
+        if(!user){
+            return res.status({
+                message:"user not found"
+            })
+        }
+
+        if(refreshToken !==user.refreshToken){
+            await userModel.findByIdAndUpdate(user._id,{refreshToken:null})
+        }
+
+        const acceessToken = generateAccesToken({userId:user._id,role:user.role})
+       const newRefreshToken = generateRefreshToken({userId:user._id,role:user.role})
+
+      res.cookie("refreshToken", newRefreshToken)
+
+      await userModel.findByIdAndUpdate(user._id,{refreshToken:newRefreshToken})
+
+      return res.status(400).json({
+        message:"refresh token retoded",
+        data:{
+            user:{
+                name:user.name,
+                email:user.email,
+                id:user._id,
+                role:user.role
+            },acceessToken
+        }
+      })
 
     }catch(error){
         return res.status(500).json({
