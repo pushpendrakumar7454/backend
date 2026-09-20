@@ -156,3 +156,29 @@ export const authRefreshController=async(req,res)=>{
         })
     }
 }
+
+
+export const authMeController=async(req,res)=>{
+    try {
+
+        const {userId,role}=req.user
+
+        const user=await userModel.findById(userId)
+
+
+     
+        return res.status(200).json({
+            message:"user find succefully",
+            data:{
+                name:user.name,
+                email:user.email,
+                id:user._id
+            }
+        })
+ 
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}

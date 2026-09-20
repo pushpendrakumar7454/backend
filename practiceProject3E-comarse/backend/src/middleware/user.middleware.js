@@ -1,9 +1,9 @@
 import userModel from "../modules/auth.module.js"
 import { readAccessToken } from "../utils/auth.js"
 
-const authenticate=(req,res,next)=>{
+export const authenticate=async(req,res,next)=>{
     try{
-        const accessToken=req.headers.Authenticate.split(" ").[1]
+         const accessToken = req.headers.authorization?.split(" ")[1];
 
         if(!accessToken){
             return res.status(400).json({
@@ -12,11 +12,7 @@ const authenticate=(req,res,next)=>{
         }
 
         const decoded=readAccessToken(accessToken)
-        const {userId,role}= decoded
-      
-        const user=await userModel.findById(userId)
-
-        req.user=user
+        req.user=decoded
         next()
 
     }catch(error){
