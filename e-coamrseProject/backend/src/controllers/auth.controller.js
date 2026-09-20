@@ -208,6 +208,7 @@ export const authMeControllers = async (req, res) => {
 
      return res.status(200).json({
       message:"user find succefully",
+      
       data:{
         user:{
           name:user.name,
