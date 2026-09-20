@@ -52,8 +52,8 @@ export const loginControllers=[
   body("password")
   .exists().withMessage("email is required")
   .isString().withMessage("password must be string")
-  .isLength({min:6}).withMessage("password must be 6 character required")
-  .trim(),
+  .trim()
+  .isLength({min:6}).withMessage("password must be 6 character required"),
 
   (req,res,next)=>{
     const errors=validationResult(req)
