@@ -51,3 +51,53 @@ export const authRegisterController=async(req,res)=>{
     }
 
 }
+
+
+export const loginController=async(req,res)=>{
+    try {
+        
+      const {email,password}=req.body
+
+      const user=await userModel.findOne({email})
+      
+      if(!user){
+        return res.status(400).json({
+            message:"invalid email and password"
+        })
+      }
+
+      const isValidPassword=await  bycpt.compare(password,user.hashPassword)
+
+      if(!isValidPassword){
+        return res.status(400).json({
+            message:"invalid email and password"
+        })
+      }
+
+      const accessToken = generateAccesToken({userId:user._id,role:user.role})
+      const refreshToken = generateRefreshToken({userId:user._id,role:user.role})
+       
+      res.cookie("refreshToken",refreshToken,{
+        httpOnly:true
+      })
+
+      await userModel.findOneAndUpdate({email},{refreshToken})
+
+      return res.status(200).json({
+        message:'user login succesfully',
+        data:{
+            user:{
+                name:user.name,
+                email:user.email,
+                id:user._id,
+                role:user.role
+            }
+        }
+      })
+
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}

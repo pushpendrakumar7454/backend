@@ -42,7 +42,7 @@ export const registerValidator = [
 ];
 
 
-export const loginControllers=[
+export const loginvalidator=[
   body("email")
   .exists().withMessage("email is required").bail()
   .isEmail().withMessage("please enter email valid formate")
