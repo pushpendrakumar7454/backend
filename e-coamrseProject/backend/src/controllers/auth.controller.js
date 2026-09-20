@@ -201,6 +201,22 @@ export const authrefreshControllers = async (req, res) => {
 
 
 export const authMeControllers = async (req, res) => {
+
+     const {userId,role}=req.user
+
+     const user=await userModel.findById(userId)
+
+     return res.status(200).json({
+      message:"user find succefully",
+      data:{
+        user:{
+          name:user.name,
+          email:user.email,
+          id:user._id
+        }
+      }
+     })
+
     try {
         return res.status(200).json({
             message: "user found successfully",

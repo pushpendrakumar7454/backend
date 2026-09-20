@@ -13,7 +13,7 @@ const authenticate=async(req,res,next)=>{
 
      const decoded=readAccessToken(accessToken)
      req.user=decoded
-     nex()
+     next()
 
 
   } catch (error) {
