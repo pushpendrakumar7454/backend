@@ -55,7 +55,7 @@ const productSchema = new mongoose.Schema({
 
     seller: {
         type: mongoose.Types.ObjectId,
-        ref: "users",
+        ref: "E-comarseFisrtProject",
         required: true
     }
 
