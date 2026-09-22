@@ -40,7 +40,7 @@ export const createProductValidtar=[
    (req,res,next)=>{
     let errors=validationResult(req)
     if(!errors.isEmpty()){
-        return res.states({
+        return res.states(400).json({
             message:"invalid request",
             errors:errors.array()
         })
