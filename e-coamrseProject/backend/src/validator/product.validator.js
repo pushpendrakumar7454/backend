@@ -7,7 +7,7 @@ export const createProductValidtar=[
     .isString().withMessage("title must be string").bail()
     .trim()
     .isLength({min:2,max:100}).withMessage("title length must be between 2 to 100 character").bail()
-    .isAlpha("en-Us",{ignore:" "}).withMessage("title can only have englsh small case and capita case character"),
+    .isAlpha("en-Us",{ignore:" "}).withMessage("title can only have englsh small case and capital case character"),
 
     body("description")
     .exists().withMessage("des is required").bail()
