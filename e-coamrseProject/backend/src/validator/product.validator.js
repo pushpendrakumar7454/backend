@@ -22,7 +22,30 @@ export const createProductValidtar=[
     body("price.currency")
     .exists().withMessage("currency is required").bail()
     .isString().withMessage("currency must be a Strring value").bail()
-    .isIn(["INR","USD"]).withMessage("currency either be inr or USD")
+    .isIn(["INR","USD"]).withMessage("currency either be inr or USD"),
 
+    body("sizes")
+    .exists().withMessage("sizes is required").bail()
+    .isArray().withMessage("sizes must be an array"),
+
+   body("sizes.*.size")
+   .exists().withMessage("size is requird").bail()
+   .isString().withMessage("size must be string").bail()
+   .isIn(["XS", "S", "L", "XL", "XXL"]).withMessage("sizes must s,xs,l,xl,xxl"),
+
+   body("sizes.*.stock")
+   .exists().withMessage("stock is required").bail()
+   .isInt({min:0}).withMessage("stock is must be a number is not nagative"),
+
+   (req,res,next)=>{
+    let errors=validationResult(req)
+    if(!errors.isEmpty()){
+        return res.states({
+            message:"invalid request",
+            errors:errors.array()
+        })
+    }
+    next()
+   }
 
 ]
