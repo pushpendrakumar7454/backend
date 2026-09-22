@@ -21,7 +21,27 @@ export const createProductValidator=[
     body("price.currency")
     .exists().withMessage("current is required").bail()
     .isString().withMessage("currency must be string").bail()
-    .isIn(["INR","USD"]).withMessage("currency either be uSD AND INR")
+    .isIn(["INR","USD"]).withMessage("currency either be uSD AND INR"),
+
+    body("sizes.*.size")
+    .exists().withMessage("size is required").bail()
+    .isString().withMessage("size must be string").bail()
+    .isIn(["XS", "S", "L", "XL", "XXL"]).withMessage("size must be required xl,xxl,s,l,xl"),
+
+    body("sizez.*.stock")
+    .exists().withMessage("stock is required").bail()
+    .isInt({min:0}).withMessage("stock must be number not given a nagitive"),
+
+    (req,res,next)=>{
+        const errors=validationResult(req)
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                message:"invalid requiest",
+                errors:errors.array()
+            })
+        }
+        next()
+    }
 
 
 
