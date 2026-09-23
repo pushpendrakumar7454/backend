@@ -1,6 +1,6 @@
 import userModel from "../modules/auth.module.js"
 import bcrypt from 'bcryptjs'
-import { createAccessToken } from "../utils/auth"
+import { createAccessToken, createRefreshToken } from "../utils/auth.js"
 export const authRegisterController=async(req,res)=>{
     try {
           
@@ -19,7 +19,27 @@ export const authRegisterController=async(req,res)=>{
             hashPassword:await bcrypt.hash(password,6)
         })
    
-       createAccessToken({userId:user._id})
+     const accessToken=createAccessToken({userId:user._id})
+      const refreshToken=createRefreshToken({userId:user._id})
+
+      res.cookie("refreshToken",refreshToken,{
+        httpOnly:true
+      })
+
+      await userModel.findByIdAndUpdate(user._id,{refreshToken})
+
+      return res.status(201).json({
+        message:"user register succefully",
+        data:{
+            user:{
+                name:user.name,
+                email:user.email,
+                number:user.number,
+                id:user._id
+            },
+            accessToken
+        }
+      })
        
 
     } catch (error) {
