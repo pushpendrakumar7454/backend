@@ -1,4 +1,6 @@
-import { readAccessToken } from "../../../../practiceProject3E-comarse/backend/src/utils/auth.js";
+import {
+  readaccessToken
+} from "../utils/auth.js";
 
 const authenticate=async(req,res,next)=>{
   try {
@@ -11,7 +13,7 @@ const authenticate=async(req,res,next)=>{
       })
      }
 
-     const decoded=readAccessToken(accessToken)
+     const decoded=readaccessToken(accessToken)
      req.user=decoded
      next()
 
