@@ -1,25 +1,39 @@
-import userModel from "../modules/auth.module.js"
-import { readAccessToken, readRefreshToken } from "../utils/auth.js"
 
-export const authenticate=async(req,res,next)=>{
+import userModel from "../modules/auth.module.js";
+import { readAccessToken, readRefreshToken } from "../utils/auth.js";
+
+export const authenticate = async (req, res, next) => {
     try {
-          
-      const accessToken = req.headers.authorization.split(" ")[1]
-      if(!accessToken){
-        return res.status(400).json({
-            message:'accessToken not found'
-        })
-      }
+        const authorization = req.headers.authorization;
+        if (!authorization) {
+            return res.status(401).json({
+                message: "Authorization header not found"
+            });
+        }
+        const accessToken = authorization.split(" ")[1];
+        if (!accessToken) {
+            return res.status(401).json({
+                message: "Access token not found"
+            });
+        }
 
-      const decoded=readAccessToken(accessToken)
-      req.user=decoded
-      next()
+        const decoded = readAccessToken(accessToken);
+
+        if (!decoded) {
+            return res.status(401).json({
+                message: "Invalid access token"
+            });
+        }
+
+        req.user = decoded;
+
+        next();
 
     } catch (error) {
-        return res.status(500).json({
-            message:"token expried"
-        })
+        console.log("AUTH ERROR:", error);
+        return res.status(401).json({
+            message: "Invalid or expired access token"
+        });
     }
-}
-
+};
 
