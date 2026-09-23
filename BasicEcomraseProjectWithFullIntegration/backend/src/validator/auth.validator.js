@@ -10,19 +10,19 @@ export const registerValidator=[
     body('email')
     .exists().withMessage("email is required").bail()
     .isEmail().withMessage("plese enter a valid email").bail()
-    .trim()
-    .isString().withMessage("emial must be string"),
+    .isString().withMessage("emial must be string")
+    .trim(),
 
     body("number")
     .exists().withMessage("number is required").bail()
     .isMobilePhone().withMessage("please enter a phone number").bail()
-    .trim()
-    .isString().withMessage("number must be string"),
+    .isString().withMessage("number must be string")
+    .trim(),
 
     body("password")
     .exists().withMessage("password is required").bail()
-    .trim()
     .isString().withMessage("password must be string").bail()
+    .trim()
     .isLength({min:6}).withMessage("length must be 6 character"),
 
     (req,res,next)=>{
@@ -42,14 +42,14 @@ export const loginValidator=[
     body("email").bail()
     .exists().withMessage("email is required").bail()
     .isEmail().withMessage('please enter a valid email').bail()
-    .trim()
-    .isString().withMessage("email must be string"),
+    .isString().withMessage("email must be string")
+    .trim(),
 
     body("password").bail()
     .exists().withMessage("password is required").bail()
+    .isString().withMessage("password must be string")
     .trim()
-    .isLength({min:6}).withMessage("password must be at least 6 character").bail()
-    .isString().withMessage("password must be string"),
+    .isLength({min:6}).withMessage("password must be at least 6 character").bail(),
 
     (req,res,next)=>{
         let errors=validationResult(req)
