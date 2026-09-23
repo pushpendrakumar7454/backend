@@ -25,8 +25,7 @@ const authSchema=new mongoose.Schema({
     },refreshToken:{
      type:String
     }
-}
-)
+})
 
 const userModel=mongoose.model("basicAssianmentEcomrase",authSchema)
 export default userModel;
