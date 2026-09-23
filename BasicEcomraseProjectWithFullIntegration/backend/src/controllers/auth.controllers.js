@@ -1,6 +1,6 @@
 import userModel from "../modules/auth.module.js"
 import bcrypt from 'bcryptjs'
-import { createAccessToken, createRefreshToken } from "../utils/auth.js"
+import { createAccessToken, createRefreshToken, readRefreshToken } from "../utils/auth.js"
 export const authRegisterController=async(req,res)=>{
     try {
           
@@ -75,7 +75,7 @@ export const authLoginController=async(req,res)=>{
             httpOnly:true
          })
 
-         await userModel.findOne({email},{refreshToken})
+         await userModel.findOneAndUpdate({email},{refreshToken})
 
          return res.status(200).json({
             messsage:"userr loggeIn succesfully",
@@ -84,13 +84,95 @@ export const authLoginController=async(req,res)=>{
                     name:user.name,
                     email:user.email,
                     id:user._id,
-                }
+                },
+                accessToken
             }
          })
 
     } catch (error) {
         return res.status(500).json({
             message:'internal server error'
+        })
+    }
+}
+
+
+export const authRefreshController=async(req,res)=>{
+    const refreshToken=req.cookies.refreshToken
+
+    if(!refreshToken){
+        return res.status(400).json({
+            message:"refresh not found"
+        })
+    }
+    try {
+      const decoded= readRefreshToken(refreshToken)
+      const {userId}=decoded
+
+      const user=await userModel.findById(userId)
+
+      if(!user){
+        return res.status(400).json({
+            message:'user not found'
+        })
+      }
+
+      if(refreshToken!==user.refreshToken){
+        await userModel.findByIdAndUpdate(user._id,{refreshToken:null})
+
+        return res.status(400).json({
+            message:"refresh Token mismatch"
+        })
+      }
+
+      const accessToken=createAccessToken({userId:user._id})
+      const newRefreshToken=createRefreshToken({userId:user._id})
+       
+
+      res.cookie("refreshToken",newRefreshToken,{
+        httpOnly:true
+      })
+
+      await userModel.findByIdAndUpdate(user._id,{newRefreshToken})
+
+      return res.status(200).json({
+        message:"refresh token roteted",
+        data:{
+            user:{
+                name:user.name,
+                id:user._id
+            },
+            accessToken
+        }
+      })
+        
+    } catch (error) {
+        console.log(error)
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+
+
+export const authMeController=async(req,res)=>{
+    try {
+       const {userId}= req.user
+       const user=await userModel.findById(userId)
+
+       return res.status(200).json({
+        message:"user find succefully",
+        data:{
+            user:{
+                name:user.name,
+                email:user.email,
+                id:user._id
+            }
+        }
+       })
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
         })
     }
 }

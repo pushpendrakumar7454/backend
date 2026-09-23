@@ -137,9 +137,7 @@ export const authrefreshControllers = async (req, res) => {
 
     try {
         const decoded = readrefreshToken(refreshToken);
-
         const { userId, role } = decoded;
-
         const user = await userModel.findById(userId);
 
         if (!user) {
