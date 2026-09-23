@@ -176,3 +176,33 @@ export const authMeController=async(req,res)=>{
         })
     }
 }
+
+
+export const  authLogoutController=async(req,res)=>{
+
+    const refreshToken=req.cookies.refreshToken
+
+    if(!refreshToken){
+        return res.status(400).json({
+            message:"user allready logout"
+        })
+    }
+    try {
+
+        const decoded=readRefreshToken(refreshToken)
+        const {userId}=decoded
+
+        await userModel.findByIdAndUpdate(userId,{refreshToken:null})
+
+        res.clearCookie("refreshToken")
+
+        return res.status(200).json({
+            message:"user logOut seccufully"
+        })
+        
+    } catch (error) {
+        return res.status(500).json({
+            message:'internal server error'
+        })
+    }
+}
