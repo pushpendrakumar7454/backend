@@ -1,8 +1,9 @@
 import { Router } from "express";
 import authenticate from "../middleware/auth.middleware.js";
 import { createProductCoontroller } from "../controllers/product.controllers.js";
-import multer from 'multer'
-import { createProductValidtar } from "../validator/product.validator.js";
+import {createProductValidator} from '../validator/product.validator.js'
+
+
 import upload from "../config/multer.js";
 
 
@@ -19,6 +20,6 @@ router.post("/",authenticate,(req,res,next)=>{
     req.body.sizes=JSON.parse(req.body.sizes)
     req.body.price=JSON.parse(req.body.price)
     next()
-},createProductCoontroller)
+},createProductValidator,createProductCoontroller)
 
 export default router;
