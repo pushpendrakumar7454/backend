@@ -1,8 +1,9 @@
 
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
-import useApi from "../config/apiInstance";
+
 import { useAuth } from "../context/authContext";
+import { useAuthApi } from "../hooks/api";
 
 const Login = () => {
   const [formValues, setFormValues] = useState({
@@ -11,7 +12,7 @@ const Login = () => {
   });
 
  const navigate= useNavigate()
- const api=useApi()
+ const{loginApi}= useAuthApi()
  const {setUser,setAccessToken}=useAuth()
 
   const handleChange = (e) => {
@@ -24,11 +25,11 @@ const Login = () => {
   const handleSubmit = async(e) => {
     e.preventDefault();
     try {
-        const res=await api.post("/auth/login",formValues)
+        const res=await loginApi(formValues)
         console.log(res)
-        setAccessToken(res.data.accessToken)
-        setUser(res.data.data.user)
-        navigate("/profile")
+        setAccessToken(res.accessToken)
+        setUser(res.data.user)
+        navigate("/header")
     } catch (error) {
         console.log(error)
     }
