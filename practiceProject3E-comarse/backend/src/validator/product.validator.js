@@ -1,48 +1,76 @@
-import {body,validationResult} from 'express-validator'
+import { body, validationResult } from "express-validator";
 
-export const createProductValidator=[
+export const createProductValidator = [
+
     body("title")
-    .exists().withMessage("title is required").bail()
-    .isString().withMessage("title must be Strring").bail()
-    .trim()
-    .isLength({min:2,max:100}).withMessage("title must be required minimum 2 character and maximum 100 character").bail()
-    .isAlpha("en-US",{ignore:" "}).withMessage("title can only have small letters and capital letters"),
+        .exists()
+        .withMessage("title is required")
+        .bail()
+        .isString()
+        .withMessage("title must be string")
+        .bail()
+        .trim()
+        .isLength({ min: 2, max: 100 })
+        .withMessage("title must be minimum 2 characters and maximum 100 characters")
+        .bail(),
 
-    body("desctiption")
-    .exists().withMessage("desctiption is required").bail()
-    .isLength({min:10,max:500}).withMessage("desctiption must be minimum 10 character and maximum 500 character").bail()
-    .trim()
-    .isString().withMessage("desctiption must be String"),
+    body("description")
+        .exists()
+        .withMessage("description is required")
+        .bail()
+        .isString()
+        .withMessage("description must be string")
+        .bail()
+        .trim()
+        .isLength({ min: 10, max: 500 })
+        .withMessage("description must be minimum 10 characters and maximum 500 characters")
+        .bail(),
 
     body("price.amount")
-    .exists().withMessage("price is required").bail()
-    .isFloat({min:0}).withMessage("amount must be float"),
+        .exists()
+        .withMessage("price is required")
+        .bail()
+        .isFloat({ min: 0 })
+        .withMessage("amount must be a positive number"),
 
     body("price.currency")
-    .exists().withMessage("current is required").bail()
-    .isString().withMessage("currency must be string").bail()
-    .isIn(["INR","USD"]).withMessage("currency either be uSD AND INR"),
+        .exists()
+        .withMessage("currency is required")
+        .bail()
+        .isString()
+        .withMessage("currency must be string")
+        .bail()
+        .isIn(["INR", "USD"])
+        .withMessage("currency must be either USD or INR"),
 
     body("sizes.*.size")
-    .exists().withMessage("size is required").bail()
-    .isString().withMessage("size must be string").bail()
-    .isIn(["XS", "S", "L", "XL", "XXL"]).withMessage("size must be required xl,xxl,s,l,xl"),
+        .exists()
+        .withMessage("size is required")
+        .bail()
+        .isString()
+        .withMessage("size must be string")
+        .bail()
+        .isIn(["XS", "S", "M", "L", "XL", "XXL"])
+        .withMessage("invalid size"),
 
-    body("sizez.*.stock")
-    .exists().withMessage("stock is required").bail()
-    .isInt({min:0}).withMessage("stock must be number not given a nagitive"),
+    body("sizes.*.stock")
+        .exists()
+        .withMessage("stock is required")
+        .bail()
+        .isInt({ min: 0 })
+        .withMessage("stock must be a non-negative number"),
 
-    (req,res,next)=>{
-        const errors=validationResult(req)
-        if(!errors.isEmpty()){
+    (req, res, next) => {
+
+        const errors = validationResult(req);
+
+        if (!errors.isEmpty()) {
             return res.status(400).json({
-                message:"invalid requiest",
-                errors:errors.array()
-            })
+                message: "Invalid request",
+                errors: errors.array()
+            });
         }
-        next()
+
+        next();
     }
-
-
-
-]
+];
