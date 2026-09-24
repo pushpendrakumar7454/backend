@@ -1,6 +1,6 @@
 import { Router } from "express";
 import authenticate from "../middleware/auth.middleware.js";
-import { createProductCoontroller } from "../controllers/product.controllers.js";
+import { createProductCoontroller, listALlProducts } from "../controllers/product.controllers.js";
 import {createProductValidator} from '../validator/product.validator.js'
 
 
@@ -21,5 +21,8 @@ router.post("/",authenticate,(req,res,next)=>{
     req.body.price=JSON.parse(req.body.price)
     next()
 },createProductValidator,createProductCoontroller)
+
+
+router.get("/",authenticate,listALlProducts)
 
 export default router;
