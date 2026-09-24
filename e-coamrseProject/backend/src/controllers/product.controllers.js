@@ -1,6 +1,7 @@
 export const createProductCoontroller = async (req, res) => {
     try {
         console.log(req.body);
+        console.log(req.files)
 
         return res.status(201).json({
             message: "Product created successfully",
