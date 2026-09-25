@@ -3,6 +3,9 @@ import { uploadFiles } from "../services/storage.service.js";
 
 export const createProductCoontroller = async (req, res) => {
   try {
+    console.log("BODY:", req.body);
+    console.log("FILES:", req.files);
+
     const fileUrl = [];
 
     for (let i = 0; i < req.files.length; i++) {
@@ -11,6 +14,7 @@ export const createProductCoontroller = async (req, res) => {
         fileName: req.files[i].originalname,
       });
 
+      console.log("IMAGEKIT RESPONSE:", response);
 
       fileUrl.push(response.url);
     }
@@ -32,6 +36,7 @@ export const createProductCoontroller = async (req, res) => {
       data: product,
     });
   } catch (error) {
+    console.log("CREATE PRODUCT ERROR:", error);
 
     return res.status(500).json({
       message: "internal server error",

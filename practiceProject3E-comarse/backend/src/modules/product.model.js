@@ -55,5 +55,5 @@ const productSchema=new mongoose.Schema({
 
 })
 
-const productModel=mongoose.model("productDeatailDataBase",productSchema)
+const productModel=mongoose.model("product3DeatailDataBase",productSchema)
 export default productModel
