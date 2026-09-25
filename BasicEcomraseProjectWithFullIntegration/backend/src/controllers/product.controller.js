@@ -63,3 +63,22 @@ export const listALlProducts=async(req,res)=>{
         })
     }
 }
+
+export const fildAllProductController=async(req,res)=>{
+    try {
+         
+        const products=await productModel.find()
+
+        return res.status(200).json({
+            message:"find all products",
+            data:{
+                products
+            }
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
