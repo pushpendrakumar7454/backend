@@ -90,7 +90,8 @@ export const updateProductController = async (req, res) => {
         const products = await productModel.findByIdAndUpdate(
             id,
             req.body,
-            { new: true }
+            {new:true}
+        
         );
 
         if (!products) {
