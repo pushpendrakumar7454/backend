@@ -15,10 +15,11 @@ export const  createProductController=async(req,res)=>{
         })
         fileUrl.push(responce.url)
       }
-
+      const {title,description}=req.body
+      
       const product=await productModel.create({
-        title:req.body.title,
-        description:req.body.description,
+        title,
+        description,
         price:{
             amount:req.body.price.amount,
             currency:req.body.price.currency
