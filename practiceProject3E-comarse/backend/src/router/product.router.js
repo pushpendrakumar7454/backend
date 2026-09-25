@@ -1,7 +1,7 @@
 import { Router } from "express";
 
 import { authenticate } from "../middleware/user.middleware.js";
-import { createProductController } from "../controllers/product.controller.js";
+import { createProductController,findALlProductController } from "../controllers/product.controller.js";
 import { createProductValidator } from "../validator/product.validator.js";
 import upload from "../config/multer.js";
 
@@ -23,6 +23,8 @@ router.post("/",authenticate,(req, res, next) => {
         next();
     },createProductValidator,createProductController
 );
+
+router.get("/",authenticate,findALlProductController)
 
 
 
