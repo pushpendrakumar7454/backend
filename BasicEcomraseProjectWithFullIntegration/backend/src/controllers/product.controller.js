@@ -1,15 +1,21 @@
-
-
-export const createProductController=async(req,res)=>{
+export const createProductController = async (req, res) => {
     try {
-        console.log(req.body)
-        console.log(req.files)
+        console.log("Product Data:", req.body);
+        console.log("Product Images:", req.files);
+
         return res.status(201).json({
-            message:"product creates succefully"
-        })
+            message: "Product created successfully",
+            data: {
+                product: req.body,
+                images: req.files
+            }
+        });
+
     } catch (error) {
+        console.log(error);
+
         return res.status(500).json({
-            message:"internal server error"
-        })
+            message: "Internal server error"
+        });
     }
-}
+};
