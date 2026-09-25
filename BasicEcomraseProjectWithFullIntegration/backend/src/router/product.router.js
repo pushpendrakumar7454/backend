@@ -7,7 +7,6 @@ const router=Router()
  
 router.post(
     "/",
-    authenticate,
     upload.array("images"),
     (req, res, next) => {
         req.body.price = JSON.parse(req.body.price);
