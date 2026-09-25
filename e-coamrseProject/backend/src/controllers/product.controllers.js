@@ -3,11 +3,8 @@ import { uploadFiles } from "../services/storage.service.js";
 
 export const createProductCoontroller = async (req, res) => {
   try {
-    console.log("BODY:", req.body);
-    console.log("FILES:", req.files);
-
     const fileUrl = [];
-
+    
     for (let i = 0; i < req.files.length; i++) {
       const response = await uploadFiles({
         buffer: req.files[i].buffer,
