@@ -53,3 +53,25 @@ export const createCartController = async (req, res) => {
     });
   }
 };
+
+
+
+export const getCart=async(req,res)=>{
+    try{
+
+        const cart=(await cartModel.findOne({user:req.user.userId}))
+        ?? (await cartModel.create({user:req.user.userId}))
+
+     return res.status(200).json({
+        message:"cart received succefully",
+        data:{
+            cart:cart
+        }
+     })
+
+    }catch(error){
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
