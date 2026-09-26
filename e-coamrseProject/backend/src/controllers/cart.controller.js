@@ -70,7 +70,6 @@ export const createCartController = async (req, res) => {
     }
   )
 
-
   return res.status(200).json({
     message:"product added to cart succefully"
   })
