@@ -102,3 +102,17 @@ export const getCart = async (req, res) => {
     });
   }
 };
+
+
+
+export const unlistProduct=async(req,res)=>{
+    try{
+      
+      
+
+    }catch(error){
+      return res.status(500).json({
+        message:"internal server error"
+      })
+    }
+}

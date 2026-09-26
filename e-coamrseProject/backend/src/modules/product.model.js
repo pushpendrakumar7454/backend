@@ -58,6 +58,9 @@ const productSchema = new mongoose.Schema({
         type: mongoose.Types.ObjectId,
         ref: "E-comarseFisrtProject",
         required: true
+    },
+    {
+        
     }
 
 });
