@@ -1,20 +1,25 @@
-import React, { useEffect } from "react";
 
+import React, { useEffect } from "react";
+import { NavLink, useNavigate } from "react-router";
 import { useAuth } from "../context/authContext";
 import useApi from "../config/apiInstance";
 import { useAuthApi } from "../hooks/api";
-import { useNavigate } from "react-router";
 
 const Header = () => {
   const { user, setUser } = useAuth();
+
   const api = useApi();
-  const {logoutUser}=useAuthApi()
-  const navigate= useNavigate()
+
+  const { logoutUser } = useAuthApi();
+
+  const navigate = useNavigate();
 
   const getData = async () => {
     try {
       const res = await api.get("/auth/me");
+
       console.log("ME RESPONSE:", res.data);
+
       setUser(res.data.data.user);
     } catch (error) {
       console.log("DATA:", error.response?.data);
@@ -25,20 +30,19 @@ const Header = () => {
     getData();
   }, []);
 
-   
-  const logOutUser=()=>{
+  const logOutUser = () => {
     try {
-          logoutUser()
-          navigate("/login")
+      logoutUser();
+      navigate("/login");
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   return (
     <header className="sticky top-0 z-50 border-b border-gray-200/80 bg-white/90 shadow-sm backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-18">
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-18 items-center justify-between">
 
           {/* Logo */}
           <div className="flex items-center gap-3">
@@ -50,42 +54,62 @@ const Header = () => {
               <div className="text-xl font-extrabold tracking-tight text-gray-900">
                 E-Shop
               </div>
-              <p className="hidden sm:block text-[11px] font-medium text-gray-400">
+
+              <p className="hidden text-[11px] font-medium text-gray-400 sm:block">
                 Shop smarter
               </p>
             </div>
           </div>
 
           {/* Navigation */}
-          <nav className="hidden md:flex items-center gap-1 rounded-xl border border-gray-100 bg-gray-50/80 p-1.5">
-            <a
-              href="/"
-              className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-white hover:text-blue-600 hover:shadow-sm"
+          <nav className="hidden items-center gap-1 rounded-xl border border-gray-100 bg-gray-50/80 p-1.5 md:flex">
+
+            <NavLink
+              to="/"
+              className={({ isActive }) =>
+                `rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  isActive
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-700 hover:bg-white hover:text-blue-600 hover:shadow-sm"
+                }`
+              }
             >
               Home
-            </a>
+            </NavLink>
 
-            <a
-              href="/products"
-              className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-white hover:text-blue-600 hover:shadow-sm"
+            <NavLink
+              to="/products"
+              className={({ isActive }) =>
+                `rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  isActive
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-700 hover:bg-white hover:text-blue-600 hover:shadow-sm"
+                }`
+              }
             >
               All Products
-            </a>
+            </NavLink>
 
-            <a
-              href="/create-product"
-              className="rounded-lg px-4 py-2 text-sm font-semibold text-gray-700 transition-all duration-200 hover:bg-white hover:text-blue-600 hover:shadow-sm"
+            <NavLink
+              to="/create-product"
+              className={({ isActive }) =>
+                `rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                  isActive
+                    ? "bg-white text-blue-600 shadow-sm"
+                    : "text-gray-700 hover:bg-white hover:text-blue-600 hover:shadow-sm"
+                }`
+              }
             >
               Create Product
-            </a>
+            </NavLink>
+
           </nav>
 
           {/* User Section */}
           <div className="flex items-center gap-3">
 
             {/* User Profile */}
-            <div className="hidden sm:flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2">
-              
+            <div className="hidden items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-3 py-2 sm:flex">
               <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-bold text-white shadow-md">
                 {user?.name?.charAt(0)?.toUpperCase()}
               </div>
@@ -102,12 +126,13 @@ const Header = () => {
             </div>
 
             {/* Mobile User Avatar */}
-            <div className="sm:hidden flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-bold text-white">
+            <div className="flex h-9 w-9 items-center justify-center rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-sm font-bold text-white sm:hidden">
               {user?.name?.charAt(0)?.toUpperCase()}
             </div>
 
             {/* Logout */}
             <button
+              onClick={logOutUser}
               className="group flex items-center gap-2 rounded-xl bg-red-500 px-4 py-2.5 text-sm font-semibold text-white shadow-md shadow-red-500/20 transition-all duration-200 hover:bg-red-600 hover:shadow-lg hover:shadow-red-500/30 active:scale-95"
             >
               <svg
@@ -125,14 +150,12 @@ const Header = () => {
                 />
               </svg>
 
-              <span
-                onClick={()=>console.log("clicked")}
-               className="hidden sm:inline">
+              <span className="hidden sm:inline">
                 Logout
               </span>
             </button>
-          </div>
 
+          </div>
         </div>
       </div>
     </header>
@@ -140,3 +163,4 @@ const Header = () => {
 };
 
 export default Header;
+
