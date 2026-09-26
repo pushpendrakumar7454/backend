@@ -26,56 +26,57 @@ export const createCartController = async (req, res) => {
       });
     }
 
-   const cart=(await cartModel.findOne({user:req.user.userId}))
-    ?? await cartModel.create({user:req.user.userId})
+    const cart =
+      (await cartModel.findOne({ user: req.user.userId })) ??
+      (await cartModel.create({ user: req.user.userId }));
 
+    const isProductInCart = cart.products.find(
+      (p) => p.product.toString() === productId && p.size === size,
+    );
 
-    const isProductInCart=cart.products.find(p=>(p.product.toString()===productId) && (p.size===size))
+    if (isProductInCart) {
+      if (isProductInCart.quantity + quantity > selectedsizes.stock) {
+        return res.status(400).json({
+          message: "insufficient stock",
+        });
+      }
 
-    if(isProductInCart){
-        if((isProductInCart.quantity+quantity)>selectedsizes.stock){
-            return res.status(400).json({
-                message:"insufficient stock"
-            })
-            
-        }
-
-
-        await cartModel.updateOne({
-            user:req.user.userId,
-            "products.product":productId,
-            "products.size":size
-        },{
-          $inc:{
-            "products.$.quantity":quantity
-          }
-        }
-      )
+      await cartModel.updateOne(
+        {
+          user: req.user.userId,
+          "products.product": productId,
+          "products.size": size,
+        },
+        {
+          $inc: {
+            "products.$.quantity": quantity,
+          },
+        },
+      );
 
       return res.status(200).json({
-        message:"product quantity update in cart"
-      })
+        message: "product quantity update in cart",
+      });
     }
 
-    await cartModel.findOneAndUpdate({
-      user:req.user.userId
-    },{
-      $push:{
-        products:{
-          product:productId,
-          quantity:quantity,
-          size:size
-        }
-      }
-    }
-  )
+    await cartModel.findOneAndUpdate(
+      {
+        user: req.user.userId,
+      },
+      {
+        $push: {
+          products: {
+            product: productId,
+            quantity: quantity,
+            size: size,
+          },
+        },
+      },
+    );
 
-  return res.status(200).json({
-    message:"product added to cart succefully"
-  })
-      
-    
-
+    return res.status(200).json({
+      message: "product added to cart succefully",
+    });
   } catch (error) {
     return res.status(500).json({
       message: "internal servver error",
@@ -83,24 +84,21 @@ export const createCartController = async (req, res) => {
   }
 };
 
+export const getCart = async (req, res) => {
+  try {
+    const cart =
+      (await cartModel.findOne({ user: req.user.userId })) ??
+      (await cartModel.create({ user: req.user.userId }));
 
-
-export const getCart=async(req,res)=>{
-    try{
-
-        const cart=(await cartModel.findOne({user:req.user.userId}))
-        ?? (await cartModel.create({user:req.user.userId}))
-
-     return res.status(200).json({
-        message:"cart received succefully",
-        data:{
-            cart:cart
-        }
-     })
-
-    }catch(error){
-        return res.status(500).json({
-            message:"internal server error"
-        })
-    }
-}
+    return res.status(200).json({
+      message: "cart received succefully",
+      data: {
+        cart: cart,
+      },
+    });
+  } catch (error) {
+    return res.status(500).json({
+      message: "internal server error",
+    });
+  }
+};
