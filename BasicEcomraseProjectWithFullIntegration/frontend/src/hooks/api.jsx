@@ -1,6 +1,7 @@
 import useApi from "../config/apiInstance";
 
 export const useAuthApi = () => {
+    
     const api = useApi();
 
     const registerApi = async (credentials) => {
