@@ -5,6 +5,8 @@ import Login from '../components/Login'
 import Profile from '../components/Profile'
 import { useAuthApi } from '../hooks/api'
 import Header from '../components/Header'
+import Main from '../pages/Main'
+import Product from '../components/Product'
 
 const AppRoutes = () => {
      const {hydreadUser}=useAuthApi()
@@ -31,7 +33,10 @@ const AppRoutes = () => {
         element:<Profile/>
        },{
         path:"/header",
-        element:<Header/>
+        element:<Main/>
+       },{
+         path:"/product",
+         element:<Product/>
        }
     ])
 
