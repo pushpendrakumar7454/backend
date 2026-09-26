@@ -59,8 +59,9 @@ const productSchema = new mongoose.Schema({
         ref: "E-comarseFisrtProject",
         required: true
     },
-    {
-        
+    publiashed:{
+      tpye:Boolean,
+      default:false
     }
 
 });
