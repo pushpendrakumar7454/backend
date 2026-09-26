@@ -1,8 +1,9 @@
 
+import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router";
 
-const ProductDetail = ({ product }) => {
+const ProductDetail = ({ product,setProducts }) => {
 
     const handleAddToCart = () => {
         console.log("Add to cart:", product);
@@ -12,7 +13,15 @@ const ProductDetail = ({ product }) => {
         console.log("Update product:", product._id);
     };
 
-    const handleDelete = () => {
+    const handleDelete = async(id) => {
+         try {
+            const res=await axios.delete(`http://localhost:5173/api/produts/${id}`)
+            setProducts((pre)=>pre.filter((p)=>p._id!==product))
+            
+            console.log(res)
+         } catch (error) {
+            console.log(error)
+         }
         console.log("Delete product:", product._id);
     };
 
@@ -76,7 +85,7 @@ const ProductDetail = ({ product }) => {
 
                     <button
                         type="button"
-                        onClick={handleDelete}
+                        onClick={()=>handleDelete(product._id)}
                         className="w-1/2 rounded-xl border border-red-600 px-4 py-2.5 font-semibold text-red-600 transition duration-300 hover:bg-red-600 hover:text-white active:scale-95"
                     >
                         Delete

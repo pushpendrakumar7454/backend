@@ -37,6 +37,7 @@ const Main = () => {
                         <ProductDetail
                             key={product._id}
                             product={product}
+                            setProducts={setProducts}
                         />
                     );
                 })}
