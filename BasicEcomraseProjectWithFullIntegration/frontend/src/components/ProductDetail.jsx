@@ -30,7 +30,6 @@ const ProductDetail = ({ product }) => {
                     alt={product.title}
                     className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                 />
-
                 {/* Product Badge */}
                 <div className="absolute left-3 top-3 rounded-full bg-white px-3 py-1 text-xs font-semibold text-gray-800 shadow">
                     New
