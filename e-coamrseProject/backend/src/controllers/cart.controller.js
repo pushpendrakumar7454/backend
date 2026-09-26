@@ -108,7 +108,15 @@ export const getCart = async (req, res) => {
 export const unlistProduct=async(req,res)=>{
     try{
       
-      
+       const {id}=req.params
+
+       const product=await productModel.findById(id)
+
+       if(!product){
+        return res.status(400).json({
+          message:"product not found by id"
+        })
+       }
 
     }catch(error){
       return res.status(500).json({

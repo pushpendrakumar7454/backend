@@ -60,7 +60,7 @@ const productSchema = new mongoose.Schema({
         required: true
     },
     publiashed:{
-      tpye:Boolean,
+      type:Boolean,
       default:false
     }
 
