@@ -1,14 +1,14 @@
 import useApi from "../config/apiInstance";
 
 export const useAuthApi = () => {
-    
+
     const api = useApi();
 
     const registerApi = async (credentials) => {
         try {
             const res = await api.post("/auth/register", credentials);
-
             return res.data;
+            
         } catch (error) {
             console.log(error);
             throw error;
