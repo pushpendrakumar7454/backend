@@ -37,6 +37,7 @@ export const createCartController = async (req, res) => {
             return res.status(400).json({
                 message:"insufficient stock"
             })
+            
         }
 
 
@@ -44,8 +45,37 @@ export const createCartController = async (req, res) => {
             user:req.user.userId,
             "products.product":productId,
             "products.size":size
-        })
+        },{
+          $inc:{
+            "products.$.quantity":quantity
+          }
+        }
+      )
+
+      return res.status(200).json({
+        message:"product quantity update in cart"
+      })
     }
+
+    await cartModel.findOneAndUpdate({
+      user:req.user.userId
+    },{
+      $push:{
+        products:{
+          product:productId,
+          quantity:quantity,
+          size:size
+        }
+      }
+    }
+  )
+
+
+  return res.status(200).json({
+    message:"product added to cart succefully"
+  })
+      
+    
 
   } catch (error) {
     return res.status(500).json({
