@@ -1,10 +1,12 @@
 import {Router} from 'express'
 import authenticate from '../middleware/auth.middleware.js'
-import { createCartController } from '../controllers/cart.controller.js'
+import { addToCartController, getCartController } from '../controllers/cart.controller.js'
+import { addToCartProductValidator } from '../validator/cart.validator.js'
 const router=Router()
 
 
-router.get("/",authenticate,createCartController)
+router.post("/",authenticate,addToCartProductValidator,addToCartController)
+router.get("/get",authenticate,getCartController)
 
 
 export default router

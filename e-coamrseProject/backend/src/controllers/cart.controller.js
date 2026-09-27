@@ -1,7 +1,7 @@
 import productModel from "../modules/product.model.js";
 import cartModel from "../modules/cart.model.js";
 
-export const createCartController = async (req, res) => {
+export const addToCartController = async (req, res) => {
   try {
     const { productId, quantity, size } = req.body;
 
@@ -84,7 +84,7 @@ export const createCartController = async (req, res) => {
   }
 };
 
-export const getCart = async (req, res) => {
+export const getCartController = async (req, res) => {
   try {
     const cart =
       (await cartModel.findOne({ user: req.user.userId })) ??

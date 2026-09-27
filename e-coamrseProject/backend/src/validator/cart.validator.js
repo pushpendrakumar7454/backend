@@ -1,7 +1,7 @@
 import { body, validationResult } from "express-validator";
 
 
-export const createCartProduct=[
+export const addToCartProductValidator=[
     body("productId")
     .exists().withMessage("product id is required").bail()
     .isString().withMessage("product is must be string").bail()
