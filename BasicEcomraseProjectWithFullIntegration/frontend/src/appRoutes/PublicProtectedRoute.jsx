@@ -2,6 +2,7 @@ import React from 'react'
 import { useEffect } from 'react';
 import useApi from '../config/apiInstance';
 import { useAuth } from '../context/authContext';
+import { Navigate, Outlet } from 'react-router';
 
 const PublicProtectedRoute = () => {
    const { user, setUser } = useAuth();
@@ -11,7 +12,7 @@ const PublicProtectedRoute = () => {
         try {
             const res = await api.get("/auth/me");
             setUser(res.data.data.user);
-            
+
         } catch (error) {
             console.log("DATA:", error.response?.data);
         }
@@ -21,11 +22,11 @@ const PublicProtectedRoute = () => {
         getData();
     }, []);
 
-    if (user) {
-        return <Outlet />;
+    if (!user) {
+        return <Navigate  to={"/login"} replace/>;
     }
 
-    return <Navigate to="/login" replace />;
+    return <Outlet/>
 }
 
 export default PublicProtectedRoute
