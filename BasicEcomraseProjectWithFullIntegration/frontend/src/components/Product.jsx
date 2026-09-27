@@ -1,16 +1,33 @@
-import React from "react";
-import { useLocation } from "react-router";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { useParams } from "react-router";
 
 const Product = () => {
-    const location = useLocation();
+    const { id } = useParams();
 
-    const product = location.state?.product;
+    const [product, setProduct] = useState(null);
+
+    const getProduct = async () => {
+        try {
+            const res = await axios.get(
+                `http://localhost:5173/api/products/${id}`
+            );
+
+            setProduct(res.data.data.product);
+        } catch (error) {
+            console.log("PRODUCT ERROR:", error);
+        }
+    };
+
+    useEffect(() => {
+        getProduct();
+    }, [id]);
 
     if (!product) {
         return (
-            <div className="flex min-h-screen items-center justify-center bg-gray-50">
-                <h1 className="text-xl font-semibold text-gray-700">
-                    Product not found
+            <div className="flex min-h-screen items-center justify-center">
+                <h1 className="text-xl font-semibold">
+                    Loading...
                 </h1>
             </div>
         );
@@ -71,11 +88,10 @@ const Product = () => {
                                 Select Size
                             </h2>
 
-                            <div className="flex flex-wrap items-center gap-3">
+                            <div className="flex items-center gap-3">
                                 {product.sizes?.map((item) => (
                                     <button
                                         key={item._id || item.size}
-                                        type="button"
                                         className="rounded-lg border-2 border-gray-900 px-6 py-3 text-sm font-semibold text-gray-900 transition hover:bg-gray-900 hover:text-white"
                                     >
                                         {item.size}
@@ -91,9 +107,8 @@ const Product = () => {
                             </p>
                         </div>
 
-                        {/* Add To Cart */}
+                        {/* Add to Cart */}
                         <button
-                            type="button"
                             className="mt-7 w-full rounded-xl bg-black px-6 py-4 text-base font-semibold text-white transition hover:bg-gray-800"
                         >
                             Add to Cart
@@ -101,11 +116,11 @@ const Product = () => {
 
                         {/* Buy Now */}
                         <button
-                            type="button"
                             className="mt-3 w-full rounded-xl border-2 border-black px-6 py-4 text-base font-semibold text-black transition hover:bg-gray-100"
                         >
                             Buy Now
                         </button>
+
                     </div>
                 </div>
             </div>

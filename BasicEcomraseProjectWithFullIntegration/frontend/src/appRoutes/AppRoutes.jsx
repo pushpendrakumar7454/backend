@@ -26,9 +26,6 @@ const AppRoutes = () => {
     }, []);
 
     const router = createBrowserRouter([
-        // =========================
-        // PROTECTED ROUTES
-        // =========================
         {
             element: <ProtectedRoute />,
             children: [
@@ -41,7 +38,7 @@ const AppRoutes = () => {
                     element: <Profile />,
                 },
                 {
-                    path: "/product/:id",
+                    path: "/product",
                     element: <Product />,
                 },
                 {
