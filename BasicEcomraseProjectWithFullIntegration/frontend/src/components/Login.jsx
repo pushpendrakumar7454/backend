@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 
@@ -11,9 +10,9 @@ const Login = () => {
     password: "",
   });
 
- const navigate= useNavigate()
- const{loginApi}= useAuthApi()
- const {setUser,setAccessToken}=useAuth()
+  const navigate = useNavigate();
+  const { loginApi } = useAuthApi();
+  const { setUser, setAccessToken } = useAuth();
 
   const handleChange = (e) => {
     setFormValues((prev) => ({
@@ -22,16 +21,16 @@ const Login = () => {
     }));
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-        const res=await loginApi(formValues)
-        console.log(res)
-        setAccessToken(res.accessToken)
-        setUser(res.data.user)
-        navigate("/header")
+      const res = await loginApi(formValues);
+      console.log(res);
+      setAccessToken(res.accessToken);
+      setUser(res.data.user);
+      navigate("/header");
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
 
     console.log(formValues);
@@ -40,21 +39,15 @@ const Login = () => {
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
-        
         {/* Heading */}
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-gray-800">
-            Welcome Back
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-800">Welcome Back</h1>
 
-          <p className="text-gray-500 mt-2">
-            Login to your account
-          </p>
+          <p className="text-gray-500 mt-2">Login to your account</p>
         </div>
 
         {/* Login Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
-          
           {/* Email */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -93,8 +86,7 @@ const Login = () => {
           <div className="flex justify-end">
             <button
               type="button"
-              className="text-sm text-blue-600 hover:text-blue-700"
-            >
+              className="text-sm text-blue-600 hover:text-blue-700">
               Forgot password?
             </button>
           </div>
@@ -102,8 +94,7 @@ const Login = () => {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200"
-          >
+            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">
             Login
           </button>
         </form>
@@ -121,4 +112,3 @@ const Login = () => {
 };
 
 export default Login;
-
