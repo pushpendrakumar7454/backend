@@ -30,6 +30,8 @@ export const addToCartController = async (req, res) => {
       (await cartModel.findOne({ user: req.user.userId })) ??
       (await cartModel.create({ user: req.user.userId }));
 
+      
+
     const isProductInCart = cart.products.find(
       (p) => p.product.toString() === productId && p.size === size,
     );

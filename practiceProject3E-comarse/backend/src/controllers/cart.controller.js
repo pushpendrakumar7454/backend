@@ -1,0 +1,111 @@
+
+import productModel from '../modules/product.model.js'
+import cartModel from '../modules/cart.module.js'
+
+export const addToCartController = async (req, res) => {
+    try {
+        const { productId, quantity, size } = req.body
+
+        const product = await productModel.findById(productId)
+
+        if (!product) {
+            return res.status(404).json({
+                message: "product not found"
+            })
+        }
+
+        const selectedSize = product.sizes.find((s) => s.size === size)
+
+        if (!selectedSize) {
+            return res.status(400).json({
+                message: "selected size is not available"
+            })
+        }
+
+        if (selectedSize.stock < quantity) {
+            return res.status(400).json({
+                message: "not enough stock available"
+            })
+        }
+
+        const cart = (await cartModel.findOne({
+            user: req.user.userId
+        })) ??
+            (await cartModel.create({
+                user: req.user.userId
+            }))
+
+        const productInCart = cart.products.find(
+            (p) => p.product.toString() === productId && p.size === size
+        )
+
+        if (productInCart) {
+            if (productInCart.quantity + quantity > selectedSize.stock) {
+                return res.status(400).json({
+                    message: "requested quantity exceeds available stock"
+                })
+            }
+
+            await cartModel.updateOne(
+                {
+                    user: req.user.userId,
+                    "products.product": productId,
+                    "products.size": size
+                },
+                {
+                    $inc: {
+                        "products.$.quantity": quantity
+                    }
+                }
+            )
+
+            return res.status(200).json({
+                message: "product quantity updated successfully"
+            })
+        }
+
+        await cartModel.findOneAndUpdate(
+            {
+                user: req.user.userId
+            },
+            {
+                $push: {
+                    products: {
+                        product: productId,
+                        quantity: quantity,
+                        size: size
+                    }
+                }
+            }
+        )
+
+        return res.status(200).json({
+            message: "product added to cart successfully"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message: "internal server error"
+        })
+    }
+}
+
+export const getAllCartProductController=async(req,res)=>{
+    try {
+         
+        const cart= (await cartModel.findOne({user:req.user.userId})) ??
+                    (await cartModel.create({user:req.user.userId}))
+
+        return res.status(200).json({
+            message:"fetached all cart products",
+            data:{
+                cart:cart
+            }
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
