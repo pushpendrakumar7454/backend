@@ -7,15 +7,10 @@ import { useAuthApi } from "../hooks/api";
 const Register = () => {
 
  
-  const { setUser, setAccessToken } = useAuth();
+  const { setUser, setAccessToken,formValues,setFormValues } = useAuth();
    const navigate= useNavigate()
-
-  const [formValues, setFormValues] = useState({
-    name: "",
-    email: "",
-    password: "",
-    number: "",
-  });
+ 
+  
   const handleChange = (e) => {
     setFormValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };

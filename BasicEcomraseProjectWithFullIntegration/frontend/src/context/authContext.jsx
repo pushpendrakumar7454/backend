@@ -6,9 +6,26 @@ const AuthContextProvider = ({ children }) => {
 
     const [accessToken, setAccessToken] = useState(null);
     const [user, setUser] = useState("");
+    const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    price: 600,
+    currency: "INR",
+    size: "S",
+    stock: 45,
+    })
+  
+     const [formValues, setFormValues] = useState({
+         name: "",
+         email: "",
+         password: "",
+         number: "",
+       });
 
+       const [updateData, setUpdateData] = useState(null)
+       const [products, setProducts] = useState([]);
     return (
-        <authContext.Provider value={{ accessToken, setAccessToken, user, setUser }}>
+        <authContext.Provider value={{ accessToken, formData,setFormData,setAccessToken, user, setUser,formValues,setFormValues,updateData,setUpdateData,products,setProducts }}>
             {children}
         </authContext.Provider>
     );

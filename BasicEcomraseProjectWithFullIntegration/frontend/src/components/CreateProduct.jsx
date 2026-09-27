@@ -2,16 +2,10 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
+import { useAuth } from "../context/authContext";
 
 const CreateProduct = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    price: 600,
-    currency: "INR",
-    size: "S",
-    stock: 45,
-  });
+ const {formData,setFormData,updateData}=useAuth()
 
 
     const navigate=useNavigate()
@@ -31,50 +25,63 @@ const CreateProduct = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const data = new FormData();
+    try {
+        const data = new FormData();
 
-    data.append("title", formData.title);
-    data.append("description", formData.description);
+        data.append("title", formData.title);
+        data.append("description", formData.description);
 
-    data.append(
-      "price",
-      JSON.stringify({
-        amount: formData.price,
-        currency: formData.currency,
-      })
-    );
+        data.append(
+            "price",
+            JSON.stringify({
+                amount: formData.price,
+                currency: formData.currency,
+            })
+        );
 
-    data.append(
-      "sizes",
-      JSON.stringify([
-        {
-          size: formData.size,
-          stock: formData.stock,
-        },
-      ])
-    );
+        data.append(
+            "sizes",
+            JSON.stringify([
+                {
+                    size: formData.size,
+                    stock: formData.stock,
+                },
+            ])
+        );
 
-    if (image) {
-      data.append("images", image);
+        if (image) {
+            data.append("images", image);
+        }
+
+        console.log("Sending Product Data");
+
+        if (updateData) {
+            // UPDATE PRODUCT
+            const res = await axios.put(
+                `http://localhost:5173/api/products/${updateData}`,
+                data
+            );
+
+            
+
+            console.log("UPDATE PRODUCT RESPONSE:", res.data);
+        } else {
+            // CREATE PRODUCT
+            const res = await axios.post(
+                "http://localhost:5173/api/products",
+                data
+            );
+
+            console.log("PRODUCT RESPONSE:", res.data);
+        }
+
+        navigate("/header");
+    } catch (error) {
+        console.log("PRODUCT ERROR:", error.response?.data);
     }
-
-    console.log("Sending Product Data");
-
-    const res = await axios.post(
-      "http://localhost:5173/api/products",
-      data
-    );
-
-    console.log("PRODUCT RESPONSE:", res.data);
-    navigate("/header")
-  } catch (error) {
-    console.log("PRODUCT ERROR:", error.response?.data);
-  }
 };
-
 
 
 
