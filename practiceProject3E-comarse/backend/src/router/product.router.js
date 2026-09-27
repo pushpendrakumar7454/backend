@@ -1,21 +1,13 @@
 import { Router } from "express";
 
-import { authenticate } from "../middleware/user.middleware.js";
-import { createProductController,findALlProductController } from "../controllers/product.controller.js";
-import { createProductValidator } from "../validator/product.validator.js";
+import { authenticate, authenticateSeller } from "../middleware/user.middleware.js";
+import { createProductController,findALlProductController, listALlSellerProductController, listProductsController, unlistProductController } from "../controllers/product.controller.js";
+import { createProductValidator, listProductValidator, unlistProductValidator } from "../validator/product.validator.js";
 import upload from "../config/multer.js";
 
 const router = Router();
 
-router.post("/",authenticate,(req, res, next) => {
-        if (req.user.role !== "seller") {
-            return res.status(403).json({
-                message: "Unauthorized user, so do not create a product"
-            });
-        }
-        next();
-    },
-    upload.array("images"),
+router.post("/",authenticate,authenticateSeller,upload.array("images"),
     (req, res, next) => {
         req.body.price = JSON.parse(req.body.price);
         req.body.sizes = JSON.parse(req.body.sizes);
@@ -25,7 +17,9 @@ router.post("/",authenticate,(req, res, next) => {
 );
 
 router.get("/",authenticate,findALlProductController)
-
+router.get("/seller",authenticate,authenticateSeller,listALlSellerProductController)
+router.patch("/unlist/:id",authenticate,authenticateSeller,unlistProductValidator,unlistProductController)
+router.patch("/list/:id",authenticate,authenticateSeller,listProductValidator,listProductsController)
 
 
 export default router;
