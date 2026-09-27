@@ -1,15 +1,25 @@
-import React from 'react'
-import { useAuth } from '../context/authContext';
-import { Navigate, Outlet } from 'react-router';
+import React from "react";
+import { Navigate, Outlet } from "react-router";
+import { useAuth } from "../context/authContext";
 
 const PublicProtectedRoute = () => {
-   const { user} = useAuth();
+    const { user, loading } = useAuth();
 
-    if (user) {
-        return <Navigate  to={"/"} replace/>;
+    if (loading) {
+        return (
+            <div className="flex min-h-screen items-center justify-center">
+                <h1 className="text-xl font-semibold">
+                    Loading...
+                </h1>
+            </div>
+        );
     }
 
-    return <Outlet/>
-}
+    if (user) {
+        return <Navigate to="/" replace />;
+    }
 
-export default PublicProtectedRoute
+    return <Outlet />;
+};
+
+export default PublicProtectedRoute;
