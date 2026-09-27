@@ -24,7 +24,7 @@ const AuthContextProvider = ({ children }) => {
   const [updateData, setUpdateData] = useState(null);
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
-  
+
   return (
     <authContext.Provider
       value={{
@@ -40,6 +40,8 @@ const AuthContextProvider = ({ children }) => {
         setUpdateData,
         products,
         setProducts,
+        loading,
+        setLoading
       }}>
       {children}
     </authContext.Provider>
