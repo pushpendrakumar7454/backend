@@ -22,8 +22,8 @@ const PublicProtectedRoute = () => {
         getData();
     }, []);
 
-    if (!user) {
-        return <Navigate  to={"/login"} replace/>;
+    if (user) {
+        return <Navigate  to={"/header"} replace/>;
     }
 
     return <Outlet/>
