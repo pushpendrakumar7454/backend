@@ -12,7 +12,14 @@ router.post("/", upload.array("images"),(req, res, next) => {
     }, createProductValidator,createProductController);
 
 router.get("/find",fildAllProductController) 
-router.put("/:id",updateProductController)
+
+router.put( "/:id",upload.array("images"),(req, res, next) => {
+        req.body.price = JSON.parse(req.body.price);
+        req.body.sizes = JSON.parse(req.body.sizes);
+        next();
+    },
+    updateProductController
+);
 router.delete("/:id",deleteProductController)   
 
 export default router;

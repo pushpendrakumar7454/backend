@@ -3,7 +3,7 @@ import { useAuth } from "../context/authContext";
 
 export const useAuthApi = () => {
   const api = useApi();
-  const { setUser, setLoading } = useAuth();
+  const { setUser, setLoading,setAccessToken, } = useAuth();
   const registerApi = async (credentials) => {
     try {
       const res = await api.post("/auth/register", credentials);
@@ -44,7 +44,9 @@ export const useAuthApi = () => {
   };
 
   const logoutUser = async () => {
-    const res = await api.post("/auth/logout");
+     const res = await api.post("/auth/logout");
+      setUser(null);
+    setAccessToken(null);      
     return res.data;
   };
 

@@ -54,7 +54,7 @@ const Header = () => {
                         </NavLink>
 
                         <NavLink
-                            to="/products"
+                            to="/about"
                             className={({ isActive }) =>
                                 `rounded-lg px-4 py-2 text-sm font-semibold transition-all duration-200 ${
                                     isActive
@@ -63,7 +63,7 @@ const Header = () => {
                                 }`
                             }
                         >
-                            All Products
+                            About
                         </NavLink>
 
                         <NavLink

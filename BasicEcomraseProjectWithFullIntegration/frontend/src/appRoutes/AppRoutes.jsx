@@ -3,71 +3,72 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 
 import Register from "../components/Register";
 import Login from "../components/Login";
-import Profile from "../components/Profile";
-import { useAuthApi } from "../hooks/api";
 import Main from "../pages/Main";
-import Product from "../components/Product";
 import CreateProduct from "../components/CreateProduct";
+
+import About from "../components/About";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicProtectedRoute from "./PublicProtectedRoute";
-import ProductMainPage from "../pages/ProductMainPage";
+import Layout from "../components/Layout";
+
+import { useAuthApi } from "../hooks/api";
 
 const AppRoutes = () => {
-    const { hydreadUser } = useAuthApi();
+  const { hydreadUser } = useAuthApi();
 
-    useEffect(() => {
-        (async () => {
-            try {
-                await hydreadUser();
-            } catch (error) {
-                console.log(error);
-            }
-        })();
-    }, []);
+  useEffect(() => {
+    const getUser = async () => {
+      try {
+        await hydreadUser();
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-    const router = createBrowserRouter([
+    getUser();
+  }, []);
+
+  const router = createBrowserRouter([
+    {
+      element: <ProtectedRoute />,
+      children: [
         {
-            element: <ProtectedRoute />,
-            children: [
-                {
-                    path: "/",
-                    element: <Main />,
-                },
-                {
-                    path: "/profile",
-                    element: <Profile />,
-                },
-                {
-                    path: "/product",
-                    element: <ProductMainPage/>,
-                },
-                {
-                    path: "/create-product",
-                    element: <CreateProduct />,
-                },
-            ],
+          element: <Layout />,
+          children: [
+            {
+              path: "/",
+              element: <Main />,
+            },
+            {
+              path: "/about",
+              element: <About />,
+            },
+            {
+              path: "/create-product",
+              element: <CreateProduct />,
+            },
+          ],
         },
+      ],
+    },
 
-        // =========================
-        // PUBLIC ROUTES
-        // =========================
+    {
+      element: <PublicProtectedRoute />,
+      children: [
         {
-            element: <PublicProtectedRoute />,
-            children: [
-                {
-                    path: "/login",
-                    element: <Login />,
-                },
-                {
-                    path: "/register",
-                    element: <Register />,
-                },
-            ],
+          path: "/login",
+          element: <Login />,
         },
-    ]);
+        {
+          path: "/register",
+          element: <Register />,
+        },
+      ],
+    },
+  ]);
 
-    return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />;
 };
 
 export default AppRoutes;
