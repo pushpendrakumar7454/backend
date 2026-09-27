@@ -11,6 +11,7 @@ import CreateProduct from "../components/CreateProduct";
 
 import ProtectedRoute from "./ProtectedRoute";
 import PublicProtectedRoute from "./PublicProtectedRoute";
+import ProductMainPage from "../pages/ProductMainPage";
 
 const AppRoutes = () => {
     const { hydreadUser } = useAuthApi();
@@ -39,7 +40,7 @@ const AppRoutes = () => {
                 },
                 {
                     path: "/product",
-                    element: <Product />,
+                    element: <ProductMainPage/>,
                 },
                 {
                     path: "/create-product",

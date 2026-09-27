@@ -3,6 +3,7 @@ import Header from "../components/Header";
 import ProductDetail from "../components/ProductDetail";
 import axios from "axios";
 import { useAuth } from "../context/authContext";
+import Product from "../components/Product";
 
 const Main = () => {
     
@@ -38,6 +39,8 @@ const Main = () => {
                         />
                     );
                 })}
+
+               
             </div>
         </div>
     );
