@@ -6,7 +6,6 @@ const upload=multer({
     storage,
     limits:{
         files:5,
-        fileSize:7*1024*1024
     }
 })
 

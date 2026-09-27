@@ -15,7 +15,7 @@ const ProductDetail = ({ product,setProducts }) => {
 
     const handleDelete = async(id) => {
          try {
-            const res=await axios.delete(`http://localhost:5173/api/produts/${id}`)
+            const res=await axios.delete(`http://localhost:5173/api/products/${id}`)
             setProducts((pre)=>pre.filter((p)=>p._id!==product))
             
             console.log(res)
