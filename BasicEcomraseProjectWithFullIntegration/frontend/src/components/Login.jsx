@@ -94,7 +94,7 @@ const Login = () => {
           {/* Login Button */}
           <button
             type="submit"
-            className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">
+            className="w-full bg-blue-600 cursor-pointer active:scale-95 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition duration-200">
             Login
           </button>
         </form>
@@ -102,7 +102,7 @@ const Login = () => {
         {/* Register */}
         <p className="text-center text-sm text-gray-500 mt-6">
           Don't have an account?{" "}
-          <span className="text-blue-600 font-semibold cursor-pointer hover:text-blue-700">
+          <span className="text-blue-600 active:scale-95 cursor-pointer font-semibold cursor-pointer hover:text-blue-700">
             Register
           </span>
         </p>
