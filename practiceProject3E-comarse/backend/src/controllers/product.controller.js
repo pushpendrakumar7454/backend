@@ -55,4 +55,56 @@ export const findALlProductController=async(req,res)=>{
         })
     }
 }
+
+export const unlistProductController=async(req,res)=>{
+   try {
+     
+    const {id}=req.params
+    const product=await productModel.findById(id)
+
+    if(!product){
+        return res.status(404).json({
+            message:"product not found"
+        })
+    }
+   
+    await productModel.findByIdAndUpdate(id,{published:false})
+
+     return res.status(200).json({
+            message:"product unpublished succefully",
+            
+           })
+
+   } catch (error) {
+    return res.status(500).json({
+        message:"internal server error"
+    })
+   }
+}
+
+export const listProductsController=async(req,res)=>{
+    try {
+        const{id}=req.params
+   
+        const product=await productModel.findById(id)
+        
+
+        if(!product){
+            return res.status(404).json({
+                message:"product not found"
+            })
+        }
+
+        await productModel.findByIdAndDelete(id,{published:true})
+
+        return res.status(200).json({
+            message:"product published succefully"
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
             
