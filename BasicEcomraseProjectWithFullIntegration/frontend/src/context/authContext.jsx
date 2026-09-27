@@ -23,6 +23,8 @@ const AuthContextProvider = ({ children }) => {
 
   const [updateData, setUpdateData] = useState(null);
   const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  
   return (
     <authContext.Provider
       value={{

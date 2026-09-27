@@ -4,24 +4,7 @@ import useApi from "../config/apiInstance";
 import { Navigate, Outlet } from "react-router";
 
 const ProtectedRoute = () => {
-    const { user, setUser } = useAuth();
-    const api = useApi();
-
-    const getData = async () => {
-        try {
-            const res = await api.get("/auth/me");
-
-            console.log("ME RESPONSE:", res.data);
-
-            setUser(res.data.data.user);
-        } catch (error) {
-            console.log("DATA:", error.response?.data);
-        }
-    };
-
-    useEffect(() => {
-        getData();
-    }, []);
+    const { user } = useAuth();
 
     if (!user) {
         return <Navigate to={"/login"} replace/>;

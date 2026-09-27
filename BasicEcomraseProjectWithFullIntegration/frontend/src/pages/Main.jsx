@@ -1,4 +1,4 @@
-import React, { useEffect} from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../components/Header";
 import ProductDetail from "../components/ProductDetail";
 import axios from "axios";
