@@ -1,6 +1,7 @@
 
 import axios from "axios";
 import React, { useState } from "react";
+import { useNavigate } from "react-router";
 
 const CreateProduct = () => {
   const [formData, setFormData] = useState({
@@ -13,7 +14,7 @@ const CreateProduct = () => {
   });
 
 
-
+    const navigate=useNavigate()
   const [image, setImage] = useState(null);
 
   const handleChange = (e) => {
@@ -68,6 +69,7 @@ const CreateProduct = () => {
     );
 
     console.log("PRODUCT RESPONSE:", res.data);
+    navigate("/header")
   } catch (error) {
     console.log("PRODUCT ERROR:", error.response?.data);
   }

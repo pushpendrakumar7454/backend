@@ -16,7 +16,7 @@ const ProductDetail = ({ product,setProducts }) => {
     const handleDelete = async(id) => {
          try {
             const res=await axios.delete(`http://localhost:5173/api/products/${id}`)
-            setProducts((pre)=>pre.filter((p)=>p._id!==product))
+            setProducts((pre)=>pre.filter((p)=>p._id!==product._id))
             
             console.log(res)
          } catch (error) {
@@ -86,7 +86,7 @@ const ProductDetail = ({ product,setProducts }) => {
                     <button
                         type="button"
                         onClick={()=>handleDelete(product._id)}
-                        className="w-1/2 rounded-xl border border-red-600 px-4 py-2.5 font-semibold text-red-600 transition duration-300 hover:bg-red-600 hover:text-white active:scale-95"
+                        className="w-1/2 active:scale-95 cursor-pointer rounded-xl border border-red-600 px-4 py-2.5 font-semibold text-red-600 transition duration-300 hover:bg-red-600 hover:text-white active:scale-95"
                     >
                         Delete
                     </button>
