@@ -42,10 +42,15 @@ const ProductDetail = ({ product }) => {
   return (
     <div className="group w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Product Image */}
-      
-      <div
-        onClick={() =>navigate(`/product/${product._id}`)}
 
+      <div
+        onClick={() =>
+          navigate("/product", {
+            state: {
+              product: product,
+            },
+          })
+        }
         className="relative h-80 w-full overflow-hidden bg-gray-100">
         <img
           src={product.images?.[0]}
