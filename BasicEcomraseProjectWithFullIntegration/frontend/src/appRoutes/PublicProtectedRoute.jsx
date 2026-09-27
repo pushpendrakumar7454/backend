@@ -23,7 +23,7 @@ const PublicProtectedRoute = () => {
     }, []);
 
     if (user) {
-        return <Navigate  to={"/header"} replace/>;
+        return <Navigate  to={"/"} replace/>;
     }
 
     return <Outlet/>

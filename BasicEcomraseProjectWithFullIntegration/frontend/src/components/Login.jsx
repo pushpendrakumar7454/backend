@@ -28,7 +28,7 @@ const Login = () => {
       console.log(res);
       setAccessToken(res.accessToken);
       setUser(res.data.user);
-      navigate("/header");
+      navigate("/");
     } catch (error) {
       console.log(error);
     }

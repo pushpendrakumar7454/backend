@@ -64,7 +64,7 @@ const CreateProduct = () => {
                 data
             );
 
-            
+
 
             console.log("UPDATE PRODUCT RESPONSE:", res.data);
         } else {
@@ -77,7 +77,7 @@ const CreateProduct = () => {
             console.log("PRODUCT RESPONSE:", res.data);
         }
 
-        navigate("/header");
+        navigate("/");
     } catch (error) {
         console.log("PRODUCT ERROR:", error.response?.data);
     }
