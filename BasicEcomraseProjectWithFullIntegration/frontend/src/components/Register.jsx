@@ -8,6 +8,7 @@ const Register = () => {
 
  
   const { setUser, setAccessToken,formValues,setFormValues } = useAuth();
+  
    const navigate= useNavigate()
  
   
