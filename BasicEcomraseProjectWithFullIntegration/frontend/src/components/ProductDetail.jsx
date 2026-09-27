@@ -44,11 +44,8 @@ const ProductDetail = ({ product }) => {
       {/* Product Image */}
       
       <div
-        onClick={() =>
-          navigate("/product", {
-            state: { product },
-          })
-        }
+        onClick={() =>navigate(`/product/${product._id}`)}
+
         className="relative h-80 w-full overflow-hidden bg-gray-100">
         <img
           src={product.images?.[0]}
