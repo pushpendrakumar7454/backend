@@ -42,6 +42,7 @@ const ProductDetail = ({ product }) => {
   return (
     <div className="group w-full max-w-sm overflow-hidden rounded-2xl bg-white shadow-md transition duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Product Image */}
+      
       <div
         onClick={() =>
           navigate("/product", {
