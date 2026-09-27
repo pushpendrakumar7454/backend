@@ -43,12 +43,33 @@ export const  createProductController=async(req,res)=>{
 
 export const findALlProductController=async(req,res)=>{
     try {
-        const product=await productModel.find()
+        const product=await productModel.find({published:true})
 
         return res.status(200).json({
             message:"find all product succefully",
             data:product
         })
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+
+export const listALlSellerProductController=async(req,res)=>{
+    try {
+        const product=await productModel.find()
+
+        if(!product){
+            return res.status(404).json({
+                message:"product not found"
+            })
+        }
+      return res.status(200).json({
+        message:"find all seller product",
+        data:product
+      })
+
     } catch (error) {
         return res.status(500).json({
             message:"internal server error"
