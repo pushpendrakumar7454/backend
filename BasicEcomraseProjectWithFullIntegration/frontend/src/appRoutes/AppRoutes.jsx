@@ -10,7 +10,9 @@ import Product from '../components/Product'
 import CreateProduct from '../components/CreateProduct'
 
 const AppRoutes = () => {
+   
      const {hydreadUser}=useAuthApi()
+
      useEffect(()=>{
         (async()=>{
             try {
