@@ -1,7 +1,7 @@
 import { Router } from "express";
-import authenticate from "../middleware/auth.middleware.js";
-import { createProductCoontroller, listALlProducts } from "../controllers/product.controllers.js";
-import {createProductValidator} from '../validator/product.validator.js'
+import authenticate, { authenticateSeller } from "../middleware/auth.middleware.js";
+import { createProductCoontroller, listALlProducts, listAllProducttoSeller, listProduct, unlistProduct } from "../controllers/product.controllers.js";
+import {createProductValidator, listProductValidator, unlistProductValidator} from '../validator/product.validator.js'
 
 
 import upload from "../config/multer.js";
@@ -9,14 +9,7 @@ import upload from "../config/multer.js";
 
 const router = Router();
 
-router.post("/",authenticate,(req,res,next)=>{
-    if(req.user.role!=='seller'){
-        return res.status(403).json({
-            message:"unothorizes user do not creeated a product"
-        })
-    }
-    next()
-},upload.array('images'),(req,res,next)=>{
+router.post("/",authenticate,authenticateSeller,upload.array('images'),(req,res,next)=>{
     req.body.sizes=JSON.parse(req.body.sizes)
     req.body.price=JSON.parse(req.body.price)
     next()
@@ -24,5 +17,7 @@ router.post("/",authenticate,(req,res,next)=>{
 
 
 router.get("/",authenticate,listALlProducts)
-
+router.get("/seller",authenticate,authenticateSeller,listAllProducttoSeller)
+router.patch("/unlist/:id",authenticate,authenticateSeller,unlistProductValidator,unlistProduct)
+router.patch("/list/:id",authenticate,authenticateSeller,listProductValidator,listProduct)
 export default router;

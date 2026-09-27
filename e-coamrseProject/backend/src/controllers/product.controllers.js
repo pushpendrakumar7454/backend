@@ -47,7 +47,7 @@ export const createProductCoontroller = async (req, res) => {
 
 export const listALlProducts=async(req,res)=>{
     try {
-        const product=await productModel.find()
+        const product=await productModel.find({published:true})
 
 
         return res.status(200).json({
@@ -62,3 +62,77 @@ export const listALlProducts=async(req,res)=>{
         })
     }
 }
+
+
+export const listAllProducttoSeller=async(req,res)=>{
+  try {
+     const products=await productModel.find({})
+     return res.status(200).json({
+      message:"all products feached succufully",
+      data:{
+        products
+      }
+     })
+  } catch (error) {
+    return res.status(500).json({
+      message:"internal server error"
+    })
+  }
+} 
+
+export const unlistProduct=async(req,res)=>{
+    try{
+      
+       const {id}=req.params
+
+       const product=await productModel.findById(id)
+
+       if(!product){
+        return res.status(404).json({
+          message:"product not found by id"
+        })
+       }
+
+       await productModel.findByIdAndUpdate(id,{published:false})
+
+       return res.status(200).json({
+        message:"product unpublished succefully",
+        
+       })
+
+    }catch(error){
+      return res.status(500).json({
+        message:"internal server error"
+      })
+    }
+}
+
+
+export const listProduct=async(req,res)=>{
+    try{
+      
+       const {id}=req.params
+
+       const product=await productModel.findById(id)
+
+       if(!product){
+        return res.status(404).json({
+          message:"product not found by id"
+        })
+       }
+
+       await productModel.findByIdAndUpdate(id,{published:true})
+
+       return res.status(200).json({
+        message:"product published succefully",
+        
+       })
+
+    }catch(error){
+      return res.status(500).json({
+        message:"internal server error"
+      })
+    }
+}
+
+

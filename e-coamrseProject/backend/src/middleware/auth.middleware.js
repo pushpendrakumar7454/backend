@@ -32,7 +32,7 @@ export default authenticate;
 export const authenticateSeller=async(req,res,next)=>{
   if(req.user.role!=="seller"){
     return res.status(403).json({
-      message:"unauthoerz user"
+      message:"user is not unauthorized to do this action"
     })
   }
   next()
