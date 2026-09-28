@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 
 const apiInstance = axios.create({
-    baseURL: "https://backend-iuwx.vercel.app/api",
+    baseURL: "https://basic-e-comarse-wurn.onrender.com/api",
     withCredentials: true,
 });
 
@@ -38,13 +38,16 @@ const useApi = () => {
     );
 
     apiInstance.interceptors.response.use(
-        (response) => response,
+        (response) => {
+            return response;
+        },
 
         async (error) => {
             const originalRequest = error.config;
 
             if (
                 error.response?.status === 401 &&
+                originalRequest &&
                 !originalRequest._retry
             ) {
                 originalRequest._retry = true;
@@ -67,7 +70,7 @@ const useApi = () => {
 
                 try {
                     const res = await axios.post(
-                        "https://backend-iuwx.vercel.app/api/auth/refresh",
+                        "https://basic-e-comarse-wurn.onrender.com/api/auth/refresh",
                         {},
                         {
                             withCredentials: true,
@@ -84,12 +87,10 @@ const useApi = () => {
                         `Bearer ${newAccessToken}`;
 
                     return apiInstance(originalRequest);
-
                 } catch (refreshError) {
                     processQueue(refreshError, null);
 
                     return Promise.reject(refreshError);
-
                 } finally {
                     isRefreshing = false;
                 }
