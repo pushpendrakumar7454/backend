@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 
 const apiInstance = axios.create({
-    baseURL: "https://basic-e-comarse-wurn.onrender.com/api",
+    baseURL: "https://backend-iuwx.vercel.app/api",
     withCredentials: true,
 });
 
@@ -67,7 +67,7 @@ const useApi = () => {
 
                 try {
                     const res = await axios.post(
-                        "https://basic-e-comarse-wurn.onrender.com/api/auth/refresh",
+                        "https://backend-iuwx.vercel.app/api/auth/refresh",
                         {},
                         {
                             withCredentials: true,

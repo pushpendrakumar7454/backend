@@ -8,7 +8,7 @@ export default defineConfig({
   server:{
     proxy:{
       "/api":{
-        target:"https://vercel.com/pushpendrakumar7454s-projects/backend-iuwx",
+        target:"https://basic-e-comarse-wurn.onrender.com",
         changeOrigin:true
       }
     }
