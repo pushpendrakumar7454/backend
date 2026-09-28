@@ -1,12 +1,11 @@
-
+import axios from "axios";
 import React from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/authContext";
-import useApi from "../config/apiInstance";
 
 const ProductDetail = ({ product }) => {
-  const { setProducts, setUpdateData, setFormData } = useAuth();
-  const api=useApi()
+  const { products, setProducts, setUpdateData, setFormData } = useAuth();
+
   const handleUpdate = (product) => {
     console.log("UPDATE PRODUCT:", product);
 
@@ -26,8 +25,8 @@ const ProductDetail = ({ product }) => {
 
   const handleDelete = async (id) => {
     try {
-      const res = await api.delete(
-        `/products/${id}`,
+      const res = await axios.delete(
+        `http://localhost:5173/api/products/${id}`,
       );
       setProducts((pre) => pre.filter((p) => p._id !== product._id));
 

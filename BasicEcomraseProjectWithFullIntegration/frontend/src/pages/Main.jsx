@@ -1,16 +1,16 @@
 
 import React, { useEffect } from "react";
 import ProductDetail from "../components/ProductDetail";
+import axios from "axios";
 import { useAuth } from "../context/authContext";
-import useApi from "../config/apiInstance";
 
 const Main = () => {
   const { products, setProducts } = useAuth();
-   const api=useApi()
+
   const getData = async () => {
     try {
-      const res = await api.get(
-        "/products/find"
+      const res = await axios.get(
+        "http://localhost:5173/api/products/find"
       );
 
       setProducts(res.data.data.products);
