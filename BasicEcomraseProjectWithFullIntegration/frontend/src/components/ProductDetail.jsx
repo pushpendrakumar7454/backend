@@ -27,7 +27,7 @@ const ProductDetail = ({ product }) => {
   const handleDelete = async (id) => {
     try {
       const res = await api.delete(
-        `/api/products/${id}`,
+        `/products/${id}`,
       );
       setProducts((pre) => pre.filter((p) => p._id !== product._id));
 

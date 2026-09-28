@@ -59,12 +59,12 @@ const CreateProduct = () => {
 
       if (updateData) {
         // UPDATE PRODUCT
-        const res = await api.put(`/api/products/${updateData}`, data);
+        const res = await api.put(`/products/${updateData}`, data);
 
         console.log("UPDATE PRODUCT RESPONSE:", res.data);
       } else {
         // CREATE PRODUCT
-        const res = await api.post("/api/products", data);
+        const res = await api.post("/products", data);
 
         console.log("PRODUCT RESPONSE:", res.data);
       }
