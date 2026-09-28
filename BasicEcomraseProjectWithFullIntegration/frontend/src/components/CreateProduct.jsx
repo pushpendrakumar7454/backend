@@ -1,14 +1,14 @@
-
-import axios from "axios";
 import React, { useState } from "react";
 import { useNavigate } from "react-router";
 import { useAuth } from "../context/authContext";
+import useApi from "../config/apiInstance";
 
 const CreateProduct = () => {
- const {formData,setFormData,updateData}=useAuth()
+  const { formData, setFormData, updateData } = useAuth();
 
+  const api = useApi();
 
-    const navigate=useNavigate()
+  const navigate = useNavigate();
   const [image, setImage] = useState(null);
 
   const handleChange = (e) => {
@@ -28,72 +28,59 @@ const CreateProduct = () => {
     e.preventDefault();
 
     try {
-        const data = new FormData();
+      const data = new FormData();
 
-        data.append("title", formData.title);
-        data.append("description", formData.description);
+      data.append("title", formData.title);
+      data.append("description", formData.description);
 
-        data.append(
-            "price",
-            JSON.stringify({
-                amount: formData.price,
-                currency: formData.currency,
-            })
-        );
+      data.append(
+        "price",
+        JSON.stringify({
+          amount: formData.price,
+          currency: formData.currency,
+        }),
+      );
 
-        data.append(
-            "sizes",
-            JSON.stringify([
-                {
-                    size: formData.size,
-                    stock: formData.stock,
-                },
-            ])
-        );
+      data.append(
+        "sizes",
+        JSON.stringify([
+          {
+            size: formData.size,
+            stock: formData.stock,
+          },
+        ]),
+      );
 
-        if (image) {
-            data.append("images", image);
-        }
+      if (image) {
+        data.append("images", image);
+      }
 
-        console.log("Sending Product Data");
+      console.log("Sending Product Data");
 
-        if (updateData) {
-            // UPDATE PRODUCT
-            const res = await axios.put(
-                `http://localhost:5173/api/products/${updateData}`,
-                data
-            );
+      if (updateData) {
+        // UPDATE PRODUCT
+        const res = await api.put(`/api/products/${updateData}`, data);
 
+        console.log("UPDATE PRODUCT RESPONSE:", res.data);
+      } else {
+        // CREATE PRODUCT
+        const res = await api.post("/api/products", data);
 
+        console.log("PRODUCT RESPONSE:", res.data);
+      }
 
-            console.log("UPDATE PRODUCT RESPONSE:", res.data);
-        } else {
-            // CREATE PRODUCT
-            const res = await axios.post(
-                "http://localhost:5173/api/products",
-                data
-            );
-
-            console.log("PRODUCT RESPONSE:", res.data);
-        }
-
-        navigate("/");
+      navigate("/");
     } catch (error) {
-        console.log("PRODUCT ERROR:", error.response?.data);
+      console.log("PRODUCT ERROR:", error.response?.data);
     }
-};
-
-
+  };
 
   return (
     <div className="min-h-screen bg-gray-100 px-4 py-8 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-3xl">
-
         {/* Heading */}
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">
-            Create Product
-          </h1>
+          <h1 className="text-3xl font-bold text-gray-900">Create Product</h1>
 
           <p className="mt-2 text-sm text-gray-500">
             Add a new product to your store
@@ -103,9 +90,7 @@ const CreateProduct = () => {
         {/* Form */}
         <form
           onSubmit={handleSubmit}
-          className="rounded-2xl bg-white p-6 shadow-sm sm:p-8"
-        >
-
+          className="rounded-2xl bg-white p-6 shadow-sm sm:p-8">
           {/* Title */}
           <div className="mb-6">
             <label className="mb-2 block text-sm font-semibold text-gray-700">
@@ -157,9 +142,7 @@ const CreateProduct = () => {
 
             {image && (
               <div className="mt-3">
-                <p className="text-sm text-gray-500">
-                  Selected: {image.name}
-                </p>
+                <p className="text-sm text-gray-500">Selected: {image.name}</p>
 
                 <img
                   src={URL.createObjectURL(image)}
@@ -172,12 +155,9 @@ const CreateProduct = () => {
 
           {/* Price */}
           <div className="mb-6">
-            <h2 className="mb-4 text-lg font-semibold text-gray-900">
-              Price
-            </h2>
+            <h2 className="mb-4 text-lg font-semibold text-gray-900">Price</h2>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
               {/* Amount */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -205,14 +185,12 @@ const CreateProduct = () => {
                   name="currency"
                   value={formData.currency}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-black"
-                >
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-black">
                   <option value="INR">INR</option>
                   <option value="USD">USD</option>
                   <option value="EUR">EUR</option>
                 </select>
               </div>
-
             </div>
           </div>
 
@@ -223,7 +201,6 @@ const CreateProduct = () => {
             </h2>
 
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-
               {/* Size */}
               <div>
                 <label className="mb-2 block text-sm font-medium text-gray-700">
@@ -234,8 +211,7 @@ const CreateProduct = () => {
                   name="size"
                   value={formData.size}
                   onChange={handleChange}
-                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-black"
-                >
+                  className="w-full rounded-lg border border-gray-300 bg-white px-4 py-3 outline-none focus:border-black">
                   <option value="S">S</option>
                   <option value="M">M</option>
                   <option value="L">L</option>
@@ -260,18 +236,15 @@ const CreateProduct = () => {
                   className="w-full rounded-lg border border-gray-300 px-4 py-3 outline-none focus:border-black"
                 />
               </div>
-
             </div>
           </div>
 
           {/* Submit */}
           <button
             type="submit"
-            className="w-full cursor-pointer rounded-lg bg-black px-6 py-3.5 font-semibold text-white transition hover:bg-gray-800 active:scale-95"
-          >
+            className="w-full cursor-pointer rounded-lg bg-black px-6 py-3.5 font-semibold text-white transition hover:bg-gray-800 active:scale-95">
             Create Product
           </button>
-
         </form>
       </div>
     </div>
@@ -279,4 +252,3 @@ const CreateProduct = () => {
 };
 
 export default CreateProduct;
-

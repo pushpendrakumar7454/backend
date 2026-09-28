@@ -1,22 +1,17 @@
-import React, { useState } from "react";
 import { useAuth } from "../context/authContext";
 import { useNavigate } from "react-router";
 import { useAuthApi } from "../hooks/api";
 
-
 const Register = () => {
+  const { setUser, setAccessToken, formValues, setFormValues } = useAuth();
 
- 
-  const { setUser, setAccessToken,formValues,setFormValues } = useAuth();
-  
-   const navigate= useNavigate()
- 
-  
+  const navigate = useNavigate();
+
   const handleChange = (e) => {
     setFormValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-   const {registerApi}=useAuthApi()
+  const { registerApi } = useAuthApi();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,13 +20,11 @@ const Register = () => {
       const res = await registerApi(formValues);
       setAccessToken(res.accessToken);
       setUser(res.data.user);
-      navigate("/login")
+      navigate("/login");
       console.log(res.accessToken);
-
     } catch (error) {
       console.log(error);
     }
-
   };
 
   return (

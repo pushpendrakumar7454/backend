@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 
 const apiInstance = axios.create({
-    baseURL: "http://localhost:5173/api",
+    baseURL: "https://basic-e-comarse-wurn.onrender.com/api",
     withCredentials: true,
 });
 
@@ -67,7 +67,7 @@ const useApi = () => {
 
                 try {
                     const res = await axios.post(
-                        "http://localhost:5173/api/auth/refresh",
+                        "https://basic-e-comarse-wurn.onrender.com/api/auth/refresh",
                         {},
                         {
                             withCredentials: true,
