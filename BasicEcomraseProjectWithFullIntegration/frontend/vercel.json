@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://basic-e-comarse-wurn.onrender.com/api/:path*"
-    }
-  ]
-}

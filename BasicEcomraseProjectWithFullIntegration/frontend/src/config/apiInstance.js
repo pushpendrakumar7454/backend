@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 
 const apiInstance = axios.create({
-    baseURL: "https://backend-iuwx.vercel.app/api",
+    baseURL: "http://localhost:5173/api",
     withCredentials: true,
 });
 
@@ -67,7 +67,7 @@ const useApi = () => {
 
                 try {
                     const res = await axios.post(
-                        "https://backend-iuwx.vercel.app/api/auth/refresh",
+                        "http://localhost:5173/api/auth/refresh",
                         {},
                         {
                             withCredentials: true,
