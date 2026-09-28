@@ -8,12 +8,5 @@ export default defineConfig({
         tailwindcss(),
     ],
 
-    server: {
-        proxy: {
-            "/api": {
-                target: "https://basic-e-comarse-wurn.onrender.com",
-                changeOrigin: true,
-            },
-        },
-    },
+   
 });
