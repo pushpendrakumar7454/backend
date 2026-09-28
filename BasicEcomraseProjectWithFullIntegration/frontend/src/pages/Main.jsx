@@ -10,7 +10,7 @@ const Main = () => {
   const getData = async () => {
     try {
       const res = await api.get(
-        "/api/products/find"
+        "/products/find"
       );
 
       setProducts(res.data.data.products);
