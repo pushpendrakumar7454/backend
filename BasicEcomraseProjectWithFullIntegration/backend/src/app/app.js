@@ -11,6 +11,9 @@ app.use(cookieParser())
 
 app.use("/api/auth",authRouter)
 app.use("/api/products",productRouter)
+app.get("/api/all",(req,res)=>{
+    res.send("products")
+})
 
 
 
