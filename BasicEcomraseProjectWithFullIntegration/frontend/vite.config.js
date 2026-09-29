@@ -8,7 +8,7 @@ export default defineConfig({
   server:{
     proxy:{
       "/api":{
-        target:"http://localhost:3000",
+        target:"https://backend-2-icq9.onrender.com",
         changeOrigin:true
       }
     }
