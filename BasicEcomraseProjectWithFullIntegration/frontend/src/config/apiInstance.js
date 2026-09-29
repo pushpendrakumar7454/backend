@@ -2,104 +2,101 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 
 const apiInstance = axios.create({
-    baseURL: "https://backend-7v94.vercel.app/api",
-    withCredentials: true,
+  baseURL: "/api",
+  withCredentials: true,
 });
 
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-    failedQueue.forEach((promise) => {
-        if (error) {
-            promise.reject(error);
-        } else {
-            promise.resolve(token);
-        }
-    });
+  failedQueue.forEach((promise) => {
+    if (error) {
+      promise.reject(error);
+    } else {
+      promise.resolve(token);
+    }
+  });
 
-    failedQueue = [];
+  failedQueue = [];
 };
 
 const useApi = () => {
-    const { accessToken, setAccessToken } = useAuth();
+  const { accessToken, setAccessToken } = useAuth();
 
-    apiInstance.interceptors.request.use(
-        (config) => {
-            if (accessToken) {
-                config.headers.Authorization = `Bearer ${accessToken}`;
-            }
+  apiInstance.interceptors.request.use(
+    (config) => {
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
+      }
 
-            return config;
-        },
-        (error) => {
-            return Promise.reject(error);
+      return config;
+    },
+    (error) => {
+      return Promise.reject(error);
+    }
+  );
+
+  apiInstance.interceptors.response.use(
+    (response) => response,
+
+    async (error) => {
+      const originalRequest = error.config;
+
+      if (
+        error.response?.status === 401 &&
+        !originalRequest._retry
+      ) {
+        originalRequest._retry = true;
+
+        if (isRefreshing) {
+          return new Promise((resolve, reject) => {
+            failedQueue.push({
+              resolve,
+              reject,
+            });
+          }).then((token) => {
+            originalRequest.headers.Authorization =
+              `Bearer ${token}`;
+
+            return apiInstance(originalRequest);
+          });
         }
-    );
 
-    apiInstance.interceptors.response.use(
-        (response) => response,
+        isRefreshing = true;
 
-        async (error) => {
-            const originalRequest = error.config;
+        try {
+          const res = await apiInstance.post(
+            "/auth/refresh",
+            {}
+          );
 
-            if (
-                error.response?.status === 401 &&
-                !originalRequest._retry
-            ) {
-                originalRequest._retry = true;
+          const newAccessToken = res.data.accessToken;
 
-                if (isRefreshing) {
-                    return new Promise((resolve, reject) => {
-                        failedQueue.push({
-                            resolve,
-                            reject,
-                        });
-                    }).then((token) => {
-                        originalRequest.headers.Authorization =
-                            `Bearer ${token}`;
+          setAccessToken(newAccessToken);
 
-                        return apiInstance(originalRequest);
-                    });
-                }
+          processQueue(null, newAccessToken);
 
-                isRefreshing = true;
+          originalRequest.headers.Authorization =
+            `Bearer ${newAccessToken}`;
 
-                try {
-                    const res = await axios.post(
-                        "https://backend-7v94.vercel.app/api/auth/refresh",
-                        {},
-                        {
-                            withCredentials: true,
-                        }
-                    );
+          return apiInstance(originalRequest);
 
-                    const newAccessToken = res.data.accessToken;
+        } catch (refreshError) {
+          processQueue(refreshError, null);
 
-                    setAccessToken(newAccessToken);
+          return Promise.reject(refreshError);
 
-                    processQueue(null, newAccessToken);
-
-                    originalRequest.headers.Authorization =
-                        `Bearer ${newAccessToken}`;
-
-                    return apiInstance(originalRequest);
-
-                } catch (refreshError) {
-                    processQueue(refreshError, null);
-
-                    return Promise.reject(refreshError);
-
-                } finally {
-                    isRefreshing = false;
-                }
-            }
-
-            return Promise.reject(error);
+        } finally {
+          isRefreshing = false;
         }
-    );
+      }
 
-    return apiInstance;
+      return Promise.reject(error);
+    }
+  );
+
+  return apiInstance;
 };
 
 export default useApi;

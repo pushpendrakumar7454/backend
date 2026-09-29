@@ -1,44 +1,32 @@
-import express from 'express'
-import cookieParser from 'cookie-parser'
-import cors from 'cors'
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
 
-import authRouter from '../router/auth.router.js'
-import productRouter from '../router/product.router.js'
+import authRouter from "../router/auth.router.js";
+import productRouter from "../router/product.router.js";
 
-const app = express()
+const app = express();
 
 const allowedOrigins = [
-    "http://localhost:5173",
-    "https://basic-e-comarse-p6dq.vercel.app"
-]
+  "http://localhost:5173",
+  "https://basic-e-comarse-p6dq.vercel.app"
+];
 
 app.use(
-    cors({
-        origin: function (origin, callback) {
+  cors({
+    origin: allowedOrigins,
+    credentials: true
+  })
+);
 
-            // Postman / server-to-server requests
-            if (!origin) {
-                return callback(null, true)
-            }
+app.use(express.json());
+app.use(cookieParser());
 
-            if (allowedOrigins.includes(origin)) {
-                return callback(null, true)
-            }
-
-            return callback(new Error("Not allowed by CORS"))
-        },
-        credentials: true
-    })
-)
-
-app.use(express.json())
-app.use(cookieParser())
-
-app.use("/api/auth", authRouter)
-app.use("/api/products", productRouter)
+app.use("/api/auth", authRouter);
+app.use("/api/products", productRouter);
 
 app.get("/api/all", (req, res) => {
-    res.send("products")
-})
+  res.send("products");
+});
 
-export default app
+export default app;
