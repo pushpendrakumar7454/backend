@@ -2,7 +2,7 @@ import axios from "axios";
 import { useAuth } from "../context/authContext";
 
 const apiInstance = axios.create({
-  baseURL: "/api",
+  baseURL: "https://backend-2-icq9.onrender.com/api",
   withCredentials: true,
 });
 
