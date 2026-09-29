@@ -4,8 +4,8 @@ import { createBrowserRouter, RouterProvider } from "react-router";
 import Register from "../components/Register";
 import Login from "../components/Login";
 import Main from "../pages/Main";
+import Product from "../pages/Product";
 import CreateProduct from "../components/CreateProduct";
-
 import About from "../components/About";
 
 import ProtectedRoute from "./ProtectedRoute";
@@ -40,13 +40,20 @@ const AppRoutes = () => {
               path: "/",
               element: <Main />,
             },
+
             {
               path: "/about",
               element: <About />,
             },
+
             {
               path: "/create-product",
               element: <CreateProduct />,
+            },
+
+            {
+              path: "/product",
+              element: <Product />,
             },
           ],
         },
@@ -60,6 +67,7 @@ const AppRoutes = () => {
           path: "/login",
           element: <Login />,
         },
+
         {
           path: "/register",
           element: <Register />,
