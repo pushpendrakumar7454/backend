@@ -38,14 +38,16 @@ const useApi = () => {
   );
 
   apiInstance.interceptors.response.use(
-    (response) => response,
+    (response) => {
+      return response;
+    },
 
     async (error) => {
       const originalRequest = error.config;
 
       if (
         error.response?.status === 401 &&
-        !originalRequest._retry
+        !originalRequest?._retry
       ) {
         originalRequest._retry = true;
 
@@ -81,12 +83,10 @@ const useApi = () => {
             `Bearer ${newAccessToken}`;
 
           return apiInstance(originalRequest);
-
         } catch (refreshError) {
           processQueue(refreshError, null);
 
           return Promise.reject(refreshError);
-
         } finally {
           isRefreshing = false;
         }
