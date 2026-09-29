@@ -1,102 +1,275 @@
+
 import axios from "axios";
 import { useAuth } from "../context/authContext";
+import { useEffect } from "react";
 
 const apiInstance = axios.create({
-  baseURL: "https://backend-2-icq9.onrender.com/api",
-  withCredentials: true,
+    baseURL: "https://backend-2-icq9.onrender.com/api",
+    withCredentials: true,
 });
 
 let isRefreshing = false;
 let failedQueue = [];
 
 const processQueue = (error, token = null) => {
-  failedQueue.forEach((promise) => {
-    if (error) {
-      promise.reject(error);
-    } else {
-      promise.resolve(token);
-    }
-  });
+    failedQueue.forEach((promise) => {
+        if (error) {
+            promise.reject(error);
+        } else {
+            promise.resolve(token);
+        }
+    });
 
-  failedQueue = [];
+    failedQueue = [];
 };
 
 const useApi = () => {
-  const { accessToken, setAccessToken } = useAuth();
 
-  apiInstance.interceptors.request.use(
-    (config) => {
-      if (accessToken) {
-        config.headers.Authorization = `Bearer ${accessToken}`;
-      }
+    const {
+        accessToken,
+        setAccessToken,
+    } = useAuth();
 
-      return config;
-    },
-    (error) => {
-      return Promise.reject(error);
-    }
-  );
+    useEffect(() => {
 
-  apiInstance.interceptors.response.use(
-    (response) => {
-      return response;
-    },
+        // =========================
+        // REQUEST INTERCEPTOR
+        // =========================
 
-    async (error) => {
-      const originalRequest = error.config;
+        const requestInterceptor =
+            apiInstance.interceptors.request.use(
+                (config) => {
 
-      if (
-        error.response?.status === 401 &&
-        !originalRequest?._retry
-      ) {
-        originalRequest._retry = true;
+                    if (accessToken) {
+                        config.headers.Authorization =
+                            `Bearer ${accessToken}`;
+                    }
 
-        if (isRefreshing) {
-          return new Promise((resolve, reject) => {
-            failedQueue.push({
-              resolve,
-              reject,
-            });
-          }).then((token) => {
-            originalRequest.headers.Authorization =
-              `Bearer ${token}`;
+                    return config;
+                },
 
-            return apiInstance(originalRequest);
-          });
-        }
+                (error) => {
+                    return Promise.reject(error);
+                }
+            );
 
-        isRefreshing = true;
 
-        try {
-          const res = await apiInstance.post(
-            "/auth/refresh",
-            {}
-          );
+        // =========================
+        // RESPONSE INTERCEPTOR
+        // =========================
 
-          const newAccessToken = res.data.accessToken;
+        const responseInterceptor =
+            apiInstance.interceptors.response.use(
 
-          setAccessToken(newAccessToken);
+                (response) => {
+                    return response;
+                },
 
-          processQueue(null, newAccessToken);
+                async (error) => {
 
-          originalRequest.headers.Authorization =
-            `Bearer ${newAccessToken}`;
+                    const originalRequest = error.config;
 
-          return apiInstance(originalRequest);
-        } catch (refreshError) {
-          processQueue(refreshError, null);
+                    // =========================
+                    // CHECK 401
+                    // =========================
 
-          return Promise.reject(refreshError);
-        } finally {
-          isRefreshing = false;
-        }
-      }
+                    if (
+                        error.response?.status === 401 &&
+                        originalRequest &&
+                        !originalRequest._retry
+                    ) {
 
-      return Promise.reject(error);
-    }
-  );
+                        /*
+                         * Agar request already refresh endpoint hai,
+                         * to refresh ko dobara refresh mat karo.
+                         */
 
-  return apiInstance;
+                        if (
+                            originalRequest.url?.includes(
+                                "/auth/refresh"
+                            )
+                        ) {
+                            return Promise.reject(error);
+                        }
+
+                        originalRequest._retry = true;
+
+
+                        // =========================
+                        // ALREADY REFRESHING
+                        // =========================
+
+                        if (isRefreshing) {
+
+                            return new Promise(
+                                (resolve, reject) => {
+
+                                    failedQueue.push({
+                                        resolve,
+                                        reject,
+                                    });
+
+                                }
+                            ).then((token) => {
+
+                                originalRequest.headers.Authorization =
+                                    `Bearer ${token}`;
+
+                                return apiInstance(
+                                    originalRequest
+                                );
+
+                            });
+                        }
+
+
+                        // =========================
+                        // START REFRESH
+                        // =========================
+
+                        isRefreshing = true;
+
+                        try {
+
+                            console.log(
+                                "Access token expired. Refreshing..."
+                            );
+
+                            /*
+                             * refreshToken HttpOnly cookie me hai.
+                             *
+                             * withCredentials: true ki wajah se
+                             * browser cookie automatically send karega.
+                             */
+
+                            const res =
+                                await apiInstance.post(
+                                    "/auth/refresh",
+                                    {}
+                                );
+
+
+                            console.log(
+                                "REFRESH RESPONSE:",
+                                res.data
+                            );
+
+
+                            /*
+                             * Tumhare backend ka response:
+                             *
+                             * {
+                             *   message: "refresh token roteted",
+                             *   accessToken: "...",
+                             *   data: {
+                             *      user: {...}
+                             *   }
+                             * }
+                             */
+
+                            const newAccessToken =
+                                res.data.accessToken;
+
+
+                            if (!newAccessToken) {
+
+                                throw new Error(
+                                    "New access token not received"
+                                );
+                            }
+
+
+                            // =========================
+                            // SAVE NEW ACCESS TOKEN
+                            // =========================
+
+                            setAccessToken(
+                                newAccessToken
+                            );
+
+
+                            // =========================
+                            // PROCESS WAITING REQUESTS
+                            // =========================
+
+                            processQueue(
+                                null,
+                                newAccessToken
+                            );
+
+
+                            // =========================
+                            // RETRY ORIGINAL REQUEST
+                            // =========================
+
+                            originalRequest.headers.Authorization =
+                                `Bearer ${newAccessToken}`;
+
+
+                            return apiInstance(
+                                originalRequest
+                            );
+
+                        } catch (refreshError) {
+
+                            console.log(
+                                "REFRESH ERROR:",
+                                refreshError.response?.data ||
+                                refreshError.message
+                            );
+
+
+                            // Waiting requests ko reject karo
+                            processQueue(
+                                refreshError,
+                                null
+                            );
+
+
+                            // Access token remove
+                            setAccessToken(null);
+
+
+                            return Promise.reject(
+                                refreshError
+                            );
+
+                        } finally {
+
+                            isRefreshing = false;
+                        }
+                    }
+
+
+                    // =========================
+                    // OTHER ERRORS
+                    // =========================
+
+                    return Promise.reject(error);
+                }
+            );
+
+
+        // =========================
+        // CLEANUP INTERCEPTORS
+        // =========================
+
+        return () => {
+
+            apiInstance.interceptors.request.eject(
+                requestInterceptor
+            );
+
+            apiInstance.interceptors.response.eject(
+                responseInterceptor
+            );
+        };
+
+    }, [accessToken, setAccessToken]);
+
+
+    return apiInstance;
 };
 
 export default useApi;
+
