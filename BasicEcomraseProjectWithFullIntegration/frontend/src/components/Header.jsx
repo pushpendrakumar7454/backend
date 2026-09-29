@@ -29,7 +29,7 @@ const Header = () => {
 
                         <div>
                             <div className="text-xl font-extrabold tracking-tight text-gray-900">
-                                E-Shop
+                                E-comrase-Shop
                             </div>
 
                             <p className="hidden text-[11px] font-medium text-gray-400 sm:block">
