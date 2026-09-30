@@ -29,7 +29,7 @@ export const authRegisterController=async(req,res)=>{
 
         await authModel.findByIdAndUpdate(user._id,{refreshToken})
 
-        return res.status({
+        return res.status(201).json({
             message:"user register succesfully",
             data:{
                 accessToken,
@@ -44,6 +44,7 @@ export const authRegisterController=async(req,res)=>{
 
         
     } catch (error) {
+        console.log(error)
         return res.status(500).json({
             message:"internal server error"
         })
