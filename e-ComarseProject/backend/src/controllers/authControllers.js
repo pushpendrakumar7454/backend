@@ -50,3 +50,5 @@ export const authRegisterController=async(req,res)=>{
         })
     }
 }
+
+

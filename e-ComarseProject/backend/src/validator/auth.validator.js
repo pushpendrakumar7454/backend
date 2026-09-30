@@ -36,3 +36,30 @@ export const registerValidator=[
         next()
     }
 ]
+
+
+export const loginValidator=[
+    body("email")
+    .exists().withMessage("email is required").bail()
+    .isEmail().withMessage("please enter a valid enter").bail()
+    .isString().withMessage("emeail must be string")
+    .trim(),
+
+    body("password")
+    .exists().withMessage("password is required").bail()
+    .isString().withMessage("password is string").bail()
+    .trim()
+    .isLength({min:6}).withMessage("password must bee at reast 6 character"),
+
+    (req,res,next)=>{
+        const errors=validationResult(req)
+
+        if(!errors.isEmpty()){
+            return res.status(400).json({
+                message:"invalid request",
+                errors:errors.array()
+            })
+        }
+        next()
+    }
+]
