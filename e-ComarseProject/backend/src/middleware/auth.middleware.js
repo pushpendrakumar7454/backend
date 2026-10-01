@@ -3,15 +3,25 @@ import { readAccessToken } from "../utils/auth.js"
 export  const authenticate=async(req,res,next)=>{
     try {
         
-          const accessToken = req.headers.authorization.split(" ")[1];
+          const authorization = req.headers.authorization
 
-        if(!accessToken){
+          if(!authorization){
             return res.status(404).json({
-                message:"accessToken not found"
+                messae:"Authorization header not found"
+            })
+          }
+
+          const accessToken=authorization.split(" ")[1];
+
+
+          const decoded=readAccessToken(accessToken)
+
+        if(!decoded){
+            return res.status(401).json({
+                message:"invalid access token"
             })
         }
 
-        const decoded=readAccessToken(accessToken)
        req.user=decoded
        next()        
 
