@@ -1,6 +1,6 @@
 import {body,validationResult} from 'express-validator'
 
-const createProductValidator=[
+export const createProductValidator=[
     body("title")
     .exists().withMessage("title is required").bail()
     .isString().withMessage("title must be strinng").bail()
