@@ -80,42 +80,42 @@ export const deleteProductController=async(req,res)=>{
     }
 }
 
-
 export const updateProductController=async(req,res)=>{
     try {
-         
+        
    const {id}=req.params
 
-    const {title,description,category,brand,price,sizes}=req.body
-    const updateData={}
+   const {title,description,brand,category,sizes,price}=req.body
 
-    if(title!=="undefined"){
-        updateData.title=title
-    }
+   const updateData={}
 
-    if(description!=="undefined"){
-        updateData.description=description
-    }
+   if(title!=="undefined"){
+     updateData.title=title
+   }
 
-    if(brand!=="undefined"){
-        updataData.brand=brand
-    }
+   if(description!=="undefined"){
+    updateData.description=description
+   }
 
-    if(category!=="undefined"){
-        updateData.category=category
-    }
+   if(brand!=="undefined"){
+    updateData.brand=brand
+   }
 
-    if(price!=="undefined"){
-        updateData.price=price
-    }
+   if(category!=="undefined"){
+    updateData.category=category
+   }
 
-    if(sizes!=="undefined"){
-        updateData.sizes=sizes
-    }
+   if(price!=="undefined"){
+    updateData.price=price
+   }
+
+   if(sizes!=="undefined"){
+    updateData.sizes=sizes
+   }
 
 
-    if(req.files && req.files.length>0){
-        const fileUrl=await Promise.all(
+   if(req.files && req.files.length>0){
+    const fileUrl=await Promise.all(
         req.files.map(async(file)=>{
             const res=await uploadFile({
                 buffer:file.buffer,
@@ -125,23 +125,21 @@ export const updateProductController=async(req,res)=>{
         })
     )
     updateData.images=fileUrl
-    }
+   }
 
-    const products=await productModel.findByIdAndUpdate(id,updateData,{new:true})
+   const products=await productModel.findByIdAndUpdate(id,updateData,{new:true})
 
-    if(!products){
-        return res.status(404).json({
-            message:"product not found"
-        })
-    }
-
-    return res.status(200).json({
-        message:"product update succefully",
-        data:products
+   if(!products){
+    return res.status(404).json({
+        message:"product not found"
     })
+   }
 
+   return res.status(200).json({
+    message:"product update succefully",
+    data:products
+   })
 
-  
 
     } catch (error) {
         return res.status(500).json({
