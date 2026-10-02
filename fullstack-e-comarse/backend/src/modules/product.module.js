@@ -57,7 +57,6 @@ const productSchema = new mongoose.Schema(
     seller: {
       type: mongoose.Types.ObjectId,
       ref: "authModelE-comarseProjectFull",
-      required: true,
     },
     publiashed: {
       type: Boolean,
@@ -78,4 +77,4 @@ const productModel = mongoose.model(
   productSchema,
 );
 
-export default prodductModel;
+export default productModel;
