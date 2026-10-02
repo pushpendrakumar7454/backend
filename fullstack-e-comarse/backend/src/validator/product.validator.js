@@ -74,7 +74,7 @@ export const listProductValidator=[
     }
 ]
 
-export const unlistProductController=[
+export const unlistProductValidator=[
     param('id')
     .exists().withMessage("product id must be required").bail()
     .isMongoId().withMessage("product must be a valid mongo object id"),
