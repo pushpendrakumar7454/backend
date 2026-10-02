@@ -1,7 +1,7 @@
 import {Router} from 'express'
 import { authenticate,sellerAuthencticate } from '../middleware/auth.middleware.js'
 import upload from "../config/multer.js";
-import { createProductController, deleteProductController,updateProductController, findAllProductsControler } from '../controllers/product.controller.js';
+import { createProductController, deleteProductController,updateProductController, findAllProductsControler, listAllProductBySellerController } from '../controllers/product.controller.js';
 import {createProductValidator} from '../validator/product.validator.js'
 const router =Router()
 
@@ -13,6 +13,7 @@ router.post("/",authenticate,sellerAuthencticate,upload.array("images"),(req,res
 router.get("/find",authenticate,findAllProductsControler)//for user find router
 router.delete("/delete/:id",authenticate,sellerAuthencticate,deleteProductController)//delete the product by only seller
 router.put("/update/:id",authenticate,sellerAuthencticate,upload.array("images"),updateProductController)//update the product by only seller
+router.get("/findseller",authenticate,sellerAuthencticate,listAllProductBySellerController)
 
 
 export default router

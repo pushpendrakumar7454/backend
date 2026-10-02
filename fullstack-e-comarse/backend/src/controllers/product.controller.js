@@ -147,3 +147,75 @@ export const updateProductController=async(req,res)=>{
         })
     }
 }
+
+
+export const listAllProductBySellerController=async(req,res)=>{
+    try {
+        const {id}=req.params
+
+        const products=await productModel.find()
+
+        return res.status(200).json({
+            message:"find all prodduct created by seller",
+            data:products
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
+
+export const unlistProductController=async(req,res)=>{
+    try {
+          
+   
+        const {id}=req.params
+
+        const products=await productModel.findById(id)
+        
+        if(!products){
+            return res.status(404).json({
+                message:"product not foundd"
+            })
+        }
+
+        await productModel.findByIdAndUpdate(id,{ publiashed:true})
+       
+
+        return res.status(200).json({
+            message:"product ublist succefully"
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+
+}
+
+
+export const listAllProductController=async(req,res)=>{
+    try {
+        const {id}=req.params
+
+        const products=await productModel.findById(id)
+
+        if(!products){
+            return res.status(404).json({
+                message:"internal server error"
+            })
+        }
+
+        await productModel.findByIdAndUpdate(id,{ publiashed:false})
+
+        return res.status(200).json({
+            message:"list all product succefully",
+            data:products
+        })
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
