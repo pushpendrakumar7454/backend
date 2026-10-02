@@ -59,3 +59,23 @@ export const findAllProductsControler=async(req,res)=>{
     })
    }
 }
+
+export const deleteProductController=async(req,res)=>{
+    try {
+         
+        const {id}=req.params
+
+        const product=await productModel.findByIdAndDelete(id)
+
+        return res.status(200).json({
+            message:"product delete succefully",
+            data:product
+        })
+
+
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}
