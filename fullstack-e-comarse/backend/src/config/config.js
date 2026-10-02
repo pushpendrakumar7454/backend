@@ -7,4 +7,5 @@ export const config = {
   MONGO_URI: process.env.MONGO_URI,
   ACCEESS_TOKEN: process.env.JWT_ACCESS_TOKEN,
   REFRESH_TOKEN: process.env.JWT_REFRESH_TOKEN,
+  PRIVATE_IMAGEKIT_KEY:process.env.PRIVATE_IMAGEKIT_KEY
 };
