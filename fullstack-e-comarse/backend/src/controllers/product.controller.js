@@ -184,7 +184,7 @@ export const unlistProductController=async(req,res)=>{
        
 
         return res.status(200).json({
-            message:"product ublist succefully"
+            message:"product unlist succefully"
         })
     } catch (error) {
         return res.status(500).json({
