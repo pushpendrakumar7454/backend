@@ -1,3 +1,6 @@
+import productModel from "../modules/product.module.js";
+import cartModel from "../modules/cart.module.js";
+
 export const addToCartController = async (req, res) => {
   try {
     const { productId, quantity, size } = req.body;
@@ -33,9 +36,7 @@ export const addToCartController = async (req, res) => {
       }));
 
     const productInCart = cart.products.find(
-      (p) =>
-        p.product.toString() === productId &&
-        p.size == size
+      (p) => p.product.toString() === productId && p.size == size,
     );
 
     if (productInCart) {
@@ -55,7 +56,7 @@ export const addToCartController = async (req, res) => {
           $inc: {
             "products.$.quantity": quantity,
           },
-        }
+        },
       );
 
       return res.status(200).json({
@@ -75,15 +76,38 @@ export const addToCartController = async (req, res) => {
             size: size,
           },
         },
-      }
+      },
     );
 
     return res.status(200).json({
       message: "product added to a cart",
     });
   } catch (error) {
+    console.log(error);
     return res.status(500).json({
       message: "internal server error",
     });
   }
 };
+
+
+
+export const getCartController=async(req,res)=>{
+    try {
+        
+  const cart=(await cartModel.findOne({user:req.user.userId}))||
+             (await cartModel.create({user:req.user.userId}))
+
+  return res.status(200).json({
+    message:"cart receive  succefully",
+    data:{
+        cart:cart
+    }
+  })           
+
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}

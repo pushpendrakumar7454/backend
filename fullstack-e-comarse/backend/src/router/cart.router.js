@@ -5,6 +5,6 @@ import { addToCartValidator } from '../validator/cart.validator.js'
 
 const router = Router()
 
-router.post("/",authenticate,addToCartValidator,addToCartController)
+router.post("/add",authenticate,addToCartValidator,addToCartController)
 
 export default router
