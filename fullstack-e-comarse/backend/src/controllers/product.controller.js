@@ -180,7 +180,7 @@ export const unlistProductController=async(req,res)=>{
             })
         }
 
-        await productModel.findByIdAndUpdate(id,{ publiashed:true})
+        await productModel.findByIdAndUpdate(id,{ publiashed:false})
        
 
         return res.status(200).json({
@@ -207,7 +207,7 @@ export const listAllProductController=async(req,res)=>{
             })
         }
 
-        await productModel.findByIdAndUpdate(id,{ publiashed:false})
+        await productModel.findByIdAndUpdate(id,{ publiashed:true})
 
         return res.status(200).json({
             message:"list all product succefully",
