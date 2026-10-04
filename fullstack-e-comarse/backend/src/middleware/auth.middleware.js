@@ -5,8 +5,6 @@ export const authenticate = async (req, res, next) => {
     const authorization = req.headers.authorization;
 
     if (!authorization) {
-          console.log("Authorization:", authorization);
-
       return res.status(401).json({
         messae: "Authorization header not found",
       });
