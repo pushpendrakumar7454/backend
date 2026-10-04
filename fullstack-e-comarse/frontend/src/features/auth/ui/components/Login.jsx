@@ -3,6 +3,7 @@ import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
 import { setAccessToken, addUser } from "../../state/authSlice";
 import { loginUser } from "../../api/useApi";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const {
@@ -12,9 +13,16 @@ const Login = () => {
   } = useForm();
 
   const dispatch = useDispatch();
-
+ const navigate= useNavigate()
   const onSubmit = async (data) => {
-    console.log(data)
+    try {
+        const res=await loginUser(data)
+        dispatch(setAccessToken(res.accessToken))
+        dispatch(addUser(res.data.user))
+        
+    } catch (error) {
+        console.log(error)
+    }
   };
 
   return (

@@ -23,6 +23,7 @@ export const loginUser=async(crenticial)=>{
 export const hydreadUser=async()=>{
     try {
         const res=await apiInstance.get("/auth/me")
+        console.log(res.data)
         return res.data
     } catch (error) {
         console.log(error)
