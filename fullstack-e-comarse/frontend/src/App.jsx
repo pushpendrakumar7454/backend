@@ -1,13 +1,12 @@
-import React from 'react'
-import {store} from '../src/app/store'
-import { Provider } from "react-redux";
+import Register from "./features/auth/ui/components/Register"
+
 
 const App = () => {
   return (
     <div className='text-red-700'>
-      <Provider>
-        <App store={store}/>
-      </Provider>
+
+        <Register/>
+  
     </div>
   )
 }
