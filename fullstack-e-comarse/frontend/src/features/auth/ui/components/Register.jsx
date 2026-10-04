@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { registerUser } from "../../api/useApi";
 import { useDispatch, useSelector } from "react-redux";
 import { addUser, setAccessToken } from "../../state/authSlice";
-
+import { useNavigate } from "react-router";
 const Register = () => {
     const {
         register,
@@ -12,14 +12,14 @@ const Register = () => {
         formState: { errors }
     } = useForm();
   const dispatch=useDispatch()
- 
-
+  
+const navigate=useNavigate()
     const onSubmit = async(data) => {
         try {
            const res=await registerUser(data)
            dispatch(setAccessToken(res.accessToken));
            dispatch(addUser(res.data.user));
-           
+          navigate("/login")
         
         } catch (error) {
             console.log(error)

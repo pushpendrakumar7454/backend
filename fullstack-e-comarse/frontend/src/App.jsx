@@ -1,14 +1,11 @@
-import Register from "./features/auth/ui/components/Register"
 
-
+import AppRout from '../src/router/AppRout'
 const App = () => {
-  return (
-    <div className='text-red-700'>
+    return (
+        <div className="text-red-700">
+          <AppRout/>
+        </div>
+    );
+};
 
-        <Register/>
-  
-    </div>
-  )
-}
-
-export default App
+export default App;
