@@ -19,23 +19,32 @@ apiInstance.interceptors.request.use((config) => {
 
 
 apiInstance.interceptors.response.use(
-  (response) => response,
+    (response) => response,
 
-  async (error) => {
-    if (error.response && error.response.status === 401) {
-      const res = await axios.post(
-        "http://localhost:3000/api/auth/refresh",
-        {},
-        {
-          withCredentials: true,
-        },
-      );
-      store.dispatch(setAccessToken(res.data.accessToken));
-      error.config.headers.Authorization = `Bearer ${res.data.accessToken}`;
-      return axios(error.config);
+    async (error) => {
+
+        if (error.response && error.response.status === 401) {
+
+            const res = await axios.post(
+                "http://localhost:3000/api/auth/refresh",
+                {},
+                {
+                    withCredentials: true,
+                }
+            );
+
+            store.dispatch(
+                setAccessToken(res.data.accessToken)
+            );
+
+            error.config.headers.Authorization =
+                `Bearer ${res.data.accessToken}`;
+
+            return apiInstance(error.config);
+        }
+
+        return Promise.reject(error);
     }
-    return Promise.reject(error);
-  },
 );
 
-export default apiInstance;
+export default apiInstance

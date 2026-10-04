@@ -1,8 +1,4 @@
-
-import {
-    createBrowserRouter,
-    RouterProvider
-} from "react-router";
+import { createBrowserRouter, RouterProvider } from "react-router";
 
 import Register from "../features/auth/ui/components/Register";
 import Login from "../features/auth/ui/components/Login";
@@ -13,44 +9,37 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../features/auth/state/authSlice";
 
 const AppRout = () => {
+  const dispatch = useDispatch();
 
-const dispatch =useDispatch();
-
-  useEffect(() => {
-    const loadUser = async () => {
+     
+  useEffect(()=>{
+    (async()=>{
       try {
-        const res = await hydreadUser();
-
-        console.log("HYDRATE USER:", res);
-
-        if (res?.data?.user) {
-          dispatch(addUser(res.user));
-        }
+        const res=await hydreadUser()
+          dispatch(addUser(res.data.user));
       } catch (error) {
-        console.log(error);
+        console.log(error)
       }
-    };
+    })()
+  },[dispatch])
+ 
 
-    loadUser();
-  }, [dispatch]);
+  const router = createBrowserRouter([
+    {
+      path: "/",
+      element: <Register />,
+    },
+    {
+      path: "/login",
+      element: <Login />,
+    },
+    {
+      path: "/profile",
+      element: <Profile />,
+    },
+  ]);
 
-
-    const router = createBrowserRouter([
-        {
-            path: "/",
-            element: <Register />
-        },
-        {
-            path: "/login",
-            element: <Login />
-        },{
-            path:"/profile",
-            element:<Profile/>
-        }
-    ]);
-
-    return <RouterProvider router={router} />;
+  return <RouterProvider router={router} />;
 };
 
 export default AppRout;
-
