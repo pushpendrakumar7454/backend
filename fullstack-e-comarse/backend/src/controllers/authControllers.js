@@ -188,10 +188,12 @@ export const authMeController = async (req, res) => {
     return res.status(200).json({
       message: "user find succefully",
       data: {
-        name: user.name,
-        email: user.email,
-        id: user._id,
-        role: user.role,
+        user: {
+          name: user.name,
+          email: user.email,
+          id: user._id,
+          role: user.role,
+        },
       },
     });
   } catch (error) {

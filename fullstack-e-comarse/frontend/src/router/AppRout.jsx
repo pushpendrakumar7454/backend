@@ -10,6 +10,7 @@ import Profile from "../features/auth/ui/components/Profile";
 import { useEffect } from "react";
 import { hydreadUser } from "../features/auth/api/useApi";
 import { useDispatch } from "react-redux";
+import { addUser } from "../features/auth/state/authSlice";
 
 const AppRout = () => {
 
@@ -23,7 +24,7 @@ const dispatch =useDispatch();
         console.log("HYDRATE USER:", res);
 
         if (res?.data?.user) {
-          dispatch(addUser(res.data.user));
+          dispatch(addUser(res.user));
         }
       } catch (error) {
         console.log(error);
