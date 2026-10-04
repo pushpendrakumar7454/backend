@@ -19,6 +19,9 @@ const Login = () => {
         const res=await loginUser(data)
         dispatch(setAccessToken(res.accessToken))
         dispatch(addUser(res.data.user))
+        console.log(res.data)
+        console.log(data)
+        navigate("/profile")
         
     } catch (error) {
         console.log(error)
