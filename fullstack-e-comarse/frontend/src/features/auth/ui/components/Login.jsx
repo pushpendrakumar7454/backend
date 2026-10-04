@@ -17,8 +17,8 @@ const Login = () => {
   const onSubmit = async (data) => {
     try {
         const res=await loginUser(data)
-        dispatch(setAccessToken(res.accessToken))
-        dispatch(addUser(res.data.user))
+       dispatch(setAccessToken(res.data.data.accessToken));
+       dispatch(addUser(res.data.data.user));
         console.log(res.data)
         console.log(data)
         navigate("/profile")

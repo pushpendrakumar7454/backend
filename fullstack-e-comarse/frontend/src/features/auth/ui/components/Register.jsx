@@ -17,8 +17,8 @@ const navigate=useNavigate()
     const onSubmit = async(data) => {
         try {
            const res=await registerUser(data)
-           dispatch(setAccessToken(res.accessToken));
-           dispatch(addUser(res.data.user));
+              dispatch(setAccessToken(res.data.data.accessToken));
+              dispatch(addUser(res.data.data.user));
           navigate("/login")
         
         } catch (error) {
