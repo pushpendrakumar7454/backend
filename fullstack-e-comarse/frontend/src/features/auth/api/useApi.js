@@ -9,3 +9,22 @@ export const registerUser=async(creticial)=>{
         console.log(error)
     }
 }
+
+export const loginUser=async(crenticial)=>{
+    try {
+        const res=await apiInstance.post("/auth/login",crenticial)
+        return res
+    } catch (error) {
+        console.log(error)
+    }
+
+}
+
+export const hydreadUser=async()=>{
+    try {
+        const res=await apiInstance.get("/auth/me")
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
