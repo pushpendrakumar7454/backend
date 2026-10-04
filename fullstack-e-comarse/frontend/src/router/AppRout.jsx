@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import { hydreadUser } from "../features/auth/api/useApi";
 import { useDispatch } from "react-redux";
 import { addUser } from "../features/auth/state/authSlice";
+import UserHeader from "../features/auth/ui/components/UserHeader";
+import SellerHeader from "../features/auth/ui/components/SellerHeader";
 
 const AppRout = () => {
   const dispatch = useDispatch();
@@ -37,6 +39,13 @@ const AppRout = () => {
       path: "/profile",
       element: <Profile />,
     },
+    {
+      path:"/user-header",
+      element:<UserHeader/>
+    },{
+      path:"/seller-header",
+      element:<SellerHeader/>
+    }
   ]);
 
   return <RouterProvider router={router} />;
