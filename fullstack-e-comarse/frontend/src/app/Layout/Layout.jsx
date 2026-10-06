@@ -1,14 +1,19 @@
-import React from 'react'
-import UserHeader from '../../features/auth/ui/components/UserHeader'
-import { Outlet } from 'react-router'
+import React from "react";
+import UserHeader from "../../features/auth/ui/components/UserHeader";
+import SellerHeader from "../../features/auth/ui/components/SellerHeader";
+import { Outlet } from "react-router";
+import { useSelector } from "react-redux";
 
 const Layout = () => {
+  const { users } = useSelector((state) => state.auth);
+
   return (
     <div>
-      <UserHeader/>
-      <Outlet/>
-    </div>
-  )
-}
+      {users?.role === "seller" ? <SellerHeader /> : <UserHeader />}
 
-export default Layout
+      <Outlet />
+    </div>
+  );
+};
+
+export default Layout;
