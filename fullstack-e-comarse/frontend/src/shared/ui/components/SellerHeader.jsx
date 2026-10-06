@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { NavLink, useNavigate } from "react-router";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import {
   FiGrid,
@@ -14,17 +14,19 @@ import {
   FiBell,
 } from "react-icons/fi";
 import { logOutUser } from "../../../features/auth/api/useApi";
-import { addUser, setAccessToken } from "../../../features/auth/state/authSlice";
+import {
+  addUser,
+  setAccessToken,
+} from "../../../features/auth/state/authSlice";
 
 const SellerHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const navigate = useNavigate();
-
+  const dispatch = useDispatch();
   const { users } = useSelector((state) => state.auth);
 
   const userName = users?.name || "Seller";
-
 
   const navLinkStyle = ({ isActive }) =>
     `flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
@@ -33,15 +35,15 @@ const SellerHeader = () => {
         : "text-slate-600 hover:bg-slate-50 hover:text-orange-500"
     }`;
 
-  const handleLogout = async() => {
-   try {
-    await logOutUser()
-    addUser(null)
-    setAccessToken(null)
-    navigate("/login")
-  } catch (error) {
-    console.log(error)
-   }
+  const handleLogout = async () => {
+    try {
+      await logOutUser();
+      dispatch(addUser(null));
+      dispatch(setAccessToken(null));
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
