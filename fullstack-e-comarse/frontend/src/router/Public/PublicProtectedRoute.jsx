@@ -13,6 +13,7 @@ const PublicProtectedRoute = () => {
    if(users.role=='seller'){
     return <Navigate to={"/seller-Header"} replace/>
    }
+   
   return <Outlet/>
 }
 
