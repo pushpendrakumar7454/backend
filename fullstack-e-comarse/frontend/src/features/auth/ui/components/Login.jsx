@@ -1,6 +1,6 @@
 import React from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setAccessToken, addUser } from "../../state/authSlice";
 import { loginUser } from "../../api/useApi";
 import { useNavigate } from "react-router";
@@ -14,12 +14,19 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const{users}=useSelector((state)=>state.auth)
 
   const onSubmit = async (data) => {
     try {
       const res = await loginUser(data);
       dispatch(setAccessToken(res.data.data.accessToken));
       dispatch(addUser(res.data.data.user));
+       if (users.role === "seller") {
+            navigate("/seller-header");
+        } else {
+            navigate("/user-header");
+        }
+
      
     } catch (error) {
       console.log(error);
