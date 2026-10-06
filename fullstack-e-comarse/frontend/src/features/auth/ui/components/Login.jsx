@@ -14,25 +14,31 @@ const Login = () => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const{users}=useSelector((state)=>state.auth)
+  
+const onSubmit = async (data) => {
+  try {
+    const res = await loginUser(data);
 
-  const onSubmit = async (data) => {
-    try {
-      const res = await loginUser(data);
-      dispatch(setAccessToken(res.data.data.accessToken));
-      dispatch(addUser(res.data.data.user));
-       if (users.role === "seller") {
-            navigate("/seller-header");
-        } else if(users.role=="user") {
-            navigate("/user-header");
-        }
+    console.log("FULL RESPONSE:", res.data);
+    console.log("USER:", res.data.data.user);
+    console.log("ROLE:", res.data.data.user?.role);
 
-     
-    } catch (error) {
-      console.log(error);
+    const user = res.data.data.user;
+
+    dispatch(setAccessToken(res.data.data.accessToken));
+    dispatch(addUser(user));
+
+    if (user?.role === "seller") {
+      console.log("SELLER LOGIN");
+      navigate("/seller-header");
+    } else {
+      console.log("USER LOGIN");
+      navigate("/user-header");
     }
-  };
-
+  } catch (error) {
+    console.log(error);
+  }
+};
   return (
     <div className="min-h-screen bg-[#f5f3ef] flex items-center justify-center px-4 py-8 relative overflow-hidden">
       {/* ================= BACKGROUND ================= */}
