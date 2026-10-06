@@ -23,6 +23,7 @@ const SellerHeader = () => {
 
   const userName = users?.name || "Seller";
 
+
   const navLinkStyle = ({ isActive }) =>
     `flex items-center gap-2 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-300 ${
       isActive
@@ -33,8 +34,7 @@ const SellerHeader = () => {
   const handleLogout = () => {
     localStorage.removeItem("accessToken");
 
-    navigate("/login");
-  };
+    navigate("/login")};
 
   return (
     <header className="sticky top-0 z-50">

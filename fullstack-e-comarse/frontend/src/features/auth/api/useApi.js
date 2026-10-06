@@ -28,3 +28,12 @@ export const hydreadUser=async()=>{
         console.log(error)
     }
 }
+
+export const logOutUser=async()=>{
+    try {
+        const res=await apiInstance.delete("/auth/logout")
+        return res.data
+    } catch (error) {
+        console.log(error)
+    }
+}
