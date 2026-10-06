@@ -9,11 +9,11 @@ const HomeRedirect = () => {
     return <Navigate to="/login" replace />;
   }
 
-  if (users.role === "seller") {
+  if (users?.role === "seller") {
     return <Navigate to="/seller-header" replace />;
   }
 
-  if (users.role === "user") {
+  if (users?.role === "user") {
     return <Navigate to="/user-header" replace />;
   }
 

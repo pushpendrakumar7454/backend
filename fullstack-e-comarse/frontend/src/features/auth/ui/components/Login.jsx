@@ -21,7 +21,7 @@ const Login = () => {
       const res = await loginUser(data);
       dispatch(setAccessToken(res.data.data.accessToken));
       dispatch(addUser(res.data.data.user));
-       if (users.role === "seller") {
+       if (users?.role === "seller") {
             navigate("/seller-header");
         }else{
           navigate("/user-header")

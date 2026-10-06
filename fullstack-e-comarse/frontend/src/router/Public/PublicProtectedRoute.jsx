@@ -6,11 +6,11 @@ const PublicProtectedRoute = () => {
 
    const{users}=useSelector((state)=>state.auth)
 
-   if(users.role=="user"){
+   if(users?.role=="user"){
     return <Navigate to={"/user-header"}  replace/>
    }
 
-   if(users.role=='seller'){
+   if(users?.role=='seller'){
     return <Navigate to={"/seller-Header"} replace/>
    }
    

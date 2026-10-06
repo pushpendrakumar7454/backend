@@ -13,7 +13,10 @@ import {
   FiLogOut,
 } from "react-icons/fi";
 import { logOutUser } from "../../../features/auth/api/useApi";
-import { addUser, setAccessToken } from "../../../features/auth/state/authSlice";
+import {
+  addUser,
+  setAccessToken,
+} from "../../../features/auth/state/authSlice";
 
 const UserHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -34,16 +37,15 @@ const UserHeader = () => {
   const userName = users?.name || "User";
 
   // Logout
-  const handleLogout = async() => {
-   try {
-    await logOutUser()
-    addUser(null)
-    setAccessToken(null)
-    navigate("/login")
-    
-   } catch (error) {
-    console.log(error)
-   }
+  const handleLogout = async () => {
+    try {
+      await logOutUser();
+      dispatch(addUser(null));
+      dispatch(setAccessToken(null));
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
