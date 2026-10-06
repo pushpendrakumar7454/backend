@@ -23,7 +23,7 @@ const Login = () => {
       dispatch(addUser(res.data.data.user));
        if (users.role === "seller") {
             navigate("/seller-header");
-        } else {
+        } else if(users.role=="user") {
             navigate("/user-header");
         }
 

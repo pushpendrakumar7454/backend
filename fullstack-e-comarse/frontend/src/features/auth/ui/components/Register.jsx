@@ -126,19 +126,25 @@ const Register = () => {
                   <div className="rounded-2xl bg-white/[0.055] border border-white/10 p-4 backdrop-blur-xl hover:bg-white/[0.08] transition">
                     <h3 className="text-xl font-bold">10K+</h3>
 
-                    <p className="text-[11px] text-slate-400 mt-1">Products</p>
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      Products
+                    </p>
                   </div>
 
                   <div className="rounded-2xl bg-white/[0.055] border border-white/10 p-4 backdrop-blur-xl hover:bg-white/[0.08] transition">
                     <h3 className="text-xl font-bold">5K+</h3>
 
-                    <p className="text-[11px] text-slate-400 mt-1">Customers</p>
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      Customers
+                    </p>
                   </div>
 
                   <div className="rounded-2xl bg-white/[0.055] border border-white/10 p-4 backdrop-blur-xl hover:bg-white/[0.08] transition">
                     <h3 className="text-xl font-bold">4.9</h3>
 
-                    <p className="text-[11px] text-slate-400 mt-1">Rating</p>
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      Rating
+                    </p>
                   </div>
                 </div>
               </div>
@@ -338,6 +344,35 @@ const Register = () => {
                 )}
               </div>
 
+              {/* ROLE */}
+
+              <div>
+                <label className="block text-sm font-semibold text-[#344054] mb-2">
+                  Role
+                </label>
+
+                <select
+                  {...register("role", {
+                    required: "Role is required",
+                  })}
+                  className={`w-full px-4 py-3.5 rounded-2xl border text-sm text-[#101828] outline-none transition-all duration-300 ${
+                    errors.role
+                      ? "border-red-400 bg-red-50 focus:ring-4 focus:ring-red-100"
+                      : "border-[#e4e7ec] bg-[#fafafa] hover:bg-white focus:bg-white focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
+                  }`}
+                >
+                  <option value="">Select Role</option>
+                  <option value="user">User</option>
+                  <option value="seller">Seller</option>
+                </select>
+
+                {errors.role && (
+                  <p className="text-xs text-red-500 mt-2 font-medium">
+                    {errors.role.message}
+                  </p>
+                )}
+              </div>
+
               {/* PASSWORD */}
 
               <div>
@@ -399,11 +434,13 @@ const Register = () => {
 
               <button
                 type="submit"
-                className="group relative w-full overflow-hidden bg-[#101828] hover:bg-[#182338] text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-900/15 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0">
+                className="group relative w-full overflow-hidden bg-[#101828] hover:bg-[#182338] text-white font-bold py-4 rounded-2xl shadow-lg shadow-slate-900/15 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-xl active:translate-y-0"
+              >
                 <span className="absolute inset-0 bg-gradient-to-r from-orange-400/0 via-orange-400/10 to-orange-400/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700" />
 
                 <span className="relative z-10 flex items-center justify-center gap-2">
                   Create My Account
+
                   <span className="text-lg transition-transform duration-300 group-hover:translate-x-1 text-orange-400">
                     →
                   </span>
@@ -430,7 +467,8 @@ const Register = () => {
               <button
                 type="button"
                 onClick={() => navigate("/login")}
-                className="text-orange-500 font-bold hover:text-orange-600 transition-colors">
+                className="text-orange-500 font-bold hover:text-orange-600 transition-colors"
+              >
                 Sign in
               </button>
             </p>
