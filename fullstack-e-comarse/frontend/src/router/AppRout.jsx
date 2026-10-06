@@ -11,8 +11,12 @@ import { addUser } from "../features/auth/state/authSlice";
 
 import ProtectedRoute from "./ProteectedRoute/ProtectedRoute";
 import PublicProtectedRoute from "./Public/PublicProtectedRoute";
+
 import Layout from "../app/Layout/Layout";
 
+import UserHeader from "../shared/ui/components/UserHeader";
+import SellerHeader from "../shared/ui/components/SellerHeader";
+import HomeRedirect from "../shared/ui/components/HomeRedirect";
 
 
 const AppRout = () => {
@@ -37,12 +41,22 @@ const AppRout = () => {
 
       children: [
         {
-          element: <Layout/>,
+          element: <Layout />,
 
           children: [
             {
-              path: "/",
-              element: <h1>Home Page</h1>,
+              index: true,
+              element:<HomeRedirect/>,
+            },
+
+            {
+              path: "user-header",
+              element: <UserHeader />,
+            },
+
+            {
+              path: "seller-header",
+              element: <SellerHeader />,
             },
           ],
         },
