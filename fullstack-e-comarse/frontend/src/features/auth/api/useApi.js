@@ -31,7 +31,7 @@ export const hydreadUser=async()=>{
 
 export const logOutUser=async()=>{
     try {
-        const res=await apiInstance.delete("/auth/logout")
+        const res=await apiInstance.post("/auth/logout")
         return res.data
     } catch (error) {
         console.log(error)
