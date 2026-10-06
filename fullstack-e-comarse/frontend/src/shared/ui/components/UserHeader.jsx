@@ -40,6 +40,7 @@ const UserHeader = () => {
     addUser(null)
     setAccessToken(null)
     navigate("/login")
+    
    } catch (error) {
     console.log(error)
    }
