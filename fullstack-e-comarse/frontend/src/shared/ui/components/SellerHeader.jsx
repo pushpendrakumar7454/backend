@@ -13,6 +13,8 @@ import {
   FiLogOut,
   FiBell,
 } from "react-icons/fi";
+import { logOutUser } from "../../../features/auth/api/useApi";
+import { addUser, setAccessToken } from "../../../features/auth/state/authSlice";
 
 const SellerHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -31,10 +33,16 @@ const SellerHeader = () => {
         : "text-slate-600 hover:bg-slate-50 hover:text-orange-500"
     }`;
 
-  const handleLogout = () => {
-    localStorage.removeItem("accessToken");
-
-    navigate("/login")};
+  const handleLogout = async() => {
+   try {
+    await logOutUser()
+    addUser(null)
+    setAccessToken(null)
+    navigate("/login")
+  } catch (error) {
+    console.log(error)
+   }
+  };
 
   return (
     <header className="sticky top-0 z-50">
