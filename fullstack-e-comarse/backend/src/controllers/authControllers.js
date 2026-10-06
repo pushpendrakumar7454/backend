@@ -9,7 +9,7 @@ import {
 import bycrpt from "bcryptjs";
 export const authRegisterController = async (req, res) => {
   try {
-    const { email, password, number, name } = req.body;
+    const { email, password, number, name,role } = req.body;
 
     const allReadyExistEmail = await authModel.findOne({ email });
 
@@ -23,6 +23,7 @@ export const authRegisterController = async (req, res) => {
       name,
       email,
       number,
+      role,
       password: await bycrpt.hash(password, 6),
     });
 
