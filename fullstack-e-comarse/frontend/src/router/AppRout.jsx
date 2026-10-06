@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../features/auth/state/authSlice";
 import UserHeader from "../features/auth/ui/components/UserHeader";
 import SellerHeader from "../features/auth/ui/components/SellerHeader";
+import ProtectedRoute from "./ProteectedRoute/ProtectedRoute";
+import PublicProtectedRoute from './Public/PublicProtectedRoute'
 
 const AppRout = () => {
   const dispatch = useDispatch();
@@ -26,28 +28,36 @@ const AppRout = () => {
   },[dispatch])
  
 
-  const router = createBrowserRouter([
+  const router=createBrowserRouter([
     {
-      path: "/",
-      element: <Register />,
+      path:'/',
+      element:<ProtectedRoute/>,
+      children:[
+        {
+          path:"/user-header",
+          element:<UserHeader/>
+        },
+        {
+          path:"/seller-header",
+          element:<SellerHeader/>
+        }
+      ]
     },
     {
-      path: "/login",
-      element: <Login />,
-    },
-    {
-      path: "/profile",
-      element: <Profile />,
-    },
-    {
-      path:"/user-header",
-      element:<UserHeader/>
-    },{
-      path:"/seller-header",
-      element:<SellerHeader/>
+    element:<PublicProtectedRoute/>,
+    children:[
+      {
+        path:"/login",
+        element:<Login/>
+      },
+      {
+        path:"/register",
+        element:<Register/>
+      }
+    ]
     }
-  ]);
-
+  ])
+  
   return <RouterProvider router={router} />;
 };
 
