@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+
+import React, { useEffect, useState } from "react";
+
 import {
   FiArrowLeft,
   FiArrowRight,
@@ -13,57 +15,169 @@ import {
   FiTrash2,
   FiTruck,
   FiShield,
-  FiCreditCard,
-  FiX,
 } from "react-icons/fi";
+
 import { useNavigate } from "react-router";
+import apiInstance from "../../../config/apiInstance";
 
 const Cart = () => {
   const navigate = useNavigate();
 
   // ==========================================
-  // HARD CODED CART DATA
+  // CART DATA
   // ==========================================
+  const [cartItems, setCartItems] = useState([]);
 
-  const [cartItems, setCartItems] = useState([
-    {
-      id: 1,
-      title: "Premium Oversized Jacket",
-      category: "Outerwear",
-      image:
-        "https://images.unsplash.com/photo-1551028719-00167b16eac5?auto=format&fit=crop&w=900&q=90",
-      price: 2499,
-      oldPrice: 3299,
-      quantity: 1,
-      size: "L",
-      color: "Black",
-    },
-    {
-      id: 2,
-      title: "Minimal Street Sneakers",
-      category: "Footwear",
-      image:
-        "https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=90",
-      price: 1899,
-      oldPrice: 2499,
-      quantity: 2,
-      size: "9",
-      color: "White",
-    },
-    {
-      id: 3,
-      title: "Premium Cotton Shirt",
-      category: "Shirts",
-      image:
-        "https://images.unsplash.com/photo-1603252110481-7ba873bf42ab?auto=format&fit=crop&w=900&q=90",
-      price: 1299,
-      oldPrice: 1699,
-      quantity: 1,
-      size: "M",
-      color: "Sky Blue",
-    },
-  ]);
+  // ==========================================
+  // IMAGE URL
+  // ==========================================
+  const getImageUrl = (images) => {
+    const fallbackImage =
+      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=90";
 
+    if (!Array.isArray(images) || images.length === 0) {
+      return fallbackImage;
+    }
+
+    const image = images[0];
+
+    // Image already full URL
+    if (typeof image === "string") {
+      if (
+        image.startsWith("http://") ||
+        image.startsWith("https://") ||
+        image.startsWith("data:")
+      ) {
+        return image;
+      }
+
+      return fallbackImage;
+    }
+
+    // Backend returns image object
+    if (typeof image === "object" && image !== null) {
+      if (image.url) {
+        return image.url;
+      }
+
+      if (image.filePath) {
+        return image.filePath;
+      }
+
+      if (image.path) {
+        return image.path;
+      }
+
+      if (image.src) {
+        return image.src;
+      }
+
+      if (image.imageUrl) {
+        return image.imageUrl;
+      }
+    }
+
+    return fallbackImage;
+  };
+
+  // ==========================================
+  // GET CART
+  // ==========================================
+  const getData = async () => {
+    try {
+      const res = await apiInstance.get("/cart");
+
+      console.log("CART RESPONSE:", res.data);
+
+      const products = res.data?.data?.cart?.products || [];
+
+      console.log("CART PRODUCTS:", products);
+
+      const cartData = products.map((item) => {
+        /*
+          IMPORTANT:
+
+          Backend se product populated hona chahiye:
+
+          product: {
+            _id,
+            title,
+            images,
+            price,
+            oldPrice,
+            category
+          }
+        */
+
+        const product =
+          item?.product && typeof item.product === "object"
+            ? item.product
+            : {};
+
+        // ==========================================
+        // PRICE
+        // ==========================================
+        let price = 0;
+
+        if (typeof product.price === "object" && product.price !== null) {
+          price = Number(product.price.amount) || 0;
+        } else {
+          price = Number(product.price) || 0;
+        }
+
+        // ==========================================
+        // OLD PRICE
+        // ==========================================
+        let oldPrice = 0;
+
+        if (
+          typeof product.oldPrice === "object" &&
+          product.oldPrice !== null
+        ) {
+          oldPrice = Number(product.oldPrice.amount) || 0;
+        } else {
+          oldPrice = Number(product.oldPrice) || 0;
+        }
+
+        return {
+          id: item?._id,
+
+          productId: product?._id || item?.product,
+
+          title: product?.title || "Product",
+
+          category: product?.category || "General",
+
+          image: getImageUrl(product?.images),
+
+          price: price,
+
+          oldPrice: oldPrice,
+
+          quantity: Number(item?.quantity) || 1,
+
+          size: item?.size || null,
+
+          color: item?.color || "Default",
+        };
+      });
+
+      console.log("MAPPED CART PRODUCTS:", cartData);
+
+      setCartItems(cartData);
+    } catch (error) {
+      console.log("CART ERROR:", error);
+      console.log("ERROR RESPONSE:", error?.response?.data);
+    }
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  // ==========================================
+  // PROMO
+  // ==========================================
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
   const [showPromo, setShowPromo] = useState(false);
@@ -71,7 +185,6 @@ const Cart = () => {
   // ==========================================
   // INCREASE QUANTITY
   // ==========================================
-
   const increaseQuantity = (id) => {
     setCartItems((items) =>
       items.map((item) => {
@@ -83,14 +196,13 @@ const Cart = () => {
         }
 
         return item;
-      })
+      }),
     );
   };
 
   // ==========================================
   // DECREASE QUANTITY
   // ==========================================
-
   const decreaseQuantity = (id) => {
     setCartItems((items) =>
       items.map((item) => {
@@ -102,24 +214,20 @@ const Cart = () => {
         }
 
         return item;
-      })
+      }),
     );
   };
 
   // ==========================================
   // REMOVE
   // ==========================================
-
   const removeItem = (id) => {
-    setCartItems((items) =>
-      items.filter((item) => item.id !== id)
-    );
+    setCartItems((items) => items.filter((item) => item.id !== id));
   };
 
   // ==========================================
   // APPLY PROMO
   // ==========================================
-
   const applyPromo = () => {
     if (promoCode.trim().toUpperCase() === "NEXORA10") {
       setPromoApplied(true);
@@ -129,15 +237,13 @@ const Cart = () => {
   // ==========================================
   // PRICE CALCULATIONS
   // ==========================================
-
   let subtotal = 0;
   let originalTotal = 0;
   let totalItems = 0;
 
   for (let i = 0; i < cartItems.length; i++) {
     subtotal =
-      subtotal +
-      cartItems[i].price * cartItems[i].quantity;
+      subtotal + cartItems[i].price * cartItems[i].quantity;
 
     originalTotal =
       originalTotal +
@@ -147,8 +253,10 @@ const Cart = () => {
       totalItems + cartItems[i].quantity;
   }
 
-  const productDiscount =
-    originalTotal - subtotal;
+  const productDiscount = Math.max(
+    0,
+    originalTotal - subtotal,
+  );
 
   const promoDiscount = promoApplied
     ? Math.round(subtotal * 0.1)
@@ -156,26 +264,25 @@ const Cart = () => {
 
   const deliveryLimit = 3000;
 
-  const remainingForFreeDelivery =
-    Math.max(0, deliveryLimit - subtotal);
+  const remainingForFreeDelivery = Math.max(
+    0,
+    deliveryLimit - subtotal,
+  );
 
   const deliveryCharge =
     subtotal >= deliveryLimit ? 0 : 99;
 
   const total =
-    subtotal -
-    promoDiscount +
-    deliveryCharge;
+    subtotal - promoDiscount + deliveryCharge;
 
   const deliveryProgress = Math.min(
     100,
-    Math.round((subtotal / deliveryLimit) * 100)
+    Math.round((subtotal / deliveryLimit) * 100),
   );
 
   // ==========================================
   // FORMAT PRICE
   // ==========================================
-
   const formatPrice = (price) => {
     return `₹${price.toLocaleString("en-IN")}`;
   };
@@ -183,21 +290,15 @@ const Cart = () => {
   // ==========================================
   // EMPTY CART
   // ==========================================
-
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-[#f5f5f3] px-4 py-8 sm:px-6 lg:px-8">
-
         <div className="mx-auto flex min-h-[80vh] max-w-[1000px] items-center justify-center">
-
           <div className="relative w-full overflow-hidden rounded-[32px] border border-[#e7e7e4] bg-white px-6 py-14 text-center shadow-[0_25px_80px_rgba(16,24,40,0.07)] sm:px-12 sm:py-20">
-
             <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-orange-100/70 blur-3xl" />
-
             <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-orange-50 blur-3xl" />
 
             <div className="relative">
-
               <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-[28px] bg-[#111827] text-orange-400 shadow-xl sm:h-28 sm:w-28">
                 <FiShoppingBag size={42} />
               </div>
@@ -211,9 +312,9 @@ const Cart = () => {
               </h1>
 
               <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#667085]">
-                Your shopping bag is waiting for something
-                special. Explore our latest collection and
-                find your next favourite piece.
+                Your shopping bag is waiting for something special.
+                Explore our latest collection and find your next
+                favourite piece.
               </p>
 
               <button
@@ -227,24 +328,21 @@ const Cart = () => {
                   className="transition-transform duration-300 group-hover:translate-x-1"
                 />
               </button>
-
             </div>
           </div>
-
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#f5f5f3] mt-3 p-3 ">
+    <div className="min-h-screen bg-[#f5f5f3] mt-3 p-3">
 
       {/* ==========================================
           TOP DARK SECTION
       ========================================== */}
 
-      <div className="bg-[#101828] rounded-lg">
-
+      <div className="rounded-lg bg-[#101828]">
         <div className="mx-auto max-w-[1450px] px-4 pb-16 pt-6 sm:px-6 sm:pb-20 lg:px-8">
 
           {/* BACK */}
@@ -266,25 +364,23 @@ const Cart = () => {
           <div className="mt-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
 
             <div>
-
-              <div className="flex items-center  gap-2">
+              <div className="flex items-center gap-2">
 
                 <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
 
-                <p className="text-[9px]  font-bold uppercase tracking-[3px] text-orange-400 sm:text-[10px]">
+                <p className="text-[9px] font-bold uppercase tracking-[3px] text-orange-400 sm:text-[10px]">
                   NEXORA / SHOPPING BAG
                 </p>
 
               </div>
 
-              <h1 className="mt-2 text-2xl lg:text-4xl font-semibold tracking-[-1px] text-white sm:text-4xl md:text-5xl">
+              <h1 className="mt-2 text-2xl font-semibold tracking-[-1px] text-white lg:text-4xl sm:text-4xl md:text-5xl">
                 Your Bag
               </h1>
 
               <p className="mt-2 text-xs text-white/50 sm:text-sm">
                 Everything you selected, all in one place.
               </p>
-
             </div>
 
             {/* ITEM COUNT */}
@@ -296,7 +392,6 @@ const Cart = () => {
               </div>
 
               <div>
-
                 <p className="text-[8px] font-bold uppercase tracking-[1px] text-white/40">
                   Items
                 </p>
@@ -305,7 +400,6 @@ const Cart = () => {
                   {totalItems}{" "}
                   {totalItems === 1 ? "item" : "items"}
                 </p>
-
               </div>
 
             </div>
@@ -347,16 +441,13 @@ const Cart = () => {
                         <p className="text-xs font-bold text-[#101828] sm:text-sm">
                           You're{" "}
                           <span className="text-orange-500">
-                            {formatPrice(
-                              remainingForFreeDelivery
-                            )}
+                            {formatPrice(remainingForFreeDelivery)}
                           </span>{" "}
                           away from free delivery
                         </p>
 
                         <p className="mt-1 text-[9px] text-[#98A2B3] sm:text-[10px]">
-                          Add something you love and
-                          we'll deliver it for free.
+                          Add something you love and we'll deliver it for free.
                         </p>
                       </>
                     ) : (
@@ -371,8 +462,7 @@ const Cart = () => {
                         </p>
 
                         <p className="mt-1 text-[9px] text-[#98A2B3] sm:text-[10px]">
-                          Nice choice. Your order qualifies
-                          for free shipping.
+                          Nice choice. Your order qualifies for free shipping.
                         </p>
                       </>
                     )}
@@ -396,12 +486,9 @@ const Cart = () => {
                 />
 
               </div>
-
             </div>
 
-            {/* ==================================
-                CART PRODUCTS
-            ================================== */}
+            {/* CART PRODUCTS */}
 
             <div className="overflow-hidden rounded-[26px] border border-[#e7e7e4] bg-white shadow-[0_10px_40px_rgba(16,24,40,0.05)]">
 
@@ -432,6 +519,7 @@ const Cart = () => {
               <div className="divide-y divide-[#eeeeec]">
 
                 {cartItems.map((item) => (
+
                   <div
                     key={item.id}
                     className="group p-4 transition hover:bg-[#fcfcfb] sm:p-6"
@@ -447,10 +535,13 @@ const Cart = () => {
                           src={item.image}
                           alt={item.title}
                           className="h-full w-full object-cover transition duration-700 group-hover:scale-105"
+                          onError={(e) => {
+                            e.currentTarget.src =
+                              "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=90";
+                          }}
                         />
 
-                        {item.oldPrice >
-                          item.price && (
+                        {item.oldPrice > item.price && (
                           <div className="absolute left-2.5 top-2.5 rounded-full bg-[#101828] px-2 py-1 text-[7px] font-bold tracking-wide text-white">
                             SALE
                           </div>
@@ -481,9 +572,7 @@ const Cart = () => {
                           {/* REMOVE */}
 
                           <button
-                            onClick={() =>
-                              removeItem(item.id)
-                            }
+                            onClick={() => removeItem(item.id)}
                             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#98A2B3] transition hover:bg-red-50 hover:text-red-500"
                           >
                             <FiTrash2 size={14} />
@@ -495,12 +584,24 @@ const Cart = () => {
 
                         <div className="mt-2.5 flex flex-wrap gap-2">
 
-                          <span className="rounded-md bg-[#F7F7F5] px-2.5 py-1.5 text-[9px] font-semibold text-[#667085]">
-                            Size <span className="text-[#101828]">{item.size}</span>
-                          </span>
+                          {/* SIZE */}
+
+                          {item.size && (
+                            <span className="rounded-md bg-[#F7F7F5] px-2.5 py-1.5 text-[9px] font-semibold text-[#667085]">
+                              Size{" "}
+                              <span className="text-[#101828]">
+                                {item.size}
+                              </span>
+                            </span>
+                          )}
+
+                          {/* COLOR */}
 
                           <span className="rounded-md bg-[#F7F7F5] px-2.5 py-1.5 text-[9px] font-semibold text-[#667085]">
-                            Color <span className="text-[#101828]">{item.color}</span>
+                            Color{" "}
+                            <span className="text-[#101828]">
+                              {item.color}
+                            </span>
                           </span>
 
                         </div>
@@ -528,9 +629,7 @@ const Cart = () => {
 
                               <button
                                 onClick={() =>
-                                  decreaseQuantity(
-                                    item.id
-                                  )
+                                  decreaseQuantity(item.id)
                                 }
                                 className="flex h-7 w-7 items-center justify-center rounded-md text-[#475467] transition hover:bg-[#F2F4F7]"
                               >
@@ -543,9 +642,7 @@ const Cart = () => {
 
                               <button
                                 onClick={() =>
-                                  increaseQuantity(
-                                    item.id
-                                  )
+                                  increaseQuantity(item.id)
                                 }
                                 className="flex h-7 w-7 items-center justify-center rounded-md text-[#475467] transition hover:bg-[#F2F4F7]"
                               >
@@ -563,17 +660,15 @@ const Cart = () => {
 
                               <span className="text-base font-black text-[#101828] sm:text-lg">
                                 {formatPrice(
-                                  item.price *
-                                    item.quantity
+                                  item.price * item.quantity,
                                 )}
                               </span>
 
-                              {item.oldPrice >
-                                item.price && (
+                              {item.oldPrice > item.price && (
                                 <span className="text-[10px] text-[#98A2B3] line-through">
                                   {formatPrice(
                                     item.oldPrice *
-                                      item.quantity
+                                      item.quantity,
                                   )}
                                 </span>
                               )}
@@ -587,7 +682,6 @@ const Cart = () => {
                           </div>
 
                         </div>
-
                       </div>
                     </div>
 
@@ -603,7 +697,6 @@ const Cart = () => {
 
               </div>
             </div>
-
           </div>
 
           {/* ======================================
@@ -639,7 +732,6 @@ const Cart = () => {
                   </div>
 
                 </div>
-
               </div>
 
               {/* SUMMARY BODY */}
@@ -703,13 +795,10 @@ const Cart = () => {
                     >
                       {deliveryCharge === 0
                         ? "FREE"
-                        : formatPrice(
-                            deliveryCharge
-                          )}
+                        : formatPrice(deliveryCharge)}
                     </span>
 
                   </div>
-
                 </div>
 
                 {/* DIVIDER */}
@@ -719,9 +808,7 @@ const Cart = () => {
                 {/* PROMO */}
 
                 <button
-                  onClick={() =>
-                    setShowPromo(!showPromo)
-                  }
+                  onClick={() => setShowPromo(!showPromo)}
                   className="flex w-full items-center justify-between rounded-xl bg-[#F8F8F6] px-3.5 py-3 text-left transition hover:bg-[#F2F2EF]"
                 >
 
@@ -745,17 +832,12 @@ const Cart = () => {
 
                   </div>
 
-                  {showPromo ? (
-                    <FiChevronDown
-                      size={14}
-                      className="rotate-180 text-[#98A2B3]"
-                    />
-                  ) : (
-                    <FiChevronDown
-                      size={14}
-                      className="text-[#98A2B3]"
-                    />
-                  )}
+                  <FiChevronDown
+                    size={14}
+                    className={`text-[#98A2B3] transition ${
+                      showPromo ? "rotate-180" : ""
+                    }`}
+                  />
 
                 </button>
 
@@ -770,9 +852,7 @@ const Cart = () => {
                         type="text"
                         value={promoCode}
                         onChange={(e) =>
-                          setPromoCode(
-                            e.target.value
-                          )
+                          setPromoCode(e.target.value)
                         }
                         placeholder="Enter promo code"
                         className="min-w-0 flex-1 px-3 text-xs font-medium text-[#101828] outline-none placeholder:text-[#98A2B3]"
@@ -789,8 +869,11 @@ const Cart = () => {
 
                     {promoApplied ? (
                       <div className="mt-2 flex items-center gap-1.5 text-[9px] font-bold text-[#039855]">
+
                         <FiCheck size={11} />
+
                         NEXORA10 applied — 10% saved
+
                       </div>
                     ) : (
                       <p className="mt-2 text-[9px] text-[#98A2B3]">
@@ -824,8 +907,7 @@ const Cart = () => {
 
                     <span className="mb-1 rounded-full bg-[#ECFDF3] px-2.5 py-1 text-[8px] font-bold text-[#039855]">
                       {formatPrice(
-                        productDiscount +
-                          promoDiscount
+                        productDiscount + promoDiscount,
                       )}{" "}
                       saved
                     </span>
@@ -842,30 +924,23 @@ const Cart = () => {
 
                 <button
                   onClick={() =>
-                    console.log(
-                      "Proceed to Checkout"
-                    )
+                    console.log("Proceed to Checkout")
                   }
                   className="group mt-4 flex h-13 w-full items-center justify-center gap-2 rounded-xl bg-orange-500 px-5 py-3.5 text-sm font-extrabold text-white shadow-[0_10px_28px_rgba(249,115,22,0.28)] transition duration-300 hover:bg-orange-600 hover:shadow-[0_14px_32px_rgba(249,115,22,0.35)]"
                 >
-
                   Secure Checkout
 
                   <FiArrowRight
                     size={17}
                     className="transition-transform duration-300 group-hover:translate-x-1"
                   />
-
                 </button>
 
                 {/* SECURITY */}
 
                 <div className="mt-4 flex items-center justify-center gap-1.5 text-[8px] font-medium text-[#98A2B3]">
-
                   <FiLock size={10} />
-
                   Secure & encrypted checkout
-
                 </div>
 
                 {/* PAYMENT */}
@@ -895,15 +970,11 @@ const Cart = () => {
                     </span>
 
                   </div>
-
                 </div>
-
               </div>
             </div>
 
-            {/* ==================================
-                TRUST CARDS
-            ================================== */}
+            {/* TRUST CARDS */}
 
             <div className="mt-3 grid grid-cols-2 gap-3">
 
@@ -957,6 +1028,7 @@ const Cart = () => {
             </div>
 
             <div>
+
               <p className="text-xs font-bold text-[#101828]">
                 Free Delivery
               </p>
@@ -964,6 +1036,7 @@ const Cart = () => {
               <p className="mt-0.5 text-[9px] text-[#98A2B3]">
                 On orders above ₹3,000
               </p>
+
             </div>
 
           </div>
@@ -975,6 +1048,7 @@ const Cart = () => {
             </div>
 
             <div>
+
               <p className="text-xs font-bold text-[#101828]">
                 Protected Checkout
               </p>
@@ -982,6 +1056,7 @@ const Cart = () => {
               <p className="mt-0.5 text-[9px] text-[#98A2B3]">
                 Safe & encrypted payments
               </p>
+
             </div>
 
           </div>
@@ -993,6 +1068,7 @@ const Cart = () => {
             </div>
 
             <div>
+
               <p className="text-xs font-bold text-[#101828]">
                 Easy Returns
               </p>
@@ -1000,15 +1076,16 @@ const Cart = () => {
               <p className="mt-0.5 text-[9px] text-[#98A2B3]">
                 Simple return experience
               </p>
+
             </div>
 
           </div>
 
         </div>
-
       </div>
     </div>
   );
 };
 
 export default Cart;
+

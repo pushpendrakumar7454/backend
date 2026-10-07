@@ -90,24 +90,29 @@ export const addToCartController = async (req, res) => {
   }
 };
 
+export const getCartController = async (req, res) => {
+  try {
+    let cart = await cartModel
+      .findOne({ user: req.user.userId })
+      .populate("products.product");
 
-
-export const getCartController=async(req,res)=>{
-    try {
-        
-  const cart=(await cartModel.findOne({user:req.user.userId}))||
-             (await cartModel.create({user:req.user.userId}))
-
-  return res.status(200).json({
-    message:"cart receive  succefully",
-    data:{
-        cart:cart
+    if (!cart) {
+      cart = await cartModel.create({
+        user: req.user.userId,
+      });
     }
-  })           
 
-    } catch (error) {
-        return res.status(500).json({
-            message:"internal server error"
-        })
-    }
-}
+    return res.status(200).json({
+      message: "cart receive succefully",
+      data: {
+        cart: cart,
+      },
+    });
+  } catch (error) {
+    console.log("GET CART ERROR:", error);
+
+    return res.status(500).json({
+      message: "internal server error",
+    });
+  }
+};

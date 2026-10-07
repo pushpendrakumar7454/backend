@@ -12,11 +12,7 @@ export const addToCartValidator=[
     .exists().withMessage("quantity is required").bail()
     .isInt({min:1}).withMessage("quantity must be a integer greter than 1"),
 
-    body("size")
-    .exists().withMessage("size is required").bail()
-    .isString().withMessage("size must be string").bail()
-    .trim()
-    .isIn(["XS", "S", "L", "XL", "M", "XL", "XXL"]).withMessage("size must be a XS,S,L,XL,M,XL,XXL"),
+   
 
     (req,res,next)=>{
         const errors=validationResult(req)
