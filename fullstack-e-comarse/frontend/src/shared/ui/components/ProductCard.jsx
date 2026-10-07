@@ -5,20 +5,8 @@ import {
   FiArrowUpRight,
 } from "react-icons/fi";
 
-const ProductCard = () => {
+const ProductCard = ({ product }) => {
   const [liked, setLiked] = useState(false);
-
-  const product = {
-    brand: "APPLE",
-    title: "iPhone 16 Pro",
-    price: "₹1,19,999",
-    oldPrice: "₹1,29,999",
-    discount: "8% OFF",
-    rating: "4.9",
-    reviews: "342 Reviews",
-    image:
-      "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?auto=format&fit=crop&w=900&q=90",
-  };
 
   return (
     <div className="group w-full max-w-[340px] overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl">
@@ -42,7 +30,7 @@ const ProductCard = () => {
         {/* Discount Badge */}
         <div className="absolute left-4 top-4 z-20">
           <span className="rounded-full bg-orange-500 px-3 py-1.5 text-[10px] font-bold tracking-wide text-white shadow-lg shadow-orange-500/20">
-            {product.discount}
+            {product.discount || "SPECIAL"}
           </span>
         </div>
 
@@ -63,11 +51,13 @@ const ProductCard = () => {
 
         {/* Product Image */}
         <div className="absolute inset-0 flex items-center justify-center">
+
           <img
-            src={product.image}
+            src={product.images?.[1]}
             alt={product.title}
             className="h-[220px] w-[270px] object-contain drop-shadow-[0_25px_25px_rgba(0,0,0,0.18)] transition-all duration-700 ease-out group-hover:scale-110 group-hover:-rotate-2"
           />
+
         </div>
 
         {/* Premium Badge */}
@@ -82,6 +72,7 @@ const ProductCard = () => {
           View
           <FiArrowUpRight size={13} />
         </button>
+
       </div>
 
       {/* ================= PRODUCT CONTENT ================= */}
@@ -89,7 +80,7 @@ const ProductCard = () => {
 
         {/* Brand */}
         <p className="text-[10px] font-bold tracking-[0.22em] text-orange-500">
-          {product.brand}
+          {product.brand || "NEXORA"}
         </p>
 
         {/* Product Title + Rating */}
@@ -107,10 +98,11 @@ const ProductCard = () => {
             />
 
             <span className="text-[10px] font-bold text-orange-600">
-              {product.rating}
+              {product.rating || "4.8"}
             </span>
 
           </div>
+
         </div>
 
         {/* ================= REVIEWS ================= */}
@@ -146,7 +138,7 @@ const ProductCard = () => {
           </div>
 
           <span className="text-[10px] text-slate-400">
-            {product.reviews}
+            {product.reviews || "Reviews"}
           </span>
 
         </div>
@@ -162,12 +154,14 @@ const ProductCard = () => {
             <div className="flex items-center gap-2">
 
               <span className="text-xl font-black text-slate-900">
-                {product.price}
+                ₹{product.price?.amount}
               </span>
 
-              <span className="text-xs text-slate-400 line-through">
-                {product.oldPrice}
-              </span>
+              {product.oldPrice && (
+                <span className="text-xs text-slate-400 line-through">
+                  ₹{product.oldPrice?.amount}
+                </span>
+              )}
 
             </div>
 
