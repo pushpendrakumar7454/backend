@@ -25,6 +25,7 @@ const cartSchema=new mongoose.Schema({
     }
 })
 
+
 const cartModel=mongoose.model("fullstackEecomarseCartModel",cartSchema) 
 
 export default cartModel
