@@ -26,79 +26,59 @@ const Cart = () => {
   // ==========================================
   // CART DATA
   // ==========================================
+
   const [cartItems, setCartItems] = useState([]);
 
   // ==========================================
   // IMAGE URL
   // ==========================================
+
   const getImageUrl = (images) => {
-    const fallbackImage =
-      "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=90";
-
-    if (!Array.isArray(images) || images.length === 0) {
-      return fallbackImage;
+    if (!images) {
+      return "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=90";
     }
 
-    const image = images[0];
-
-    // Image already full URL
-    if (typeof image === "string") {
-      if (
-        image.startsWith("http://") ||
-        image.startsWith("https://") ||
-        image.startsWith("data:")
-      ) {
-        return image;
+    if (Array.isArray(images)) {
+      if (images.length === 0) {
+        return "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=90";
       }
 
-      return fallbackImage;
-    }
+      const firstImage = images[0];
 
-    // Backend returns image object
-    if (typeof image === "object" && image !== null) {
-      if (image.url) {
-        return image.url;
+      if (typeof firstImage === "string") {
+        return firstImage;
       }
 
-      if (image.filePath) {
-        return image.filePath;
-      }
-
-      if (image.path) {
-        return image.path;
-      }
-
-      if (image.src) {
-        return image.src;
-      }
-
-      if (image.imageUrl) {
-        return image.imageUrl;
+      if (typeof firstImage === "object" && firstImage !== null) {
+        return (
+          firstImage.url ||
+          firstImage.filePath ||
+          firstImage.path ||
+          firstImage.src ||
+          firstImage.imageUrl ||
+          "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=90"
+        );
       }
     }
 
-    return fallbackImage;
+    if (typeof images === "string") {
+      return images;
+    }
+
+    return "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&w=900&q=90";
   };
 
   // ==========================================
-  // GET CART
+  // GET CART DATA
   // ==========================================
+
   const getData = async () => {
     try {
       const res = await apiInstance.get("/cart");
-
-      console.log("CART RESPONSE:", res.data);
-
       const products = res.data?.data?.cart?.products || [];
-
-      console.log("CART PRODUCTS:", products);
-
       const cartData = products.map((item) => {
         /*
-          IMPORTANT:
-
           Backend se product populated hona chahiye:
-
           product: {
             _id,
             title,
@@ -108,126 +88,136 @@ const Cart = () => {
             category
           }
         */
-
         const product =
           item?.product && typeof item.product === "object"
             ? item.product
-            : {};
+            : null;
 
-        // ==========================================
-        // PRICE
-        // ==========================================
         let price = 0;
 
-        if (typeof product.price === "object" && product.price !== null) {
+        if (
+          product?.price &&
+          typeof product.price === "object" &&
+          product.price !== null
+        ) {
           price = Number(product.price.amount) || 0;
         } else {
-          price = Number(product.price) || 0;
+          price = Number(product?.price) || 0;
         }
 
-        // ==========================================
-        // OLD PRICE
-        // ==========================================
         let oldPrice = 0;
 
         if (
+          product?.oldPrice &&
           typeof product.oldPrice === "object" &&
           product.oldPrice !== null
         ) {
           oldPrice = Number(product.oldPrice.amount) || 0;
         } else {
-          oldPrice = Number(product.oldPrice) || 0;
+          oldPrice = Number(product?.oldPrice) || 0;
         }
 
         return {
           id: item?._id,
 
-          productId: product?._id || item?.product,
+          productId:
+            product?._id ||
+            (typeof item?.product === "string" ? item.product : ""),
 
           title: product?.title || "Product",
-
           category: product?.category || "General",
-
           image: getImageUrl(product?.images),
-
           price: price,
-
           oldPrice: oldPrice,
-
           quantity: Number(item?.quantity) || 1,
-
           size: item?.size || null,
-
           color: item?.color || "Default",
         };
       });
 
-      console.log("MAPPED CART PRODUCTS:", cartData);
-
       setCartItems(cartData);
     } catch (error) {
-      console.log("CART ERROR:", error);
       console.log("ERROR RESPONSE:", error?.response?.data);
     }
   };
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [])
+  // ==========================================
+  // UPDATE QUANTITY
+  // ==========================================
 
-  // ==========================================
-  // PROMO
-  // ==========================================
-  const [promoCode, setPromoCode] = useState("");
-  const [promoApplied, setPromoApplied] = useState(false);
-  const [showPromo, setShowPromo] = useState(false);
+  const updateQuantity = async (productId, quantity) => {
+    try {
+      if (!productId) {
+        console.log("Product ID is missing");
+        return;
+      }
+
+      if (quantity < 1) {
+        return;
+      }
+
+      console.log("UPDATE QUANTITY:", {
+        productId,
+        quantity,
+      });
+
+      const res = await apiInstance.patch("/cart/quantity", {
+        productId: productId,
+        quantity: quantity,
+      });
+
+      console.log("QUANTITY UPDATE RESPONSE:", res.data);
+      await getData();
+    } catch (error) {
+      console.log("UPDATE QUANTITY ERROR:", error);
+      console.log(
+        "UPDATE QUANTITY ERROR RESPONSE:",
+        error?.response?.data
+      );
+    }
+  };
 
   // ==========================================
   // INCREASE QUANTITY
   // ==========================================
-  const increaseQuantity = (id) => {
-    setCartItems((items) =>
-      items.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            quantity: item.quantity + 1,
-          };
-        }
 
-        return item;
-      }),
-    );
+  const increaseQuantity = (item) => {
+    updateQuantity(item.productId, item.quantity + 1);
   };
 
   // ==========================================
   // DECREASE QUANTITY
   // ==========================================
-  const decreaseQuantity = (id) => {
-    setCartItems((items) =>
-      items.map((item) => {
-        if (item.id === id) {
-          return {
-            ...item,
-            quantity: Math.max(1, item.quantity - 1),
-          };
-        }
 
-        return item;
-      }),
-    );
+  const decreaseQuantity = (item) => {
+    if (item.quantity <= 1) {
+      return;
+    }
+
+    updateQuantity(item.productId, item.quantity - 1);
   };
 
   // ==========================================
   // REMOVE
   // ==========================================
+
   const removeItem = (id) => {
-    setCartItems((items) => items.filter((item) => item.id !== id));
+    setCartItems((items) =>
+      items.filter((item) => item.id !== id)
+    );
   };
 
   // ==========================================
-  // APPLY PROMO
+  // PROMO
   // ==========================================
+
+  const [promoCode, setPromoCode] = useState("");
+  const [promoApplied, setPromoApplied] = useState(false);
+  const [showPromo, setShowPromo] = useState(false);
+
   const applyPromo = () => {
     if (promoCode.trim().toUpperCase() === "NEXORA10") {
       setPromoApplied(true);
@@ -237,13 +227,15 @@ const Cart = () => {
   // ==========================================
   // PRICE CALCULATIONS
   // ==========================================
+
   let subtotal = 0;
   let originalTotal = 0;
   let totalItems = 0;
 
   for (let i = 0; i < cartItems.length; i++) {
     subtotal =
-      subtotal + cartItems[i].price * cartItems[i].quantity;
+      subtotal +
+      cartItems[i].price * cartItems[i].quantity;
 
     originalTotal =
       originalTotal +
@@ -255,7 +247,7 @@ const Cart = () => {
 
   const productDiscount = Math.max(
     0,
-    originalTotal - subtotal,
+    originalTotal - subtotal
   );
 
   const promoDiscount = promoApplied
@@ -266,7 +258,7 @@ const Cart = () => {
 
   const remainingForFreeDelivery = Math.max(
     0,
-    deliveryLimit - subtotal,
+    deliveryLimit - subtotal
   );
 
   const deliveryCharge =
@@ -277,12 +269,13 @@ const Cart = () => {
 
   const deliveryProgress = Math.min(
     100,
-    Math.round((subtotal / deliveryLimit) * 100),
+    Math.round((subtotal / deliveryLimit) * 100)
   );
 
   // ==========================================
   // FORMAT PRICE
   // ==========================================
+
   const formatPrice = (price) => {
     return `₹${price.toLocaleString("en-IN")}`;
   };
@@ -290,12 +283,14 @@ const Cart = () => {
   // ==========================================
   // EMPTY CART
   // ==========================================
+
   if (cartItems.length === 0) {
     return (
       <div className="min-h-screen bg-[#f5f5f3] px-4 py-8 sm:px-6 lg:px-8">
         <div className="mx-auto flex min-h-[80vh] max-w-[1000px] items-center justify-center">
           <div className="relative w-full overflow-hidden rounded-[32px] border border-[#e7e7e4] bg-white px-6 py-14 text-center shadow-[0_25px_80px_rgba(16,24,40,0.07)] sm:px-12 sm:py-20">
             <div className="absolute -right-20 -top-20 h-48 w-48 rounded-full bg-orange-100/70 blur-3xl" />
+
             <div className="absolute -bottom-20 -left-20 h-48 w-48 rounded-full bg-orange-50 blur-3xl" />
 
             <div className="relative">
@@ -338,9 +333,7 @@ const Cart = () => {
   return (
     <div className="min-h-screen bg-[#f5f5f3] mt-3 p-3">
 
-      {/* ==========================================
-          TOP DARK SECTION
-      ========================================== */}
+      {/* TOP DARK SECTION */}
 
       <div className="rounded-lg bg-[#101828]">
         <div className="mx-auto max-w-[1450px] px-4 pb-16 pt-6 sm:px-6 sm:pb-20 lg:px-8">
@@ -362,16 +355,13 @@ const Cart = () => {
           {/* HEADING */}
 
           <div className="mt-9 flex flex-col justify-between gap-5 sm:flex-row sm:items-end">
-
             <div>
               <div className="flex items-center gap-2">
-
                 <span className="h-1.5 w-1.5 rounded-full bg-orange-500" />
 
                 <p className="text-[9px] font-bold uppercase tracking-[3px] text-orange-400 sm:text-[10px]">
                   NEXORA / SHOPPING BAG
                 </p>
-
               </div>
 
               <h1 className="mt-2 text-2xl font-semibold tracking-[-1px] text-white lg:text-4xl sm:text-4xl md:text-5xl">
@@ -386,7 +376,6 @@ const Cart = () => {
             {/* ITEM COUNT */}
 
             <div className="flex w-fit items-center gap-3 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 backdrop-blur-sm">
-
               <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-orange-500 text-white">
                 <FiShoppingBag size={16} />
               </div>
@@ -401,41 +390,30 @@ const Cart = () => {
                   {totalItems === 1 ? "item" : "items"}
                 </p>
               </div>
-
             </div>
-
           </div>
         </div>
       </div>
 
-      {/* ==========================================
-          MAIN CONTENT
-      ========================================== */}
+      {/* MAIN CONTENT */}
 
       <div className="mx-auto -mt-9 max-w-[1450px] px-3 pb-10 sm:px-5 sm:pb-14 lg:px-8">
-
         <div className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1fr)_410px] xl:gap-7">
 
-          {/* ======================================
-              LEFT
-          ====================================== */}
+          {/* LEFT */}
 
           <div className="min-w-0">
 
             {/* FREE DELIVERY PROGRESS */}
 
             <div className="mb-5 rounded-[22px] border border-[#e7e7e4] bg-white p-4 shadow-[0_10px_35px_rgba(16,24,40,0.05)] sm:p-5">
-
               <div className="flex items-start justify-between gap-4">
-
                 <div className="flex gap-3">
-
                   <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-500">
                     <FiTruck size={17} />
                   </div>
 
                   <div>
-
                     {remainingForFreeDelivery > 0 ? (
                       <>
                         <p className="text-xs font-bold text-[#101828] sm:text-sm">
@@ -466,25 +444,21 @@ const Cart = () => {
                         </p>
                       </>
                     )}
-
                   </div>
                 </div>
 
                 <span className="hidden shrink-0 text-[10px] font-bold text-[#667085] sm:block">
                   {deliveryProgress}%
                 </span>
-
               </div>
 
               <div className="mt-4 h-1.5 overflow-hidden rounded-full bg-[#F2F4F7]">
-
                 <div
                   className="h-full rounded-full bg-orange-500 transition-all duration-500"
                   style={{
                     width: `${deliveryProgress}%`,
                   }}
                 />
-
               </div>
             </div>
 
@@ -495,9 +469,7 @@ const Cart = () => {
               {/* HEADER */}
 
               <div className="flex items-center justify-between border-b border-[#eeeeec] px-4 py-4 sm:px-6 sm:py-5">
-
                 <div>
-
                   <h2 className="text-sm font-extrabold text-[#101828] sm:text-base">
                     Selected Items
                   </h2>
@@ -505,32 +477,26 @@ const Cart = () => {
                   <p className="mt-0.5 text-[9px] text-[#98A2B3] sm:text-[10px]">
                     Check your sizes, colours and quantities
                   </p>
-
                 </div>
 
                 <span className="rounded-full bg-[#F5F5F3] px-3 py-1.5 text-[8px] font-bold tracking-[1px] text-[#667085] sm:text-[9px]">
                   {cartItems.length} PRODUCTS
                 </span>
-
               </div>
 
               {/* ITEMS */}
 
               <div className="divide-y divide-[#eeeeec]">
-
                 {cartItems.map((item) => (
-
                   <div
                     key={item.id}
                     className="group p-4 transition hover:bg-[#fcfcfb] sm:p-6"
                   >
-
                     <div className="flex gap-3 sm:gap-5">
 
                       {/* IMAGE */}
 
                       <div className="relative h-[135px] w-[105px] shrink-0 overflow-hidden rounded-2xl bg-[#f1f1ef] sm:h-[170px] sm:w-[140px] md:h-[185px] md:w-[155px]">
-
                         <img
                           src={item.image}
                           alt={item.title}
@@ -546,7 +512,6 @@ const Cart = () => {
                             SALE
                           </div>
                         )}
-
                       </div>
 
                       {/* CONTENT */}
@@ -556,9 +521,7 @@ const Cart = () => {
                         {/* TOP */}
 
                         <div className="flex items-start justify-between gap-3">
-
                           <div className="min-w-0">
-
                             <p className="text-[8px] font-bold uppercase tracking-[1.5px] text-orange-500 sm:text-[9px]">
                               {item.category}
                             </p>
@@ -566,7 +529,6 @@ const Cart = () => {
                             <h3 className="mt-1 line-clamp-2 max-w-[430px] text-sm font-bold leading-5 text-[#101828] sm:text-base sm:leading-6 md:text-lg">
                               {item.title}
                             </h3>
-
                           </div>
 
                           {/* REMOVE */}
@@ -577,7 +539,6 @@ const Cart = () => {
                           >
                             <FiTrash2 size={14} />
                           </button>
-
                         </div>
 
                         {/* OPTIONS */}
@@ -603,7 +564,6 @@ const Cart = () => {
                               {item.color}
                             </span>
                           </span>
-
                         </div>
 
                         {/* DESKTOP WISHLIST */}
@@ -620,7 +580,6 @@ const Cart = () => {
                           {/* QUANTITY */}
 
                           <div>
-
                             <p className="mb-1.5 text-[8px] font-bold uppercase tracking-[1px] text-[#98A2B3]">
                               Quantity
                             </p>
@@ -629,9 +588,10 @@ const Cart = () => {
 
                               <button
                                 onClick={() =>
-                                  decreaseQuantity(item.id)
+                                  decreaseQuantity(item)
                                 }
-                                className="flex h-7 w-7 items-center justify-center rounded-md text-[#475467] transition hover:bg-[#F2F4F7]"
+                                disabled={item.quantity <= 1}
+                                className="flex h-7 w-7 items-center justify-center rounded-md text-[#475467] transition hover:bg-[#F2F4F7] disabled:cursor-not-allowed disabled:opacity-40"
                               >
                                 <FiMinus size={11} />
                               </button>
@@ -642,45 +602,38 @@ const Cart = () => {
 
                               <button
                                 onClick={() =>
-                                  increaseQuantity(item.id)
+                                  increaseQuantity(item)
                                 }
                                 className="flex h-7 w-7 items-center justify-center rounded-md text-[#475467] transition hover:bg-[#F2F4F7]"
                               >
                                 <FiPlus size={11} />
                               </button>
-
                             </div>
                           </div>
 
                           {/* PRICE */}
 
                           <div className="sm:text-right">
-
                             <div className="flex items-center gap-2 sm:justify-end">
-
                               <span className="text-base font-black text-[#101828] sm:text-lg">
                                 {formatPrice(
-                                  item.price * item.quantity,
+                                  item.price * item.quantity
                                 )}
                               </span>
 
                               {item.oldPrice > item.price && (
                                 <span className="text-[10px] text-[#98A2B3] line-through">
                                   {formatPrice(
-                                    item.oldPrice *
-                                      item.quantity,
+                                    item.oldPrice * item.quantity
                                   )}
                                 </span>
                               )}
-
                             </div>
 
                             <p className="mt-0.5 text-[9px] text-[#98A2B3]">
                               {formatPrice(item.price)} each
                             </p>
-
                           </div>
-
                         </div>
                       </div>
                     </div>
@@ -691,32 +644,24 @@ const Cart = () => {
                       <FiHeart size={12} />
                       Move to wishlist
                     </button>
-
                   </div>
                 ))}
-
               </div>
             </div>
           </div>
 
-          {/* ======================================
-              RIGHT SUMMARY
-          ====================================== */}
+          {/* RIGHT SUMMARY */}
 
           <div className="h-fit xl:sticky xl:top-6">
-
             <div className="overflow-hidden rounded-[28px] border border-[#e7e7e4] bg-white shadow-[0_18px_55px_rgba(16,24,40,0.08)]">
 
               {/* SUMMARY TOP */}
 
               <div className="relative overflow-hidden bg-[#101828] px-5 py-6 text-white sm:px-6">
-
                 <div className="absolute -right-12 -top-16 h-40 w-40 rounded-full bg-orange-500/20 blur-3xl" />
 
                 <div className="relative flex items-center justify-between">
-
                   <div>
-
                     <p className="text-[9px] font-bold uppercase tracking-[2.5px] text-orange-400">
                       ORDER SUMMARY
                     </p>
@@ -724,13 +669,11 @@ const Cart = () => {
                     <h2 className="mt-1 text-xl font-black sm:text-2xl">
                       Almost yours.
                     </h2>
-
                   </div>
 
                   <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-white/10">
                     <FiShoppingBag size={18} />
                   </div>
-
                 </div>
               </div>
 
@@ -743,7 +686,6 @@ const Cart = () => {
                 <div className="space-y-3.5">
 
                   <div className="flex items-center justify-between">
-
                     <span className="text-xs text-[#667085]">
                       Bag total
                     </span>
@@ -751,11 +693,9 @@ const Cart = () => {
                     <span className="text-xs font-bold text-[#344054]">
                       {formatPrice(subtotal)}
                     </span>
-
                   </div>
 
                   <div className="flex items-center justify-between">
-
                     <span className="text-xs text-[#667085]">
                       Product savings
                     </span>
@@ -763,12 +703,10 @@ const Cart = () => {
                     <span className="text-xs font-bold text-[#039855]">
                       - {formatPrice(productDiscount)}
                     </span>
-
                   </div>
 
                   {promoApplied && (
                     <div className="flex items-center justify-between">
-
                       <span className="text-xs text-[#667085]">
                         Promo discount
                       </span>
@@ -776,12 +714,10 @@ const Cart = () => {
                       <span className="text-xs font-bold text-[#039855]">
                         - {formatPrice(promoDiscount)}
                       </span>
-
                     </div>
                   )}
 
                   <div className="flex items-center justify-between">
-
                     <span className="text-xs text-[#667085]">
                       Delivery
                     </span>
@@ -797,7 +733,6 @@ const Cart = () => {
                         ? "FREE"
                         : formatPrice(deliveryCharge)}
                     </span>
-
                   </div>
                 </div>
 
@@ -811,15 +746,12 @@ const Cart = () => {
                   onClick={() => setShowPromo(!showPromo)}
                   className="flex w-full items-center justify-between rounded-xl bg-[#F8F8F6] px-3.5 py-3 text-left transition hover:bg-[#F2F2EF]"
                 >
-
                   <div className="flex items-center gap-2.5">
-
                     <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-white text-orange-500 shadow-sm">
                       <FiTag size={14} />
                     </div>
 
                     <div>
-
                       <p className="text-[10px] font-bold text-[#101828]">
                         Have a promo code?
                       </p>
@@ -827,9 +759,7 @@ const Cart = () => {
                       <p className="mt-0.5 text-[8px] text-[#98A2B3]">
                         Unlock extra savings
                       </p>
-
                     </div>
-
                   </div>
 
                   <FiChevronDown
@@ -838,16 +768,13 @@ const Cart = () => {
                       showPromo ? "rotate-180" : ""
                     }`}
                   />
-
                 </button>
 
                 {/* PROMO INPUT */}
 
                 {showPromo && (
                   <div className="mt-2.5">
-
                     <div className="flex h-11 overflow-hidden rounded-xl border border-[#D0D5DD] bg-white">
-
                       <input
                         type="text"
                         value={promoCode}
@@ -864,16 +791,12 @@ const Cart = () => {
                       >
                         Apply
                       </button>
-
                     </div>
 
                     {promoApplied ? (
                       <div className="mt-2 flex items-center gap-1.5 text-[9px] font-bold text-[#039855]">
-
                         <FiCheck size={11} />
-
                         NEXORA10 applied — 10% saved
-
                       </div>
                     ) : (
                       <p className="mt-2 text-[9px] text-[#98A2B3]">
@@ -883,18 +806,14 @@ const Cart = () => {
                         </span>
                       </p>
                     )}
-
                   </div>
                 )}
 
                 {/* TOTAL BOX */}
 
                 <div className="mt-5 rounded-2xl bg-[#F8F8F6] p-4 sm:p-5">
-
                   <div className="flex items-end justify-between">
-
                     <div>
-
                       <p className="text-[9px] font-bold uppercase tracking-[1.5px] text-[#98A2B3]">
                         Total
                       </p>
@@ -902,22 +821,19 @@ const Cart = () => {
                       <p className="mt-1 text-2xl font-black tracking-[-0.5px] text-[#101828] sm:text-[28px]">
                         {formatPrice(total)}
                       </p>
-
                     </div>
 
                     <span className="mb-1 rounded-full bg-[#ECFDF3] px-2.5 py-1 text-[8px] font-bold text-[#039855]">
                       {formatPrice(
-                        productDiscount + promoDiscount,
+                        productDiscount + promoDiscount
                       )}{" "}
                       saved
                     </span>
-
                   </div>
 
                   <p className="mt-2 text-[8px] text-[#98A2B3]">
                     Taxes included in the displayed price
                   </p>
-
                 </div>
 
                 {/* CHECKOUT BUTTON */}
@@ -946,13 +862,11 @@ const Cart = () => {
                 {/* PAYMENT */}
 
                 <div className="mt-5 border-t border-[#EAECF0] pt-4">
-
                   <p className="text-center text-[8px] font-bold uppercase tracking-[1.5px] text-[#98A2B3]">
                     Trusted payment methods
                   </p>
 
                   <div className="mt-3 flex justify-center gap-2">
-
                     <span className="flex h-7 items-center rounded-md border border-[#EAECF0] bg-white px-2.5 text-[7px] font-black text-[#475467]">
                       VISA
                     </span>
@@ -968,7 +882,6 @@ const Cart = () => {
                     <span className="flex h-7 items-center rounded-md border border-[#EAECF0] bg-white px-2.5 text-[7px] font-black text-[#475467]">
                       COD
                     </span>
-
                   </div>
                 </div>
               </div>
@@ -977,9 +890,7 @@ const Cart = () => {
             {/* TRUST CARDS */}
 
             <div className="mt-3 grid grid-cols-2 gap-3">
-
               <div className="rounded-2xl border border-[#e7e7e4] bg-white p-3.5 shadow-sm">
-
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#ECFDF3] text-[#039855]">
                   <FiShield size={14} />
                 </div>
@@ -991,11 +902,9 @@ const Cart = () => {
                 <p className="mt-0.5 text-[8px] leading-4 text-[#98A2B3]">
                   Your payment is protected.
                 </p>
-
               </div>
 
               <div className="rounded-2xl border border-[#e7e7e4] bg-white p-3.5 shadow-sm">
-
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-orange-50 text-orange-500">
                   <FiTruck size={14} />
                 </div>
@@ -1007,28 +916,20 @@ const Cart = () => {
                 <p className="mt-0.5 text-[8px] leading-4 text-[#98A2B3]">
                   Quick & reliable shipping.
                 </p>
-
               </div>
-
             </div>
-
           </div>
         </div>
 
-        {/* ==========================================
-            BOTTOM TRUST STRIP
-        ========================================== */}
+        {/* BOTTOM TRUST STRIP */}
 
         <div className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-3">
-
           <div className="flex items-center gap-3 rounded-2xl border border-[#e7e7e4] bg-white px-4 py-4">
-
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-orange-50 text-orange-500">
               <FiTruck size={17} />
             </div>
 
             <div>
-
               <p className="text-xs font-bold text-[#101828]">
                 Free Delivery
               </p>
@@ -1036,19 +937,15 @@ const Cart = () => {
               <p className="mt-0.5 text-[9px] text-[#98A2B3]">
                 On orders above ₹3,000
               </p>
-
             </div>
-
           </div>
 
           <div className="flex items-center gap-3 rounded-2xl border border-[#e7e7e4] bg-white px-4 py-4">
-
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#ECFDF3] text-[#039855]">
               <FiShield size={17} />
             </div>
 
             <div>
-
               <p className="text-xs font-bold text-[#101828]">
                 Protected Checkout
               </p>
@@ -1056,19 +953,15 @@ const Cart = () => {
               <p className="mt-0.5 text-[9px] text-[#98A2B3]">
                 Safe & encrypted payments
               </p>
-
             </div>
-
           </div>
 
           <div className="flex items-center gap-3 rounded-2xl border border-[#e7e7e4] bg-white px-4 py-4">
-
             <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#EFF8FF] text-[#1570EF]">
               <FiCheck size={17} />
             </div>
 
             <div>
-
               <p className="text-xs font-bold text-[#101828]">
                 Easy Returns
               </p>
@@ -1076,11 +969,8 @@ const Cart = () => {
               <p className="mt-0.5 text-[9px] text-[#98A2B3]">
                 Simple return experience
               </p>
-
             </div>
-
           </div>
-
         </div>
       </div>
     </div>
