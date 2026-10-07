@@ -3,9 +3,9 @@ import { Navigate, Outlet } from "react-router";
 import { useSelector } from "react-redux";
 
 const ProtectedRoute = () => {
-    const { users, loading } = useSelector((state) => state.auth);
+    const { users, isLoading } = useSelector((state) => state.auth);
 
-    if (loading) {
+    if (isLoading) {
         return (
             <div className="min-h-screen flex items-center justify-center">
                 <h1 className="text-xl font-semibold">
