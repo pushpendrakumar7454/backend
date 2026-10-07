@@ -1,18 +1,25 @@
-
-import React from 'react'
-import { Navigate, Outlet } from 'react-router'
-import { useSelector } from 'react-redux'
+import React from "react";
+import { Navigate, Outlet } from "react-router";
+import { useSelector } from "react-redux";
 
 const ProtectedRoute = () => {
+    const { users, loading } = useSelector((state) => state.auth);
 
-    const { users } = useSelector((state) => state.auth)
-
-    if (!users) {
-        return <Navigate to={"/login"} replace />
+    if (loading) {
+        return (
+            <div className="min-h-screen flex items-center justify-center">
+                <h1 className="text-xl font-semibold">
+                    Loading...
+                </h1>
+            </div>
+        );
     }
 
-    return <Outlet />
-}
+    if (!users) {
+        return <Navigate to="/login" replace />;
+    }
 
-export default ProtectedRoute
+    return <Outlet />;
+};
 
+export default ProtectedRoute;
