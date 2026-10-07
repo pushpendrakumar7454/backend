@@ -20,6 +20,8 @@ import SellerLayout from "../app/Layout/SellerLayout";
 import UserLayout from "../app/Layout/UserLayout";
 
 import ProductHero from "../shared/ui/components/ProductHero";
+import ProductCard from "../shared/ui/components/ProductCard";
+import HomePage from "../shared/ui/pages/HomePage";
 
 const AppRout = () => {
   const dispatch = useDispatch();
@@ -47,9 +49,9 @@ const AppRout = () => {
 
           children: [
             {
-              index: true,
-              element: <ProductHero />,
-            },
+              path:"",
+              element: <HomePage/>,
+            }
           ],
         },
 
