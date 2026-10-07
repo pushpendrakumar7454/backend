@@ -54,7 +54,7 @@ const AppRout = () => {
               element: <HomePage/>,
             },
             {
-                path:"product-detail",
+                path:"product-detail/:id",
                 element:<ProductDetail/>
             }
           ],
