@@ -34,7 +34,7 @@ const ProductDetail = () => {
 
   const getData = async () => {
     try {
-     const res = await apiInstance.get(`/products/find/${id}`);
+     const res = await apiInstance.get(`/products/findone/${id}`);
          console.log("PRODUCT ID:", id);
         console.log("PRODUCT API RESPONSE:", res.data);
 
