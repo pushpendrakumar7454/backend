@@ -5,82 +5,76 @@ import Login from "../features/auth/ui/components/Login";
 
 import { useEffect } from "react";
 import { hydreadUser } from "../features/auth/api/useApi";
-
 import { useDispatch } from "react-redux";
 import { addUser } from "../features/auth/state/authSlice";
 
 import ProtectedRoute from "./ProteectedRoute/ProtectedRoute";
 import PublicProtectedRoute from "./Public/PublicProtectedRoute";
 
-import Layout from "../app/Layout/Layout";
-
-import UserHeader from "../shared/ui/components/UserHeader";
-import SellerHeader from "../shared/ui/components/SellerHeader";
 import HomeRedirect from "../shared/ui/components/HomeRedirect";
 
+import SellerLayout from "../app/Layout/SellerLayout";
+import UserLayout from "../app/Layout/UserLayout";
 
 const AppRout = () => {
-  const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const res = await hydreadUser();
+    useEffect(() => {
+        (async () => {
+            try {
+                const res = await hydreadUser();
 
-        dispatch(addUser(res.data.user));
-      } catch (error) {
-        console.log(error);
-      }
-    })();
-  }, [dispatch]);
+                dispatch(addUser(res.data.user));
+            } catch (error) {
+                console.log(error);
+            }
+        })();
+    }, [dispatch]);
 
-  const router = createBrowserRouter([
-    {
-      path: "/",
-      element: <ProtectedRoute />,
-
-      children: [
+    const router = createBrowserRouter([
         {
-          element: <Layout />,
+            element: <ProtectedRoute />,
+            children: [
+                {
+                    path: "/user-header",
+                    element: <UserLayout />,
+                    children: [
+                        {
+                            index: true,
+                            element: <HomeRedirect />,
+                        },
+                    ],
+                },
 
-          children: [
-            {
-              index: true,
-              element:<HomeRedirect/>,
-            },
-
-            {
-              path: "user-header",
-              element: <UserHeader />,
-            },
-
-            {
-              path: "seller-header",
-              element: <SellerHeader />,
-            },
-          ],
-        },
-      ],
-    },
-
-    {
-      element: <PublicProtectedRoute />,
-
-      children: [
-        {
-          path: "/login",
-          element: <Login />,
+                {
+                    path: "/seller-header",
+                    element: <SellerLayout />,
+                    children: [
+                        {
+                            index: true,
+                            element: <HomeRedirect />,
+                        },
+                    ],
+                },
+            ],
         },
 
         {
-          path: "/register",
-          element: <Register />,
+            element: <PublicProtectedRoute />,
+            children: [
+                {
+                    path: "/login",
+                    element: <Login />,
+                },
+                {
+                    path: "/register",
+                    element: <Register />,
+                },
+            ],
         },
-      ],
-    },
-  ]);
+    ]);
 
-  return <RouterProvider router={router} />;
+    return <RouterProvider router={router} />;
 };
 
 export default AppRout;
