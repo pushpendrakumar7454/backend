@@ -4,10 +4,11 @@ import {
   FiStar,
   FiArrowUpRight,
 } from "react-icons/fi";
+import { useNavigate } from "react-router";
 
 const ProductCard = ({ product }) => {
   const [liked, setLiked] = useState(false);
-
+ const navigate= useNavigate()
   return (
     <div className="group w-full max-w-[340px] overflow-hidden rounded-[24px] border border-slate-200 bg-white shadow-sm transition-all duration-500 hover:-translate-y-1 hover:shadow-2xl">
 
@@ -50,7 +51,9 @@ const ProductCard = ({ product }) => {
         </button>
 
         {/* Product Image */}
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div
+        onClick={()=>navigate("/user-header/product-detail")}
+         className="absolute inset-0 flex items-center justify-center">
 
           <img
             src={product.images?.[1]}
