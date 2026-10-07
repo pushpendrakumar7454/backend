@@ -5,7 +5,7 @@ export const createProductValidator=[
     .exists().withMessage("title is required").bail()
     .isString().withMessage("title must be strinng").bail()
     .trim()
-    .isLength({min:10,max:100}).withMessage("title must be cantain minimum 10 character and maximum 100 character")
+    .isLength({min:2,max:100}).withMessage("title must be cantain minimum 10 character and maximum 100 character")
     .isAlpha("en-US",{ignore:" "}).withMessage("title can only have small letters and capital letters"),
 
     body("description")
