@@ -167,3 +167,54 @@ export const updateCartQunatityController=async(req,res)=>{
     })
   }
 }
+
+
+
+export const removeCartProductController = async (req, res) => {
+  try {
+    const { productId } = req.body;
+
+    if (!productId) {
+      return res.status(400).json({
+        message: "product id is required",
+      });
+    }
+
+    const cart = await cartModel.findOne({
+      user: req.user.userId,
+    });
+
+    if (!cart) {
+      return res.status(404).json({
+        message: "cart not found",
+      });
+    }
+
+    const productIndex = cart.products.findIndex(
+      (item) => item.product.toString() === productId
+    );
+
+    if (productIndex === -1) {
+      return res.status(404).json({
+        message: "product not found in cart",
+      });
+    }
+
+    cart.products.splice(productIndex, 1);
+
+    await cart.save();
+
+    return res.status(200).json({
+      message: "product removed from cart successfully",
+      data: {
+        cart: cart,
+      },
+    });
+  } catch (error) {
+    console.log("REMOVE CART PRODUCT ERROR:", error);
+
+    return res.status(500).json({
+      message: "internal server error",
+    });
+  }
+};

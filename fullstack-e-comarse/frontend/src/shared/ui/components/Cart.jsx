@@ -176,15 +176,27 @@ const discreasePeoductQuantity=(item)=>{
   updateQuantity(item.productId,item.quantity-1)
 }
 
-  const removeItem = (id) => {
-    setCartItems((items) =>
-      items.filter((item) => item.id !== id)
-    );
-  };
 
-  // ==========================================
-  // PROMO
-  // ==========================================
+//delete product 
+
+const removeItem = async (productId) => {
+  try {
+    if (!productId) return;
+
+    const res = await apiInstance.delete("/cart/remove", {
+      data: {
+        productId: productId,
+      },
+    });
+
+    console.log("REMOVE CART RESPONSE:", res.data);
+
+    await getData();
+  } catch (error) {
+    console.log("REMOVE CART ERROR:", error);
+    console.log("ERROR RESPONSE:", error?.response?.data);
+  }
+};
 
   const [promoCode, setPromoCode] = useState("");
   const [promoApplied, setPromoApplied] = useState(false);
@@ -506,7 +518,7 @@ const discreasePeoductQuantity=(item)=>{
                           {/* REMOVE */}
 
                           <button
-                            onClick={() => removeItem(item.id)}
+                            onClick={() => removeItem(item.productId)}
                             className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-[#98A2B3] transition hover:bg-red-50 hover:text-red-500"
                           >
                             <FiTrash2 size={14} />
