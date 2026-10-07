@@ -144,65 +144,37 @@ const Cart = () => {
   useEffect(() => {
     getData();
   }, [])
-  // ==========================================
-  // UPDATE QUANTITY
-  // ==========================================
 
-  const updateQuantity = async (productId, quantity) => {
-    try {
-      if (!productId) {
-        console.log("Product ID is missing");
-        return;
-      }
 
-      if (quantity < 1) {
-        return;
-      }
 
-      console.log("UPDATE QUANTITY:", {
-        productId,
-        quantity,
-      });
+  //update quntity function 
 
-      const res = await apiInstance.patch("/cart/quantity", {
-        productId: productId,
-        quantity: quantity,
-      });
 
-      console.log("QUANTITY UPDATE RESPONSE:", res.data);
-      await getData();
-    } catch (error) {
-      console.log("UPDATE QUANTITY ERROR:", error);
-      console.log(
-        "UPDATE QUANTITY ERROR RESPONSE:",
-        error?.response?.data
-      );
-    }
-  };
+const updateQuantity=async(productId,quantity)=>{
+  try {
+    if(!productId) return
+    if(quantity<1) return
+    const res=await apiInstance.patch("/cart/quantity",{
+      productId,quantity
+    })
+    console.log(res)
+    await getData()
+  } catch (error) {
+    console.log(error)
+  }
+}
 
-  // ==========================================
-  // INCREASE QUANTITY
-  // ==========================================
+//increase qunatity of product
+const increaseProductQuantity=(item)=>{
+  updateQuantity(item.productId,item.quantity+1)
+}
 
-  const increaseQuantity = (item) => {
-    updateQuantity(item.productId, item.quantity + 1);
-  };
+//discrese quantity of products
 
-  // ==========================================
-  // DECREASE QUANTITY
-  // ==========================================
-
-  const decreaseQuantity = (item) => {
-    if (item.quantity <= 1) {
-      return;
-    }
-
-    updateQuantity(item.productId, item.quantity - 1);
-  };
-
-  // ==========================================
-  // REMOVE
-  // ==========================================
+const discreasePeoductQuantity=(item)=>{
+  if(item.quantity<=1)return
+  updateQuantity(item.productId,item.quantity-1)
+}
 
   const removeItem = (id) => {
     setCartItems((items) =>
@@ -587,9 +559,7 @@ const Cart = () => {
                             <div className="flex h-9 w-[108px] items-center justify-between rounded-lg border border-[#D0D5DD] bg-white px-1 sm:h-10 sm:w-[116px]">
 
                               <button
-                                onClick={() =>
-                                  decreaseQuantity(item)
-                                }
+                                onClick={()=>discreasePeoductQuantity(item)}
                                 disabled={item.quantity <= 1}
                                 className="flex h-7 w-7 items-center justify-center rounded-md text-[#475467] transition hover:bg-[#F2F4F7] disabled:cursor-not-allowed disabled:opacity-40"
                               >
@@ -601,9 +571,7 @@ const Cart = () => {
                               </span>
 
                               <button
-                                onClick={() =>
-                                  increaseQuantity(item)
-                                }
+                                onClick={()=>increaseProductQuantity(item)}
                                 className="flex h-7 w-7 items-center justify-center rounded-md text-[#475467] transition hover:bg-[#F2F4F7]"
                               >
                                 <FiPlus size={11} />
