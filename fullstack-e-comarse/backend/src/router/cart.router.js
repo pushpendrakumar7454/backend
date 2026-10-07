@@ -7,5 +7,6 @@ const router = Router()
 
 router.post("/add",authenticate,addToCartValidator,addToCartController)
 router.get("/",authenticate,getCartController)
+router.patch("/quantity",authenticate, updateCartQuantityController);
 
 export default router
