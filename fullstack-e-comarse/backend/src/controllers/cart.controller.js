@@ -134,7 +134,7 @@ export const updateCartQunatityController=async(req,res)=>{
       })
     }
 
-    const cart=await cartModel.findOne({user:req.user.usedId})
+    const cart=await cartModel.findOne({user:req.user.userId})
      
      if(!cart){
       return res.status(404).json({
