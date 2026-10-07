@@ -12,6 +12,7 @@ import {
   listAllProductBySellerController,
   listAllProductController,
   unlistProductController,
+  findProductByIdController,
 } from "../controllers/product.controller.js";
 import {
   createProductValidator,
@@ -34,7 +35,7 @@ router.post(
   createProductController,
 );
 router.get("/find", authenticate, findAllProductsControler); //for user find router
-
+router.get("/findone",authenticate,findProductByIdController)
 router.delete(
   "/delete/:id",
   authenticate,
