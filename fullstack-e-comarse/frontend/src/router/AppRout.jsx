@@ -22,6 +22,7 @@ import UserLayout from "../app/Layout/UserLayout";
 import ProductHero from "../shared/ui/components/ProductHero";
 import ProductCard from "../shared/ui/components/ProductCard";
 import HomePage from "../shared/ui/pages/HomePage";
+import ProductDetail from "../shared/ui/components/ProductDetail";
 
 const AppRout = () => {
   const dispatch = useDispatch();
@@ -51,6 +52,10 @@ const AppRout = () => {
             {
               path:"",
               element: <HomePage/>,
+            },
+            {
+                path:"product-detail",
+                element:<ProductDetail/>
             }
           ],
         },
