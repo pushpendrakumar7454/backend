@@ -116,3 +116,54 @@ export const getCartController = async (req, res) => {
     });
   }
 };
+
+
+export const updateCartQunatityController=async(req,res)=>{
+  try {
+
+    const {productId,quantity}=req.body
+    if(!productId || quantity=== undefined){
+      return res.status(400).json({
+        message:"product id and quntity is required"
+      })
+    }
+
+    if(quantity<1){
+      return res.status(400).json({
+        message:"quantity can not less then 1"
+      })
+    }
+
+    const cart=await cartModel.findOne({user:req.user.usedId})
+     
+     if(!cart){
+      return res.status(404).json({
+        message:"product not found"
+      })
+     }
+
+     const item=cart.products.find((p)=>p.product.toString()==productId)
+     if(!item){
+      return res.status(404).json({
+        message:"product not found in cart"
+      })
+     }
+
+     item.quantity=quantity
+     await cart.save()
+
+     return res.status(200).json({
+      message: "quantity updated successfully",
+      data: {
+        cart,
+      },
+    });
+
+
+
+  } catch (error) {
+    return res.status(500).json({
+      message:"internal server error"
+    })
+  }
+}
