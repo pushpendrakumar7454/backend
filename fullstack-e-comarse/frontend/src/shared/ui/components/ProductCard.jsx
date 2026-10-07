@@ -52,7 +52,7 @@ const ProductCard = ({ product }) => {
 
         {/* Product Image */}
         <div
-        onClick={()=>navigate(`/user-header/product-detail/${product.id}`)}
+        onClick={()=>navigate(`/user-header/product-detail/${product._id}`)}
          className="absolute inset-0 flex items-center justify-center">
 
           <img

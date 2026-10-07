@@ -60,6 +60,33 @@ export const findAllProductsControler=async(req,res)=>{
    }
 }
 
+
+export const findProductByIdController = async (req, res) => {
+  try {
+    const { id } = req.params;
+
+    const product = await productModel.findById(id);
+
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found"
+      });
+    }
+
+    return res.status(200).json({
+      message: "Product found successfully",
+      data: product
+    });
+
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: "Internal server error"
+    });
+  }
+};
+
 export const deleteProductController=async(req,res)=>{
     try {
          
