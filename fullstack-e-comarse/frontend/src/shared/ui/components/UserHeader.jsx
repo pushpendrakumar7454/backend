@@ -36,6 +36,7 @@ const UserHeader = () => {
   // User name
   const userName = users?.name || "User";
 
+
   // Logout
   const handleLogout = async () => {
     try {
@@ -199,7 +200,7 @@ const UserHeader = () => {
 
               <button
                 type="button"
-                onClick={() => navigate("/cart")}
+                onClick={() => navigate("/user-header/cart")}
                 className="relative w-10 h-10 rounded-xl flex items-center justify-center text-slate-600 hover:bg-orange-50 hover:text-orange-500 transition">
                 <FiShoppingBag size={20} />
 

@@ -23,6 +23,7 @@ import ProductHero from "../shared/ui/components/ProductHero";
 import ProductCard from "../shared/ui/components/ProductCard";
 import HomePage from "../shared/ui/pages/HomePage";
 import ProductDetail from "../shared/ui/components/ProductDetail";
+import Cart from "../shared/ui/components/Cart";
 
 const AppRout = () => {
   const dispatch = useDispatch();
@@ -56,6 +57,9 @@ const AppRout = () => {
             {
                 path:"product-detail/:id",
                 element:<ProductDetail/>
+            },{
+              path:"cart",
+              element:<Cart/>
             }
           ],
         },
