@@ -23,9 +23,7 @@ export const createProductValidator=[
     .isString().withMessage("currency must be string").bail()
     .isIn(["INR","USD"]).withMessage("currency must be either USD or INR"),
 
-    body("sizes.*.size")
-    .isString().withMessage("size must be string").bail()
-    .isIn(["XS", "S", "L", "XL", "M", "XL", "XXL"]).withMessage("size must be XS, S, M, L, XL or XXL"),
+  
 
     body("sizes.*.stock")
     .exists().withMessage("stock is required").bail()
