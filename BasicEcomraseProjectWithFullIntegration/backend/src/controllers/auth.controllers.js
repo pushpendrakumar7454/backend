@@ -71,6 +71,7 @@ export const authLoginController = async (req, res) => {
       });
     }
 
+    
     const isValidPassword = await bcrypt.compare(password, user.hashPassword);
 
     if (!isValidPassword) {
