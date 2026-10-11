@@ -212,6 +212,7 @@ export const authLogoutController = async (req, res) => {
     const decoded = readRefreshToken(refreshToken);
 
     const { userId } = decoded;
+    
 
     await userModel.findByIdAndUpdate(userId, {
       refreshToken: null,
