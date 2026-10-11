@@ -112,6 +112,7 @@ export const authLoginController = async (req, res) => {
 };
 
 export const authRefreshController = async (req, res) => {
+
   const refreshToken = req.cookies.refreshToken;
 
   if (!refreshToken) {
