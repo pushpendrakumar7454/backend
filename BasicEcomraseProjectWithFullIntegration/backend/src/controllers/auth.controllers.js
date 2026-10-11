@@ -61,6 +61,7 @@ export const authRegisterController = async (req, res) => {
 
 export const authLoginController = async (req, res) => {
   try {
+    
     const { email, password } = req.body;
 
     const user = await userModel.findOne({ email });
