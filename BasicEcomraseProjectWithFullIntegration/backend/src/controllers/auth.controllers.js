@@ -8,6 +8,7 @@ import {
 
 export const authRegisterController = async (req, res) => {
   try {
+    
     const { name, email, password, number } = req.body;
     const allreadyExistEmail = await userModel.findOne({ email });
 
