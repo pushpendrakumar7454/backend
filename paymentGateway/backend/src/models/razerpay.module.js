@@ -1,36 +1,35 @@
-
 import mongoose from "mongoose";
 
-const paymentSchema = new mongoose.Schema(
-  {
-    orderId: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    paymentId: {
-      type: String,
-    },
-    signature: {
-      type: String,
-    },
-    amount: {
-      type: Number,
-      required: true,
-    },
-    currency: {
-      type: String,
-      default: "INR",
-    },
-    status: {
-      type: String,
-      enum: ["pending", "completed", "failed"],
-      default: "pending",
-    },
+const paymentSchema = new mongoose.Schema({
+  orderId: {
+    type: String,
+    required: true,
   },
-  {
-    timestamps: true,
-  }
-);
+  paymentId: {
+    type: String,
+  },
+  signature: {
+    type: String,
+  },
+  amount: {
+    type: Number,
+    required: true,
+  },
+  currency: {
+    type: String,
+    default: "INR",
+  },
+  user: mongoose.Types.ObjectId,
+  ref: "",
+  required: true,
+  status: {
+    type: String,
+    enum: ["pending", "complete", "failed"],
+    default: "pending",
+  },
+});
 
-export default mongoose.model("payment", paymentSchema);
+
+const paymentModel=mongoose.model("RAZERPAYmodel",paymentSchema)
+
+export default paymentModel
