@@ -20,9 +20,9 @@ const paymentSchema = new mongoose.Schema({
     default: "INR",
   },
   user: mongoose.Types.ObjectId,
-  ref: "",
+  ref: "RejorpayPRODUCTmodel",
   required: true,
-  
+
   status: {
     type: String,
     enum: ["pending", "complete", "failed"],
