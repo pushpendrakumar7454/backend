@@ -1,20 +1,94 @@
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-    <title>Document</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Razorpay Payment Gateway</title>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 </head>
+
 <body>
-    
-<h1>Razerpay Payment Gateway</h1>
-    <script>
-     import axios from 'axios'
+  <h1>Razorpay Payment Gateway</h1>
 
+  <button id="payBtn">Pay Now</button>
 
-    </script>
+  <script>
+    async function payNow() {
+      try {
+        // Step 1: Backend se Razorpay order create karo
+        const res = await axios.post(
+          "http://localhost:3000/api/product/6acde99cf1a0dfbc10f711ba/order"
+        );
+
+        const data = res.data;
+
+        // Step 2: Razorpay Checkout options
+        const options = {
+          key: "rzp_test_TnLHYtbx4QQfLp",
+
+          amount: data.order.amount,
+          currency: data.order.currency,
+          order_id: data.order.id,
+
+          name: "Kapda Co.",
+          description: "Payment for " + data.order.id,
+
+          handler: async function (response) {
+            try {
+              // Step 3: Backend par payment verify karo
+              const verify = await axios.post(
+                "http://localhost:3000/api/payment/verify",
+                response
+              );
+
+              if (
+                verify.data.status === "success" ||
+                verify.data.status === "verified"
+              ) {
+                alert("Payment successful!");
+              } else {
+                alert("Payment verification failed!");
+              }
+            } catch (error) {
+              console.log(error.response?.data || error.message);
+              alert("Payment verification failed!");
+            }
+          },
+
+          modal: {
+            ondismiss: function () {
+              console.log("Razorpay Checkout closed");
+            }
+          },
+
+          theme: {
+            color: "#3399cc"
+          }
+        };
+
+        // Step 4: Razorpay UI open karo
+        const rzp = new window.Razorpay(options);
+
+        rzp.on("payment.failed", function (response) {
+          console.log(response.error);
+          alert("Payment failed!");
+        });
+
+        rzp.open();
+
+      } catch (error) {
+        console.log(error.response?.data || error.message);
+        alert("Order create nahi hua. Backend check karo.");
+      }
+    }
+
+    document
+      .getElementById("payBtn")
+      .addEventListener("click", payNow);
+  </script>
 </body>
 </html>
