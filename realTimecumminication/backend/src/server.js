@@ -1,16 +1,29 @@
 import app from "./app/app.js";
 import { config } from "./config/config.js";
 import connectDb from "./config/db.js";
-import {createServer} from 'node:http'
+import { createServer } from "node:http";
+import { Server } from "socket.io";
 
+await connectDb();
 
-await connectDb()
-const port=config.PORT
+const port = config.PORT;
 
+const httpServer = createServer(app);
 
+const io = new Server(httpServer, {
+    cors: {
+        origin: "*",
+    },
+});
 
-const httpServer=createServer(app)
+io.on("connection", (socket) => {
+    console.log("User connected:", socket.id);
 
-httpServer.listen(port,()=>{
-    console.log(`server is running on port ${port}`)
-})
+    socket.on("disconnect", () => {
+        console.log("User disconnected:", socket.id);
+    });
+});
+
+httpServer.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
