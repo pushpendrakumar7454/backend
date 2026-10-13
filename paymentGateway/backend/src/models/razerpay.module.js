@@ -22,6 +22,7 @@ const paymentSchema = new mongoose.Schema({
   user: mongoose.Types.ObjectId,
   ref: "",
   required: true,
+  
   status: {
     type: String,
     enum: ["pending", "complete", "failed"],
