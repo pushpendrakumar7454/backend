@@ -1,50 +1,54 @@
-import {Router} from 'express'
-import productModel from '../models/product.model.js'
-import razorpayInstance from '../config/razerpay.js'
-import paymentModel from '../models/razerpay.module.js'
 
-const router=Router()
+import { Router } from "express";
+import productModel from "../models/product.model.js";
+import razorpayInstance from "../config/razerpay.js";
+import paymentModel from "../models/razerpay.module.js";
 
-router.post("/:productId/order",async(req,res)=>{
-    try {
-        const {productId}=req.params
+const router = Router();
 
-        const product=await productModel.findById(productId)
+router.post("/:productId/order", async (req, res) => {
+  try {
+    const { productId } = req.params;
 
-        if(!product){
-            return res.status(404).json({
-                message:"product not found"
-            })
-        }
+    const product = await productModel.findById(productId);
 
- const order=await razorpayInstance.create({
-    amount:product.price.amount*100,
-    currency:product.price.currency,
-    receipt:`order_rcptid_${productId}`,
-    notes:{
-        productId:productId,
-        productTitle:product.title
+    if (!product) {
+      return res.status(404).json({
+        message: "Product not found",
+      });
     }
- })
 
-const payment=await paymentModel.create({
-    orderId:order.id,
-    productId:productId,
-    amount:product.price.amount,
-    currency:product.price.currency,
-    status:"pending"
-})
+    const order = await razorpayInstance.orders.create({
+      amount: product.price.amount * 100,
+      currency: product.price.currency,
+      receipt: `order_rcptid_${productId}`,
+      notes: {
+        productId: productId,
+        productTitle: product.title,
+      },
+    });
 
-return res.status(201).json(payment)
+    const payment = await paymentModel.create({
+      orderId: order.id,
+      product: product._id,
+      amount: product.price.amount,
+      currency: product.price.currency,
+      status: "pending",
+    });
 
+    return res.status(201).json({
+      message: "Order created successfully",
+      order,
+      payment,
+    });
 
+  } catch (error) {
+    console.log(error);
 
-    } catch (error) {
-        return res.status(500).json({
-            message:"internal server error"
-        })
-    }
-})
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+});
 
-
-export default router
+export default router;
