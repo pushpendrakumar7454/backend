@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const paymentSchema = new mongoose.Schema({
@@ -5,23 +6,35 @@ const paymentSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   paymentId: {
     type: String,
   },
+
   signature: {
     type: String,
   },
+
   amount: {
     type: Number,
     required: true,
   },
+
   currency: {
     type: String,
     default: "INR",
   },
-  user: mongoose.Types.ObjectId,
-  ref: "RejorpayPRODUCTmodel",
-  required: true,
+
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+
+  product: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "RazorpayPRODUCTmodel",
+    required: true,
+  },
 
   status: {
     type: String,
@@ -30,7 +43,9 @@ const paymentSchema = new mongoose.Schema({
   },
 });
 
+const paymentModel = mongoose.model(
+  "RAZERPAYmodel",
+  paymentSchema
+);
 
-const paymentModel=mongoose.model("RAZERPAYmodel",paymentSchema)
-
-export default paymentModel
+export default paymentModel;
