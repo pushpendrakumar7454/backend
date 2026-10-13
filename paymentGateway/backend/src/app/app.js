@@ -2,6 +2,8 @@ import express from 'express'
 import morgen from 'morgan'
 import productRouter from '../router/product.router.js'
 import path from 'path'
+import { fileURLToPath } from 'url'
+const __dirname=path.dirname(fileURLToPath(import.meta.url))
 
 const app=express()
 
