@@ -1,6 +1,6 @@
 
 import mongoose from "mongoose";
-import productModel from "../models/productModel.js";
+import productModel from "../models/product.model.js";
 import {config} from '../config/config.js'
 
 
