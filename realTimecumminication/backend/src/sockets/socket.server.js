@@ -11,6 +11,7 @@ export const initialezeSocket=(httpServer)=>{
         })
         socket.on("elon",(msg)=>{
             console.log("elon event received",msg)
+            io.emit("musk")
         })
     })
 }
