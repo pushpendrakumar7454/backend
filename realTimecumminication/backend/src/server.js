@@ -11,6 +11,7 @@ const port = config.PORT;
 
 const httpServer = createServer(app);
 
+
 initialezeSocket()
 
 httpServer.listen(port, () => {
