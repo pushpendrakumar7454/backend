@@ -9,8 +9,8 @@ export const initialezeSocket=(httpServer)=>{
         socket.on("disconnect",()=>{
             console.log("a user disconnected")
         })
-        socket.on("elon",()=>{
-            console.log("elon event received")
+        socket.on("elon",(msg)=>{
+            console.log("elon event received",msg)
         })
     })
 }
