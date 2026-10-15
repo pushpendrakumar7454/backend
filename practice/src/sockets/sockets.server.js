@@ -8,7 +8,7 @@ const initializeServer=(httpServer)=>{
 
         socket.on("elon",(msg)=>{
             console.log("elen is running",msg)
-            io.emit("musk")
+            io.emit("musk","helle server by a msg")
         })
         socket.on("disconnect",()=>{
         console.log("a user is disconnected")
