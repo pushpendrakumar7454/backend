@@ -7,11 +7,12 @@ import initiallizeServer from './sockets/socket.server.js';
 
 
 
-const httpServer=createServer(app)
-initiallizeServer(httpServer)
+
 
 try {
   await connectDB();
+  const httpServer=createServer(app)
+   initiallizeServer(httpServer)
   const server = httpServer.listen(env.port, () => {
     console.log(`API listening on http://localhost:${env.port}`);
   });
