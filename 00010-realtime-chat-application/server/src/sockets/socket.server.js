@@ -24,6 +24,10 @@ const initiallizeServer = (httpServer) => {
   io.on("connection", (socket) => {
     console.log("A user is connected:", socket.id);
 
+    socket.on("massage",(msg)=>{
+    console.log(msg)
+    })
+
     socket.on("disconnect", () => {
       console.log("A user is disconnected:", socket.id);
     });
