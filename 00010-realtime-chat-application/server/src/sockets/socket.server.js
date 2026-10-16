@@ -13,6 +13,7 @@ const initiallizeServer = (httpServer) => {
     }
     try {
         const decoded=verifyToken(token,'access')
+        socket.user=decoded
         next()
     } catch (error) {
         return next(new Error("authencticated error"))
