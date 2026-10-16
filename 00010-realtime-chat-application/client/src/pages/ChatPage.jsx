@@ -1,54 +1,45 @@
-import React,{useState,useRef, useEffect} from 'react'
-import io from 'socket.io-client'
-import { useDispatch,useSelector } from 'react-redux'
-
-
+import React, { useState, useRef, useEffect } from "react";
+import io from "socket.io-client";
+import { useDispatch, useSelector } from "react-redux";
 
 const ChatPage = () => {
+  const { accessToken } = useSelector((state) => state.auth);
+  const socketRef = useRef(null);
 
+  const [inputValue, setinputValue] = useState("");
 
-    const {accessToken}=useSelector((state)=>state.auth)
-    const socketRef=useRef(null)
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
-
-
-    const [inputValue, setinputValue] = useState("")
-
-    const handleSubmit=(e)=>{
-    e.preventDefault()
-
-    socketRef.current.emit("massage",{
-        content:inputValue
-    })
-    }
-
-
-
-   useEffect(() => {
-  const socket = io({
-    extraHeaders: {
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
-
-  socketRef.current = socket;
-
-  socket.on("massage", (msg) => {
-    console.log(msg);
-  });
-
-  return () => {
-    socket.disconnect();
+    socketRef.current.emit("massage", {
+      content: inputValue,
+    });
   };
-}, []);
+
+  useEffect(() => {
+    const socket = io({
+      extraHeaders: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
+
+    socketRef.current = socket;
+
+    socket.on("massage", (msg) => {
+      console.log(msg);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
+  
   return (
     <div className="h-screen w-full bg-[#f7f7f4] p-3">
-
       <div className="mx-auto flex h-full w-full max-w-4xl flex-col">
-
         {/* Messages Area */}
         <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-2 py-3">
-
           {/* Outgoing Message - Right */}
           <div className="flex justify-end">
             <p className="max-w-[75%] break-words rounded-md bg-[#648653] px-3 py-2 text-xs text-white">
@@ -90,34 +81,28 @@ const ChatPage = () => {
               Yes, absolutely!
             </p>
           </div>
-
         </div>
 
         {/* Input and Button - Same Line */}
-        <div
-    
-          className="flex w-full shrink-0 items-center gap-2 border-t border-gray-200 py-3"
-        >
+        <div className="flex w-full shrink-0 items-center gap-2 border-t border-gray-200 py-3">
           <input
-          onChange={(e)=>setinputValue(e.target.value)}
-          value={inputValue}
+            onChange={(e) => setinputValue(e.target.value)}
+            value={inputValue}
             type="text"
             placeholder="Type a message..."
             className="h-11 min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-4 text-sm outline-none focus:border-[#648653]"
           />
 
           <button
-          onClick={handleSubmit}
+            onClick={handleSubmit}
             type="button"
-            className="h-11 shrink-0 rounded-md bg-[#648653] px-5 text-sm font-medium text-white hover:bg-[#526f43]"
-          >
+            className="h-11 shrink-0 rounded-md bg-[#648653] px-5 text-sm font-medium text-white hover:bg-[#526f43]">
             Send
           </button>
         </div>
-
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ChatPage
+export default ChatPage;
