@@ -6,6 +6,7 @@ import { apiRouter } from './routes/index.routes.js';
 import { notFound } from './middleware/notFound.middleware.js';
 import { errorHandler } from './middleware/error.middleware.js';
 
+
 export const app = express();
 app.disable('x-powered-by');
 app.use(express.json({ limit: '16kb' }));
