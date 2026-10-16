@@ -18,6 +18,9 @@ const ChatPage = () => {
             }
         })
         socketRef.current=socket
+        socket.on("massage",(msg)=>{
+            console.log(msg)
+        })
         return socket.disconnect()
     },[])
   return (
