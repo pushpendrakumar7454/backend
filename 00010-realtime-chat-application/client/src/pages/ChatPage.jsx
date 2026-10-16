@@ -10,19 +10,37 @@ const ChatPage = () => {
     const {accessToken}=useSelector((state)=>state.auth)
     const socketRef=useRef(null)
 
-    useEffect(()=>{
-     
-        const socket=io({
-            extraHeaders:{
-                Authorization:`Bearer ${accessToken}`
-            }
-        })
-        socketRef.current=socket
-        socket.on("massage",(msg)=>{
-            console.log(msg)
-        })
-        return socket.disconnect()
-    },[])
+
+
+    const [inputValue, setinputValue] = useState("")
+
+    const handleSubmit=(e)=>{
+    e.preventDefault()
+
+    socketRef.current.emit("massage",{
+        content:inputValue
+    })
+    }
+
+
+
+   useEffect(() => {
+  const socket = io({
+    extraHeaders: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  socketRef.current = socket;
+
+  socket.on("massage", (msg) => {
+    console.log(msg);
+  });
+
+  return () => {
+    socket.disconnect();
+  };
+}, []);
   return (
     <div className="h-screen w-full bg-[#f7f7f4] p-3">
 
@@ -76,23 +94,26 @@ const ChatPage = () => {
         </div>
 
         {/* Input and Button - Same Line */}
-        <form
-          onSubmit={(e) => e.preventDefault()}
+        <div
+    
           className="flex w-full shrink-0 items-center gap-2 border-t border-gray-200 py-3"
         >
           <input
+          onChange={(e)=>setinputValue(e.target.value)}
+          value={inputValue}
             type="text"
             placeholder="Type a message..."
             className="h-11 min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-4 text-sm outline-none focus:border-[#648653]"
           />
 
           <button
+          onClick={handleSubmit}
             type="button"
             className="h-11 shrink-0 rounded-md bg-[#648653] px-5 text-sm font-medium text-white hover:bg-[#526f43]"
           >
             Send
           </button>
-        </form>
+        </div>
 
       </div>
     </div>
