@@ -25,7 +25,7 @@ const initiallizeServer = (httpServer) => {
     console.log("A user is connected:", socket.id);
 
     socket.on("massage",(msg)=>{
-    console.log(msg)
+    socket.broadcast.emit('massage',msg)
     })
 
     socket.on("disconnect", () => {
