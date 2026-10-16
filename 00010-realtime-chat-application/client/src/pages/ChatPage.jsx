@@ -8,6 +8,7 @@ const ChatPage = () => {
 
 
     const {accessToken}=useSelector((state)=>state.auth)
+    const socketRef=useRef(null)
 
     useEffect(()=>{
      
@@ -16,6 +17,8 @@ const ChatPage = () => {
                 Authorization:`Bearer ${accessToken}`
             }
         })
+        socketRef.current=socket
+        return socket.disconnect()
     },[])
   return (
     <div className="h-screen w-full bg-[#f7f7f4] p-3">
