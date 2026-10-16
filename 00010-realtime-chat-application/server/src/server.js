@@ -3,10 +3,13 @@ import { app } from './app.js';
 import { env } from './config/env.js';
 import { connectDB } from './config/db.js';
 import {createServer} from "node:http"
+import initiallizeServer from './sockets/socket.server.js';
 
 
 
 const httpServer=createServer(app)
+initiallizeServer(httpServer)
+
 try {
   await connectDB();
   const server = httpServer.listen(env.port, () => {

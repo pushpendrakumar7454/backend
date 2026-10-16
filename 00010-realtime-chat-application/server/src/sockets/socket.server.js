@@ -4,7 +4,7 @@ import {Server} from 'socket.io'
 
 const initiallizeServer=(httpServer)=>{
 
-    const io=Server(httpServer)
+    const io=new Server(httpServer)
 
 }
 
