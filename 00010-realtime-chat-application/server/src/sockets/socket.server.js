@@ -1,5 +1,6 @@
 
 import { Server } from "socket.io";
+import { verifyToken } from "../utils/jwt.js";
 
 const initiallizeServer = (httpServer) => {
   const io = new Server(httpServer);
@@ -10,7 +11,12 @@ const initiallizeServer = (httpServer) => {
     if(!token){
         return next(new Error("authenticated error"))
     }
-    next()
+    try {
+        const decoded=verifyToken(token,'access')
+        next()
+    } catch (error) {
+        return next(new Error("authencticated error"))
+    }
   })
 
   // Connection event
