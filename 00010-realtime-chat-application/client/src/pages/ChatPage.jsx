@@ -1,6 +1,22 @@
-import React from 'react'
+import React,{useState,useRef, useEffect} from 'react'
+import io from 'socket.io-client'
+import { useDispatch,useSelector } from 'react-redux'
+
+
 
 const ChatPage = () => {
+
+
+    const {accessToken}=useSelector((state)=>state.auth)
+
+    useEffect(()=>{
+     
+        const socket=io({
+            extraHeaders:{
+                Authorization:`Bearer ${accessToken}`
+            }
+        })
+    },[])
   return (
     <div className="h-screen w-full bg-[#f7f7f4] p-3">
 
