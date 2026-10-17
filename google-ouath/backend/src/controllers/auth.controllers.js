@@ -96,3 +96,25 @@ export const authLoginController=async(req,res)=>{
         })
     }
 }
+
+
+export const authRefreshcontroller=async(req,res)=>{
+
+    const refreshToken=req.cookies.refreshToken
+
+    if(!refreshToken){
+        return res.status(400).json({
+            message:"refresh token not found"
+        })
+    }
+
+    try {
+
+        
+        
+    } catch (error) {
+        return res.status(500).json({
+            message:"internal server error"
+        })
+    }
+}

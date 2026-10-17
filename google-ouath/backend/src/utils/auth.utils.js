@@ -9,3 +9,12 @@ export const readAccessToken=(userId)=>{
 export const readRefreshToken=(userId)=>{
     return jwt.sign({userId},config.REFRESH_TOKEN,{expiresIn:"15d"})
 }
+
+export const verifyAccessToken=(accessToken)=>{
+    return jwt.verify(accessToken,config.ACCESS_TOKEN)
+
+}
+
+export const verfyRefreshToken=(refreshToken)=>{
+    return jwt.verify(refreshToken,config.REFRESH_TOKEN)
+}
