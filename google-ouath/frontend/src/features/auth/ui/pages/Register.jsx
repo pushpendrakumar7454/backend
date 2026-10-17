@@ -1,6 +1,9 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
+import { registerApi } from "../../api/api";
+import { useSelector } from "react-redux";
+import { addUser, setAccessToken } from "../../state/auth";
 
 const Register = () => {
   const {
@@ -9,8 +12,15 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
+
   const onSubmit = async(data) => {
-    
+    try {
+        const res=await registerApi(data)
+         addUser(res.data.user)
+         setAccessToken(res.data.accessToken)
+    } catch (error) {
+        console.log(error)
+    }
   };
 
   return (

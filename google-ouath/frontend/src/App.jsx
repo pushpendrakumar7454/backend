@@ -1,12 +1,17 @@
-import React from 'react'
-import Register from './features/auth/ui/pages/Register'
+
+import React from "react";
+import { Provider } from "react-redux";
+import {store} from "../src/app/store";
+import Register from "./features/auth/ui/pages/Register";
 
 const App = () => {
   return (
-    <div>
-    <Register/>
-    </div>
-  )
-}
+    <Provider store={store}>
+      <div>
+        <Register />
+      </div>
+    </Provider>
+  );
+};
 
-export default App
+export default App;
