@@ -1,12 +1,33 @@
 
-import React from "react";
+import React, { useEffect } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
 
 import Register from "../features/auth/ui/pages/Register";
 import Login from "../features/auth/ui/pages/Login";
 import Profile from "../features/auth/ui/pages/Profile";
+import { hydreatedUser } from "../features/auth/api/api";
+import { useDispatch } from "react-redux";
+import { addUser } from "../features/auth/state/auth";
 
-const router = createBrowserRouter([
+
+const AppRouter = () => {
+
+const dispatch=useDispatch()
+
+    useEffect(()=>{
+      (async()=>{
+        try {
+          const res=await hydreatedUser()
+           console.log(res)
+           dispatch(addUser(res.data.user))
+        } catch (error) {
+         console.log(error) 
+        }
+      })()
+    })
+
+
+  const router = createBrowserRouter([
   {
     path: "/register",
     element: <Register />,
@@ -21,7 +42,6 @@ const router = createBrowserRouter([
   },
 ]);
 
-const AppRouter = () => {
   return <RouterProvider router={router} />;
 };
 
