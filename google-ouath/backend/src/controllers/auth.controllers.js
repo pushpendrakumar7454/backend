@@ -133,7 +133,7 @@ export const authrefreshControllers = async (req, res) => {
 
     try {
         const decoded = readrefreshToken(refreshToken);
-        const { userId, role } = decoded;
+        const { userId} = decoded;
         const user = await userModel.findById(userId);
 
         if (!user) {
@@ -154,13 +154,13 @@ export const authrefreshControllers = async (req, res) => {
 
         const { accessToken } = createAccessToken({
             userId: user._id,
-            role: user.role,
+          
         });
 
         const { refreshToken: newRefreshToken } =
             createRefreshToken({
                 userId: user._id,
-                role: user.role,
+          
             });
 
         await userModel.findByIdAndUpdate(user._id, {
@@ -177,7 +177,6 @@ export const authrefreshControllers = async (req, res) => {
                 user: {
                     name: user.name,
                     email: user.email,
-                    role: user.role,
                     id: user._id,
                 },
                 accessToken,
