@@ -104,13 +104,13 @@ export const authLoginControllers = async (req, res) => {
     return res.status(200).json({
       message: "user login successfully",
       data: {
-        accessToken,
         user: {
           id: user._id,
           name: user.name,
           email: user.email,
          
         },
+        accessToken
       },
     });
   } catch (error) {
