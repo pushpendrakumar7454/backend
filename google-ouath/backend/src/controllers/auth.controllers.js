@@ -1,235 +1,226 @@
-import authModel from "../modules/auth.modules.js";
-import bycrpt from 'bcryptjs'
-import { readAccessToken, readRefreshToken, verfyRefreshToken } from "../utils/auth.utils.js";
-import userModel from "../../../../BasicEcomraseProjectWithFullIntegration/backend/src/modules/auth.module.js";
+import userModel from '../modules/auth.modules.js'
+import bycprt from "bcryptjs";
+import {
+  createAccessToken,
+  createRefreshToken,
+  readrefreshToken,
+} from "../utils/auth.js";
 
 export const authRegisterController = async (req, res) => {
   try {
-    const { name, email, password } = req.body;
+    const { name, password, email } = req.body;
 
-    const allreadyExistEmail = await authModel.findOne({ email });
-    if (allreadyExistEmail) {
+    const alllreadyExistUser = await userModel.findOne({ email });
+
+    if (alllreadyExistUser) {
       return res.status(400).json({
-        message: "email allreadt exist",
+        message: "email allready exists",
+        errors: [
+          {
+            field: "email",
+            message: "user allready exist eith email",
+          },
+        ],
       });
     }
-
-    const user=await authModel.create({
-        name,
-        email,
-        password:await bycrpt.hash(password,6) 
-    })
-
-
-   const accessToken=readAccessToken({userId:user._id})
-   const refreshToken=readRefreshToken({userId:user._id})
-
-   res.cookie("refreshToken",{
-    httpOnly:true
-   })
-
-   await authModel.findByIdAndUpdate(user._id,{refreshToken})
-   return res.status(201).json({
-    message:"user created sucessfully",
-    data:{
-        user:{
-            name:user.name,
-            email:user.email
-        },
-        accessToken
-    }
-   })
-
-  } catch (error) {
-    return res.status(500).json({
-      message: "internal server error",
+    const user = await userModel.create({
+      email,
+      name,
+      password: await bycprt.hash(password, 6),
     });
-  }
-};
 
-
-export const authLoginController=async(req,res)=>{
-    try {
-        
-  const{email,password}=req.body
-
-  const user=await authModel.findOne({email})
-
-  if(!user){
-    return res.status(400).json({
-        message:"user not found"
-    })
-  }
-
-
-  const isValidPassword=await bycrpt.compare(password,user.password)
-
-  if(!isValidPassword){
-    return res.status(400).json({
-        message:"password is wrong"
-    })
-  }
-
-  const accessToken=readAccessToken({userId:user._id})
-  const refreshToken=readRefreshToken({userId:user._id})
-   
-  res.cookie("refreshToken",{
-    httpOnly:true
-  })
-
-  await authModel.findOneAndUpdate({email},{refreshToken})
-
-  return res.status(200).json({
-    message:"user logedIn succefully",
-    data:{
-        user:{
-            name:user.name,
-            email:user.email
-        },
-        accessToken
-    }
-  })
-
-
-    } catch (error) {
-        return res.status(500).json({
-            message:"internal server error"
-        })
-    }
-}
-
-
-export const authRefreshcontroller=async(req,res)=>{
-
-    const refreshToken=req.cookies.refreshToken
-
-    if(!refreshToken){
-        return res.status(404).json({
-            message:"refresh token not found"
-        })
-    }
-
-    try {
-
-       const decoded= verfyRefreshToken(refreshToken)
-       const {userId}=decoded
-
-       const user=await authModel.findById(userId)
-
-       if(!user){
-        return res.status(404).json({
-            message:"user not found"
-        })
-       }
-    if(refreshToken!==user.refreshToken){
-        await authModel.findByIdAndUpdate(user._id,{refreshToken:null})
-
-        return res.status(400).json({
-            message:"refreshToken mismatch"
-        })
-    }
-      
-    const accessToken=readAccessToken({userId:user._id})
-    const newRefreshToken=readRefreshToken({userId:user._id})
-     
-
-    res.cookie("refreshToken",{newRefreshToken},{
-        httpOnly:true
-    })
-
-    await authModel.findByIdAndUpdate(user._id,{newRefreshToken})
-
-    return res.status(200).json({
-        message:"refresh token roteted",
-        data:{
-            user:{
-                name:user.name,
-                email:user.email
-            },
-            accessToken
-        }
-    })
-
-    } catch (error) {
-        return res.status(500).json({
-            message:"internal server error"
-        })
-    }
-}
-
-
-
-export const authMeController=async(req,res)=>{
-    try {
-        
-   const{userId}=req.user
-
-   const user=await authModel.findById(userId)
-
-   if(!user){
-    return res.status(404).json({
-        message:"user not found"
-    })
-   }
-
-   return res.status(200).json({
-    message:"user find succefully",
-    data:{
-        user:{
-            name:user.name,
-            email:user.email
-        }
-    }
-   })
-
-    } catch (error) {
-        return res.status(500).json({
-            message:"intenral server error"
-        })
-    }
-}
-
-
-
-
-
-export const authLogoutController = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-
-  if (!refreshToken) {
-    return res.status(401).json({
-      message: "invalid refreshToken",
+    const { accessToken } = createAccessToken({
+      userId: user._id,
     });
-  }
+    const { refreshToken } = createRefreshToken({
+      userId: user._id,
+    });
 
-  try {
-    const decoded = readRefreshToken(refreshToken);
-    const { userId } = decoded;
-    const user = await authModel.findById(userId);
-    if (!user) {
-      return res.status(404).json({
-        message: "user not found",
-      });
-    }
+    await userModel.findByIdAndUpdate(user._id, {
+      refreshToken,
+    });
 
-    await authModel.findByIdAndUpdate(user._id, { refreshToken: null });
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+    });
 
-    res.clearCookie("refreshToken");
-
-    return res.status(200).json({
-      message: "user logOut succefully",
+    return res.status(201).json({
+      message: "user registered successfully",
       data: {
-        name: user.name,
-        email: user.email,
-        id: user._id,
-        role: user.role,
+        user: {
+          name: user.name,
+          email: user.email,
+        },
+        accessToken,
       },
     });
-
-    
   } catch (error) {
+    console.log(error)
     return res.status(500).json({
       message: "internal server error",
     });
   }
 };
+
+export const authLoginControllers = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await userModel.findOne({ email });
+
+    // User nahi mila
+    if (!user) {
+      return res.status(400).json({
+        message: "invalid email or password",
+      });
+    }
+
+    // Password check
+    const isValiidPassword = await bycprt.compare(password, user.password);
+
+    if (!isValiidPassword) {
+      return res.status(400).json({
+        message: "invalid email or password",
+      });
+    }
+
+    // Generate tokens
+    const { accessToken } = createAccessToken({
+      userId: user._id,
+    });
+
+    const { refreshToken } = createRefreshToken({
+      userId: user._id,
+    });
+
+    // Save refresh token
+    await userModel.findOneAndUpdate({email}, { refreshToken });
+
+    // Set refresh token cookie
+    res.cookie("refreshToken", refreshToken, {
+      httpOnly: true,
+    });
+
+    return res.status(200).json({
+      message: "user login successfully",
+      data: {
+        accessToken,
+        user: {
+          id: user._id,
+          name: user.name,
+          email: user.email,
+         
+        },
+      },
+    });
+  } catch (error) {
+    console.log(error);
+
+    return res.status(500).json({
+      message: "internal server error",
+    });
+  }
+};
+
+export const authrefreshControllers = async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        return res.status(401).json({
+            message: "refresh token is required",
+        });
+    }
+
+    try {
+        const decoded = readrefreshToken(refreshToken);
+        const { userId, role } = decoded;
+        const user = await userModel.findById(userId);
+
+        if (!user) {
+            return res.status(401).json({
+                message: "user not found",
+            });
+        }
+
+        if (refreshToken !== user.refreshToken) {
+            await userModel.findByIdAndUpdate(user._id, {
+                refreshToken: null,
+            });
+
+            return res.status(401).json({
+                message: "refresh mismatch",
+            });
+        }
+
+        const { accessToken } = createAccessToken({
+            userId: user._id,
+            role: user.role,
+        });
+
+        const { refreshToken: newRefreshToken } =
+            createRefreshToken({
+                userId: user._id,
+                role: user.role,
+            });
+
+        await userModel.findByIdAndUpdate(user._id, {
+            refreshToken: newRefreshToken,
+        });
+
+        res.cookie("refreshToken", newRefreshToken, {
+            httpOnly: true,
+        });
+
+        return res.status(200).json({
+            message: "token rotated successfully",
+            data: {
+                user: {
+                    name: user.name,
+                    email: user.email,
+                    role: user.role,
+                    id: user._id,
+                },
+                accessToken,
+            },
+        });
+
+    } catch (error) {
+        console.log(error);
+
+        return res.status(500).json({
+            message: "internal server error",
+        });
+    }
+};
+
+
+export const authMeControllers=async(req,res)=>{
+    try {
+        
+   
+        const {userId}=req.user
+
+        const user=await userModel.findById(userId)
+
+        if(!user){
+            return res.status(404).json({
+                message:"user not found"
+            })
+        }
+
+        return res.status(200).json({
+            message:"user find succefully",
+            data:{
+                user:{
+                    name:user.name,
+                    email:user.email
+                }
+            }
+        })
+
+    } catch (error) {
+        return res.status(500).json({
+            messsage:"internal sever error"
+        })
+    }
+}
