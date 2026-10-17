@@ -19,7 +19,7 @@ const dispatch=useDispatch()
         try {
           const res=await hydreatedUser()
            console.log(res)
-           dispatch(addUser(res.data.user))
+           dispatch(addUser(res.data.data.user))
         } catch (error) {
          console.log(error) 
         }
