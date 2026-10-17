@@ -173,13 +173,14 @@ export const authrefreshControllers = async (req, res) => {
 
         return res.status(200).json({
             message: "token rotated successfully",
+            accessToken,
             data: {
                 user: {
                     name: user.name,
                     email: user.email,
                     id: user._id,
                 },
-                accessToken,
+                
             },
         });
 
