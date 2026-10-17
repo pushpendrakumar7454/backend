@@ -1,6 +1,9 @@
 
 import React from "react";
 import { useForm } from "react-hook-form";
+import { loginAPi } from "../../api/api";
+import { addUser, setAccessToken } from "../../state/auth";
+import { useNavigate } from "react-router";
 
 const Login = () => {
   const {
@@ -9,8 +12,17 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
+  const navigate=useNavigate()
+
+  const onSubmit = async(data) => {
+    try {
+        const res=await loginAPi(data)
+        addUser(res.data.user)
+        setAccessToken(res.data.accessToken)
+        navigate('/profile')
+    } catch (error) {
+        console.log(error)
+    }
   };
 
   return (

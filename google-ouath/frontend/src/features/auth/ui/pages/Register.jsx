@@ -1,8 +1,9 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { registerApi } from "../../api/api";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser, setAccessToken } from "../../state/auth";
+import { useNavigate } from "react-router";
 
 const Register = () => {
   const {
@@ -11,16 +12,21 @@ const Register = () => {
     formState: { errors },
   } = useForm();
 
+ const dispatch= useDispatch()
+
+const navigate= useNavigate()
   const onSubmit = async (data) => {
     try {
       const res = await registerApi(data);
 
-      addUser(res.data.user);
+      dispatch(addUser(res.data.user));
 
       console.log(res.data.user);
       console.log(res.data.accessToken);
 
-      setAccessToken(res.data.accessToken);
+      dispatch(setAccessToken(res.data.accessToken));
+
+      navigate("/login")
     } catch (error) {
       console.log(error);
     }
