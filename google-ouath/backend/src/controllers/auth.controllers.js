@@ -156,3 +156,80 @@ export const authRefreshcontroller=async(req,res)=>{
         })
     }
 }
+
+
+
+export const authMeController=async(req,res)=>{
+    try {
+        
+   const{userId}=req.user
+
+   const user=await authModel.findById(userId)
+
+   if(!user){
+    return res.status(404).json({
+        message:"user not found"
+    })
+   }
+
+   return res.status(200).json({
+    message:"user find succefully",
+    data:{
+        user:{
+            name:user.name,
+            email:user.email
+        }
+    }
+   })
+
+    } catch (error) {
+        return res.status(500).json({
+            message:"intenral server error"
+        })
+    }
+}
+
+
+
+
+
+export const authLogoutController = async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if (!refreshToken) {
+    return res.status(401).json({
+      message: "invalid refreshToken",
+    });
+  }
+
+  try {
+    const decoded = readRefreshToken(refreshToken);
+    const { userId } = decoded;
+    const user = await authModel.findById(userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "user not found",
+      });
+    }
+
+    await authModel.findByIdAndUpdate(user._id, { refreshToken: null });
+
+    res.clearCookie("refreshToken");
+
+    return res.status(200).json({
+      message: "user logOut succefully",
+      data: {
+        name: user.name,
+        email: user.email,
+        id: user._id,
+        role: user.role,
+      },
+    });
+
+    
+  } catch (error) {
+    return res.status(500).json({
+      message: "internal server error",
+    });
+  }
+};
