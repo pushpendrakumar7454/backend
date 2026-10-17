@@ -4,7 +4,7 @@ import { setAccessToken } from '../features/auth/state/auth'
 
 
 export const apiInstance=axios.create({
-    baseURL:"http://localhost:5173/",
+    baseURL:"http://localhost:5173/api",
     withCredentials:true
 })
 
