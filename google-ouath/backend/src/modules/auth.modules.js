@@ -14,6 +14,9 @@ const authSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  refreshToken:{
+    type:String
+  }
 });
 
 const authModel = mongoose.model("googleAuth", authSchema);
