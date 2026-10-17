@@ -1,4 +1,3 @@
-
 import React from "react";
 import { useForm } from "react-hook-form";
 import { loginAPi } from "../../api/api";
@@ -13,128 +12,140 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const navigate=useNavigate()
-const dispatch=useDispatch()
-  const onSubmit = async(data) => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const onSubmit = async (data) => {
     try {
-        const res=await loginAPi(data)
-        dispatch(addUser(res.data.user))
-        dispatch(setAccessToken(res.data.accessToken))
-        navigate('/profile')
+      const res = await loginAPi(data);
+      dispatch(addUser(res.data.user));
+      dispatch(setAccessToken(res.data.accessToken));
+      navigate("/profile");
     } catch (error) {
-        console.log(error)
+      console.log(error);
     }
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-950 px-4 py-8">
-      <div className="w-full max-w-md rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl sm:p-8">
+    <div className="flex min-h-screen items-center justify-center bg-[#b9cdbb] px-4 py-8 font-sans">
 
-        {/* Header */}
-        <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-orange-500 text-2xl font-bold text-white">
-            N
-          </div>
+      <div className="w-full max-w-[350px]">
 
-          <h1 className="text-3xl font-bold text-white">
+        {/* Heading */}
+        <div className="mb-5 text-center">
+          <h1 className="text-xl font-bold tracking-wide text-[#294633]">
             Welcome Back
           </h1>
 
-          <p className="mt-2 text-sm text-slate-400">
+          <p className="mt-1 text-xs text-[#4d6853]">
             Login to access your account
           </p>
         </div>
 
-        {/* Login Form */}
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-5"
-        >
-          {/* Email */}
-          <div>
-            <label
-              htmlFor="email"
-              className="mb-2 block text-sm font-medium text-slate-200"
-            >
-              Email Address
-            </label>
+        {/* Login Card */}
+        <div className="rounded-[24px] border border-white/30 bg-[#b9cdbb] p-6 shadow-[8px_8px_18px_#9fb3a1,-8px_-8px_18px_#d3e7d5]">
 
-            <input
-              id="email"
-              type="email"
-              placeholder="you@example.com"
-              {...register("email", {
-                required: "Email is required",
-                pattern: {
-                  value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                  message: "Enter a valid email address",
-                },
-              })}
-              className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none placeholder:text-slate-500 transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-            />
-
-            {errors.email && (
-              <p className="mt-1 text-sm text-red-400">
-                {errors.email.message}
-              </p>
-            )}
-          </div>
-
-          {/* Password */}
-          <div>
-            <label
-              htmlFor="password"
-              className="mb-2 block text-sm font-medium text-slate-200"
-            >
-              Password
-            </label>
-
-            <input
-              id="password"
-              type="password"
-              placeholder="Enter your password"
-              {...register("password", {
-                required: "Password is required",
-                minLength: {
-                  value: 8,
-                  message: "Password must be at least 8 characters",
-                },
-              })}
-              className="w-full rounded-xl border border-slate-700 bg-slate-800 px-4 py-3 text-white outline-none placeholder:text-slate-500 transition focus:border-orange-500 focus:ring-2 focus:ring-orange-500/20"
-            />
-
-            {errors.password && (
-              <p className="mt-1 text-sm text-red-400">
-                {errors.password.message}
-              </p>
-            )}
-          </div>
-
-          {/* Forgot Password */}
-          <div className="flex justify-end">
-            <a
-              href="/forgot-password"
-              className="text-sm font-medium text-orange-400 hover:text-orange-300"
-            >
-              Forgot Password?
-            </a>
-          </div>
-
-          {/* Submit Button */}
-          <button
-            type="submit"
-            className="w-full rounded-xl bg-orange-500 py-3 font-semibold text-white transition hover:bg-orange-600 active:scale-[0.98]"
+          <form
+            onSubmit={handleSubmit(onSubmit)}
+            className="space-y-4"
           >
-            Login
-          </button>
-        </form>
+
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="email"
+                className="mb-2 block text-xs font-semibold text-[#304d38]"
+              >
+                Email Address
+              </label>
+
+              <input
+                id="email"
+                type="email"
+                placeholder="you@example.com"
+                autoComplete="email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Enter a valid email address",
+                  },
+                })}
+                className="w-full rounded-xl border border-[#a7bda9]/50 bg-[#b9cdbb] px-3.5 py-3 text-sm text-[#263f2e] shadow-[inset_3px_3px_6px_#9fb3a1,inset_-3px_-3px_6px_#d3e7d5] outline-none placeholder:text-[#6b806e] focus:ring-2 focus:ring-[#527b5b]/30"
+              />
+
+              {errors.email && (
+                <p className="mt-1.5 text-xs font-medium text-red-700">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                className="mb-2 block text-xs font-semibold text-[#304d38]"
+              >
+                Password
+              </label>
+
+              <input
+                id="password"
+                type="password"
+                placeholder="Enter your password"
+                autoComplete="current-password"
+                {...register("password", {
+                  required: "Password is required",
+                  minLength: {
+                    value: 8,
+                    message: "Password must be at least 8 characters",
+                  },
+                })}
+                className="w-full rounded-xl border border-[#a7bda9]/50 bg-[#b9cdbb] px-3.5 py-3 text-sm text-[#263f2e] shadow-[inset_3px_3px_6px_#9fb3a1,inset_-3px_-3px_6px_#d3e7d5] outline-none placeholder:text-[#6b806e] focus:ring-2 focus:ring-[#527b5b]/30"
+              />
+
+              {errors.password && (
+                <p className="mt-1.5 text-xs font-medium text-red-700">
+                  {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            {/* Forgot Password */}
+            <div className="flex justify-end">
+              <a
+                href="/forgot-password"
+                className="text-xs font-medium text-[#355a3d] transition hover:text-[#203c28]"
+              >
+                Forgot Password?
+              </a>
+            </div>
+
+            {/* Login Button */}
+            <button
+              type="submit"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#315b3c] py-3 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(39,76,48,0.20)] transition hover:bg-[#284d33] active:scale-[0.98]"
+            >
+              Login <span>→</span>
+            </button>
+
+          </form>
+
+          {/* Secure Access */}
+          <div className="mt-5 border-t border-[#91aa95]/50 pt-4 text-center">
+            <p className="text-[10px] font-medium tracking-wider text-[#506b55]">
+              SECURE ACCOUNT ACCESS
+            </p>
+          </div>
+        </div>
 
         {/* Register Link */}
-        <p className="mt-6 text-center text-sm text-slate-400">
+        <p className="mt-5 text-center text-xs text-[#405d46]">
           Don't have an account?{" "}
           <a
             href="/register"
-            className="font-semibold text-orange-400 transition hover:text-orange-300"
+            className="font-bold text-[#294b32] underline underline-offset-2 hover:text-[#173722]"
           >
             Create Account
           </a>
