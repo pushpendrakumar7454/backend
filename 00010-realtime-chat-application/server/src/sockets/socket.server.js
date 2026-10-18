@@ -28,6 +28,7 @@ const initiallizeServer = (httpServer) => {
     socket.broadcast.emit('message',msg)
     })
 
+    
     socket.on("disconnect", () => {
       console.log("A user is disconnected:", socket.id);
     });
