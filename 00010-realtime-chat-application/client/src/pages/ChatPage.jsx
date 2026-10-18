@@ -1,22 +1,34 @@
-import React, { useState, useRef, useEffect } from "react";
-import io from "socket.io-client";
-import { useDispatch, useSelector } from "react-redux";
+
+import React, { useEffect, useRef, useState } from 'react';
+import { useSelector } from 'react-redux';
+import io from 'socket.io-client';
 
 const ChatPage = () => {
-  const { accessToken } = useSelector((state) => state.auth);
-  const socketRef = useRef(null);
-
-  const [inputValue, setinputValue] = useState("");
+  const [inpurValues, setinpurValues] = useState("");
+  const [massage, setMassage] = useState([]);
+  const socketRef = useRef();
+  const { accessToken,user } = useSelector((state) => state.auth);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    socketRef.current.emit("massage", {
-      content: inputValue,
+    if (!inpurValues.trim()) return;
+
+    socketRef.current.emit("message", {
+      content: inpurValues,
     });
+
+    setMassage((prev) => [
+      ...prev,
+      { content: inpurValues, outgoing: true },
+    ]);
+
+    setinpurValues("");
   };
 
   useEffect(() => {
+    if (!accessToken) return;
+
     const socket = io({
       extraHeaders: {
         Authorization: `Bearer ${accessToken}`,
@@ -25,81 +37,63 @@ const ChatPage = () => {
 
     socketRef.current = socket;
 
-    socket.on("massage", (msg) => {
-      console.log(msg);
+    socket.on("message", (msg) => {
+      setMassage((prev) => [
+        ...prev,
+        { ...msg, outgoing: false },
+      ]);
     });
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [accessToken]);
 
-  
   return (
-    <div className="h-screen w-full bg-[#f7f7f4] p-3">
-      <div className="mx-auto flex h-full w-full max-w-4xl flex-col">
-        {/* Messages Area */}
-        <div className="flex flex-1 flex-col gap-5 overflow-y-auto px-2 py-3">
-          {/* Outgoing Message - Right */}
-          <div className="flex justify-end">
-            <p className="max-w-[75%] break-words rounded-md bg-[#648653] px-3 py-2 text-xs text-white">
-              Hello! This is an outgoing message.
-            </p>
-          </div>
+    <div className="chat-page">
+      <div className="chat-container">
 
-          {/* Incoming Message - Left */}
-          <div className="flex justify-start">
-            <p className="max-w-[75%] break-words rounded-md bg-[#d6d6d6] px-3 py-2 text-xs text-gray-800">
-              Hello! This is an incoming message.
-            </p>
-          </div>
+        <div className="chat-header">
+          <div className="chat-avatar">RK</div>
 
-          {/* Outgoing Message - Right */}
-          <div className="flex justify-end">
-            <p className="max-w-[75%] break-words rounded-md bg-[#648653] px-3 py-2 text-xs text-white">
-              How are you?
-            </p>
-          </div>
-
-          {/* Incoming Message - Left */}
-          <div className="flex justify-start">
-            <p className="max-w-[75%] break-words rounded-md bg-[#d6d6d6] px-3 py-2 text-xs text-gray-800">
-              I am fine, thank you!
-            </p>
-          </div>
-
-          {/* Outgoing Message - Right */}
-          <div className="flex justify-end">
-            <p className="max-w-[75%] break-words rounded-md bg-[#648653] px-3 py-2 text-xs text-white">
-              That's great!
-            </p>
-          </div>
-
-          {/* Incoming Message - Left */}
-          <div className="flex justify-start">
-            <p className="max-w-[75%] break-words rounded-md bg-[#d6d6d6] px-3 py-2 text-xs text-gray-800">
-              Yes, absolutely!
+          <div className="chat-user-info">
+            <h3>{user?.name}</h3>
+            <p>
+              <span className="online-dot"></span>
+              Online
             </p>
           </div>
         </div>
 
-        {/* Input and Button - Same Line */}
-        <div className="flex w-full shrink-0 items-center gap-2 border-t border-gray-200 py-3">
+        <div className="chat-messages">
+          {massage.map((item, index) => (
+            <div
+              key={index}
+              className={`message-row ${
+                item.outgoing ? "outgoing" : "incoming"
+              }`}
+            >
+              <div className="message-bubble">
+                <p>{item.content}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <form className="chat-footer" onSubmit={handleSubmit}>
           <input
-            onChange={(e) => setinputValue(e.target.value)}
-            value={inputValue}
+            value={inpurValues}
+            onChange={(e) => setinpurValues(e.target.value)}
             type="text"
-            placeholder="Type a message..."
-            className="h-11 min-w-0 flex-1 rounded-md border border-gray-300 bg-white px-4 text-sm outline-none focus:border-[#648653]"
+            placeholder="Type your message..."
+            className="chat-input"
           />
 
-          <button
-            onClick={handleSubmit}
-            type="button"
-            className="h-11 shrink-0 rounded-md bg-[#648653] px-5 text-sm font-medium text-white hover:bg-[#526f43]">
+          <button type="submit" className="send-button">
             Send
           </button>
-        </div>
+        </form>
+
       </div>
     </div>
   );
