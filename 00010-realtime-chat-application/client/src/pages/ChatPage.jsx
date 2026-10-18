@@ -20,7 +20,7 @@ const ChatPage = () => {
     });
 
     setMassage((prev) => [...prev, { content: inpurValues, outgoing: true },]);
-    
+
     setinpurValues("");
   };
 
@@ -36,10 +36,7 @@ const ChatPage = () => {
     socketRef.current = socket;
 
     socket.on("message", (msg) => {
-      setMassage((prev) => [
-        ...prev,
-        { ...msg, outgoing: false },
-      ]);
+      setMassage((prev) => [...prev,{...msg, outgoing: false },]);
     });
 
     return () => {
