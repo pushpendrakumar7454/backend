@@ -5,5 +5,9 @@ export const config={
    PORT:process.env.PORT,
    MONGO_URI:process.env.MONGO_URI,
    REFRESH_TOKEN:process.env.JWT_REFRESH_TOKEN,
-   ACCESS_TOKEN:process.env.JWT_ACCESS_TOKEN
+   ACCESS_TOKEN:process.env.JWT_ACCESS_TOKEN,
+   CLINT_SECRET:process.env.GOOGLE_CLIENT_SECRET_SERVER,
+   CLINT_ID:process.env.GOOGLE_CLIENT_ID,
+   CALLBACK_URL:process.env.CALLBACK_URL
+
 }
