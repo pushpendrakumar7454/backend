@@ -132,7 +132,7 @@ const Login = () => {
             {/* Login Button */}
             <button
               type="submit"
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#315b3c] py-3 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(39,76,48,0.20)] transition hover:bg-[#284d33] active:scale-[0.98]"
+              className="flex active:scale-95 cursor-pointer w-full items-center justify-center gap-2 rounded-xl bg-[#315b3c] py-3 text-sm font-semibold text-white shadow-[0_4px_10px_rgba(39,76,48,0.20)] transition hover:bg-[#284d33] active:scale-[0.98]"
             >
               Login <span>→</span>
             </button>
@@ -152,7 +152,7 @@ const Login = () => {
           <button
             type="button"
             onClick={handleGoogleLogin}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-[#91aa95]/60 bg-[#b9cdbb] py-3 text-sm font-semibold text-[#294633] shadow-[3px_3px_7px_#9fb3a1,-3px_-3px_7px_#d3e7d5] transition hover:bg-[#c4d5c6] active:scale-[0.98]"
+            className="flex w-full active:scale-95 cursor-pointer items-center justify-center gap-3 rounded-xl border border-[#91aa95]/60 bg-[#b9cdbb] py-3 text-sm font-semibold text-[#294633] shadow-[3px_3px_7px_#9fb3a1,-3px_-3px_7px_#d3e7d5] transition hover:bg-[#c4d5c6] active:scale-[0.98]"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
