@@ -12,7 +12,12 @@ const authSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: true,
+    required:()=>{
+      return !this.googleId
+    }
+  },
+  google:{
+   type:String
   },
   refreshToken:{
     type:String
