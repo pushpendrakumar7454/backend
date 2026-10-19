@@ -12,4 +12,10 @@ router.post("/login",authLoginValidator,authLoginControllers)
 router.post("/refresh",authrefreshControllers)
 router.get("/me",authenticate,authMeControllers)
 
+
+//google OAuth
+
+
+
+
 export default router
