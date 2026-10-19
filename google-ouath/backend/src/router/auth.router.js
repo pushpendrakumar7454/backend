@@ -12,7 +12,7 @@ import {
 import authenticate from "../middleware/auth.middleware.js";
 import passport from "../config/passport.js";
 import { config } from "../config/config.js";
-
+import jwt from 'jsonwebtoken'
 const router = Router();
 
 router.post("/register", authRegisterValidator, authRegisterController);
