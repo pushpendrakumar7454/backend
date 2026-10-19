@@ -8,6 +8,7 @@ import Profile from "../features/auth/ui/pages/Profile";
 import { hydreatedUser } from "../features/auth/api/api";
 import { useDispatch } from "react-redux";
 import { addUser } from "../features/auth/state/auth";
+import GoogleCallback from "../features/auth/ui/pages/GoogleCallback";
 
 
 const AppRouter = () => {
@@ -40,6 +41,10 @@ const dispatch=useDispatch()
     path: "/profile",
     element: <Profile />,
   },
+  {
+    path:"/google/callback",
+    element:<GoogleCallback/>
+  }
 ]);
 
   return <RouterProvider router={router} />;
