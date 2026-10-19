@@ -45,6 +45,7 @@ const dispatch=useDispatch()
     path:"/google/callback",
     element:<GoogleCallback/>
   }
+  
 ]);
 
   return <RouterProvider router={router} />;
