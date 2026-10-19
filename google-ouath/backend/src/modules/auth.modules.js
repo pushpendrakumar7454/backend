@@ -1,3 +1,4 @@
+
 import mongoose from "mongoose";
 
 const authSchema = new mongoose.Schema({
@@ -5,23 +6,29 @@ const authSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+
   email: {
     type: String,
     required: true,
     unique: true,
   },
+
   password: {
     type: String,
-    required:()=>{
-      return !this.googleId
-    }
+    required: function () {
+      return !this.googleId;
+    },
   },
-  google:{
-   type:String
+
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
   },
-  refreshToken:{
-    type:String
-  }
+
+  refreshToken: {
+    type: String,
+  },
 });
 
 const userModel = mongoose.model("googleAuth", authSchema);

@@ -30,9 +30,12 @@ const Login = () => {
   };
 
   // Google Login
-  const handleGoogleLogin = () => {
-    window.location.href = "http://localhost:3000/api/auth/google";
-  };
+const handleGoogleLogin = () => {
+  window.location.href = "http://localhost:3000/api/auth/google";
+};
+
+  // Google Login
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-[#b9cdbb] px-4 py-8 font-sans">
