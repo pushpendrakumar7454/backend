@@ -17,3 +17,5 @@ async(accessToken,refreshToken,profile,done)=>{
         return done(error)
     }
 }
+
+export default passport
